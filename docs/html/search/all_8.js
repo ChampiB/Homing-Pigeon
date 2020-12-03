@@ -1,0 +1,6 @@
+var searchData=
+[
+  ['incrementn_52',['incrementN',['../classhopi_1_1nodes_1_1VarNode.html#a0859f9715126cee38f5e3ba76d736f02',1,'hopi::nodes::VarNode']]],
+  ['inference_53',['inference',['../classhopi_1_1algorithms_1_1AlgoVMP.html#a43fccbaf11d7f294dd9bf451b4801407',1,'hopi::algorithms::AlgoVMP::inference(const std::vector&lt; nodes::VarNode * &gt; &amp;vars, double epsilon=0.01, int max_iter=2147483647)'],['../classhopi_1_1algorithms_1_1AlgoVMP.html#aea25a4af5056f5b72afe0e76963c31c2',1,'hopi::algorithms::AlgoVMP::inference(nodes::VarNode *var)']]],
+  ['integrate_54',['integrate',['../classhopi_1_1graphs_1_1FactorGraph.html#a7bf3d63d389f3a13d267b6cb6526bca9',1,'hopi::graphs::FactorGraph::integrate(nodes::VarNode *U, int action, const torch::Tensor &amp;observation, nodes::VarNode *A, nodes::VarNode *B)'],['../classhopi_1_1graphs_1_1FactorGraph.html#a428492be931d269005c4dfcd4b841804',1,'hopi::graphs::FactorGraph::integrate(int action, const torch::Tensor &amp;observation, const torch::Tensor &amp;A, const torch::Tensor &amp;B)'],['../classhopi_1_1graphs_1_1FactorGraph.html#a335faa8141d0501cb339d12ed419bc73',1,'hopi::graphs::FactorGraph::integrate(int action, const torch::Tensor &amp;observation, nodes::VarNode *A, nodes::VarNode *B)']]]
+];

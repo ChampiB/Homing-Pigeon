@@ -1,0 +1,7 @@
+<map id="hopi::nodes::FactorNode" name="hopi::nodes::FactorNode">
+<area shape="rect" id="node1" title=" " alt="" coords="5,81,184,108"/>
+<area shape="rect" id="node2" href="$classhopi_1_1nodes_1_1ActiveTransitionNode.html" title=" " alt="" coords="232,5,475,32"/>
+<area shape="rect" id="node3" href="$classhopi_1_1nodes_1_1CategoricalNode.html" title=" " alt="" coords="247,56,460,83"/>
+<area shape="rect" id="node4" href="$classhopi_1_1nodes_1_1DirichletNode.html" title=" " alt="" coords="256,107,451,133"/>
+<area shape="rect" id="node5" href="$classhopi_1_1nodes_1_1TransitionNode.html" title=" " alt="" coords="252,157,455,184"/>
+</map>
