@@ -1,3 +1,8 @@
+# But those files
+!examples/graphs/graph_format.md
+!examples/graphs/example.graph
+examples/graphs/*
+
 # Prerequisites
 *.d
 
@@ -30,3 +35,9 @@
 *.exe
 *.out
 *.app
+
+# CLion
+cmake-build-debug/
+.idea/
+build/
+examples/.idea
