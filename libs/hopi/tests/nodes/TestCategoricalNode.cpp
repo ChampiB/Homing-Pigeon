@@ -24,8 +24,8 @@ TEST_CASE( "CategoricalNode.vfe() returns the proper vfe contribution" ) {
     auto fg = FactorGraph::current();
     auto c1 = Categorical::create(param);
 
-    auto poc1 = c1->posterior()->probability()[0];
-    auto prt1 = c1->prior()->logProbability()[0];
+    auto poc1 = c1->posterior()->params()[0];
+    auto prt1 = c1->prior()->logParams()[0];
     REQUIRE( c1->parent()->vfe() == (poc1.transpose() * prt1)(0, 0));
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }

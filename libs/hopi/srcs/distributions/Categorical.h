@@ -24,8 +24,10 @@ namespace hopi::distributions {
         [[nodiscard]] DistributionType type() const override;
         [[nodiscard]] int cardinality() const;
         [[nodiscard]] double p(int id) const; // Probability of X = id.
-        [[nodiscard]] std::vector<Eigen::MatrixXd> logProbability() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> probability() const override;
+        [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
+        [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
+        void setParams(std::vector<Eigen::MatrixXd> &param) override; //TODO test
+        double entropy() override; //TODO test
 
     private:
         Eigen::MatrixXd param;

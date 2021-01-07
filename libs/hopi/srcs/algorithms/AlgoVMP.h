@@ -20,7 +20,6 @@ namespace hopi::algorithms {
         static void inference(const std::vector<nodes::VarNode*>& vars, double epsilon = 0.01);
         static void inference(nodes::VarNode *var);
         static double vfe(const std::vector<nodes::VarNode*>& vars);
-        static Eigen::MatrixXd softmax(Eigen::MatrixXd& vector);
     };
 
 }

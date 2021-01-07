@@ -31,10 +31,10 @@ TEST_CASE( "ActiveTransitionNode.vfe() returns the proper vfe contribution" ) {
     auto c2 = Categorical::create(param2);
     auto t1 = ActiveTransition::create(c1, c2, param3);
 
-    auto poc1 = c1->posterior()->probability()[0];
-    auto poc2 = c2->posterior()->probability()[0];
-    auto pot1 = t1->posterior()->probability()[0];
-    auto prt1 = t1->prior()->logProbability();
+    auto poc1 = c1->posterior()->params()[0];
+    auto poc2 = c2->posterior()->params()[0];
+    auto pot1 = t1->posterior()->params()[0];
+    auto prt1 = t1->prior()->logParams();
 
     double res  = poc2(0, 0) * (pot1.transpose() * prt1[0] * poc1)(0, 0);
            res += poc2(1, 0) * (pot1.transpose() * prt1[1] * poc1)(0, 0);

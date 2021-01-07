@@ -41,7 +41,6 @@ namespace hopi::algorithms {
                 std::pair<nodes::VarNode*,nodes::VarNode*> a1,
                 std::pair<nodes::VarNode*,nodes::VarNode*> a2
         );
-        static double KL(distributions::Distribution *d1, distributions::Distribution *d2);
         int distance_from_root(nodes::VarNode *n);
 
     private:

@@ -10,7 +10,7 @@
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
 #include "graphs/FactorGraph.h"
-#include "AlgoVMP.h"
+#include "math/Functions.h"
 #include <Eigen/Dense>
 #include <limits>
 #include <chrono>
@@ -18,6 +18,7 @@
 
 using namespace hopi::nodes;
 using namespace hopi::graphs;
+using namespace hopi::math;
 using namespace hopi::distributions;
 using namespace Eigen;
 
@@ -78,27 +79,13 @@ namespace hopi::algorithms {
         for (int i = 0; i < us.size(); ++i) {
             w(i, 0) = -us[i].first->g();
         }
-        w = AlgoVMP::softmax(w);
+        w = Functions::softmax(w);
         std::vector<double> weight;
         for (int i = 0; i < us.size(); ++i) {
             weight.push_back(w(i, 0));
         }
         std::discrete_distribution<int> rand_int(weight.begin(), weight.end());
         return us[rand_int(gen)].first;
-    }
-
-    double AlgoTree::KL(Distribution *d1, Distribution *d2) {
-        if (d1->type() != DistributionType::CATEGORICAL || d2->type() != DistributionType::CATEGORICAL) {
-            throw std::runtime_error("Unsupported: KL between non-categorical distributions.");
-        }
-        auto c1 = dynamic_cast<Categorical*>(d1);
-        auto c2 = dynamic_cast<Categorical*>(d2);
-        double kl = 0;
-
-        for (int i = 0; i < c1->cardinality(); ++i) {
-            kl += c1->p(i) * ( std::log(c1->p(i)) - std::log(c2->p(i)) );
-        }
-        return kl;
     }
 
     void AlgoTree::evaluation(EvaluationType type) {
@@ -203,7 +190,9 @@ namespace hopi::algorithms {
         if (parent_G == std::numeric_limits<double>::min()) {
             parent_G = 0;
         }
-        s->setG(parent_G + KL(s->posterior(), s->biased()) + KL(o->posterior(), o->biased()));
+        s->setG(parent_G \
+                 + Functions::KL(s->posterior(), s->biased()) \
+                 + Functions::KL(o->posterior(), o->biased()) );
     }
 
     void AlgoTree::evaluationAverage(nodes::VarNode *s, nodes::VarNode *o) {
@@ -213,12 +202,14 @@ namespace hopi::algorithms {
         if (parent_G == std::numeric_limits<double>::min()) {
             parent_G = 0;
         }
-        double g = KL(s->posterior(), s->biased()) + KL(o->posterior(), o->biased());
+        double g = Functions::KL(s->posterior(), s->biased()) \
+                 + Functions::KL(o->posterior(), o->biased());
         s->setG(((d * parent_G) + g) / (double)(d + 1));
     }
 
     void AlgoTree::evaluationKL(nodes::VarNode *s, nodes::VarNode *o) {
-        s->setG(KL(s->posterior(), s->biased()) + KL(o->posterior(), o->biased()));
+        s->setG(Functions::KL(s->posterior(), s->biased()) \
+                 + Functions::KL(o->posterior(), o->biased()) );
     }
 
     int AlgoTree::distance_from_root(nodes::VarNode *n) {

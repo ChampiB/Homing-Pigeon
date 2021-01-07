@@ -34,7 +34,7 @@ TEST_CASE( "Categorical distribution returns the proper type" ) {
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
-TEST_CASE( "Categorical distribution returns the correct probability" ) {
+TEST_CASE( "Categorical distribution returns the correct params" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     MatrixXd param1(3, 1);
     param1(0, 0) = 0.1;
@@ -54,14 +54,14 @@ TEST_CASE( "Categorical distribution returns the correct probability" ) {
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
-TEST_CASE( "Categorical distribution returns the correct log probability" ) {
+TEST_CASE( "Categorical distribution returns the correct log params" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     MatrixXd param1(3, 1);
     param1(0, 0) = 0.1;
     param1(1, 0) = 0.7;
     param1(2, 0) = 0.2;
     Categorical c1 = Categorical(param1);
-    auto lp1 = c1.logProbability();
+    auto lp1 = c1.logParams();
     REQUIRE( lp1.size() == 1 );
     REQUIRE( lp1[0](0, 0) == std::log(0.1) );
     REQUIRE( lp1[0](1, 0) == std::log(0.7) );
@@ -71,7 +71,7 @@ TEST_CASE( "Categorical distribution returns the correct log probability" ) {
     param2(0, 0) = 0.5;
     param2(1, 0) = 0.5;
     Categorical c2 = Categorical(param2);
-    auto lp2 = c2.logProbability();
+    auto lp2 = c2.logParams();
     REQUIRE( lp2.size() == 1 );
     REQUIRE( lp2[0](0, 0) == std::log(0.5) );
     REQUIRE( lp2[0](1, 0) == std::log(0.5) );

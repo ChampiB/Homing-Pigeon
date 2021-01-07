@@ -26,9 +26,9 @@ TEST_CASE( "TransitionNode.vfe() returns the proper vfe contribution" ) {
     auto c1 = Categorical::create(param);
     auto t1 = Transition::create(c1, param2);
 
-    auto poc1 = c1->posterior()->probability()[0];
-    auto pot1 = t1->posterior()->probability()[0];
-    auto prt1 = t1->prior()->logProbability()[0];
+    auto poc1 = c1->posterior()->params()[0];
+    auto pot1 = t1->posterior()->params()[0];
+    auto prt1 = t1->prior()->logParams()[0];
     REQUIRE( t1->parent()->vfe() == (pot1.transpose() * prt1 * poc1)(0, 0));    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
