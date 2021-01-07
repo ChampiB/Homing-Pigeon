@@ -20,11 +20,11 @@ namespace hopi::nodes {
         explicit CategoricalNode(VarNode *node);
         VarNode *parent(int index) override;
         VarNode *child() override;
-        Eigen::MatrixXd message(VarNode *to) override;
+        std::vector<Eigen::MatrixXd> message(VarNode *to) override; //TODO test
         double vfe() override;
 
     private:
-        Eigen::MatrixXd childMessage();
+        std::vector<Eigen::MatrixXd> childMessage(); //TODO test
 
     private:
         VarNode *childNode;

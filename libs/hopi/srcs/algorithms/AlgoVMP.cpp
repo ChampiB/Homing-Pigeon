@@ -43,40 +43,29 @@ namespace hopi::algorithms {
     }
 
     void AlgoVMP::inference(VarNode *var) {
-        MatrixXd post_param;
+        std::vector<MatrixXd> post_param;
         AdjacentFactorsIter factorIt(var);
         while (*factorIt != nullptr) {
-            if (post_param.rows() == 0 && post_param.cols() == 0) {
+            if (post_param.empty()) {
+                // posterior parameters <- message
                 post_param = (*factorIt)->message(var);
             } else {
-                post_param = post_param + (*factorIt)->message(var);
+                // posterior parameters += message
+                auto msg = (*factorIt)->message(var);
+                for (int i = 0; i < post_param.size(); ++i) {
+                    post_param[i] = post_param[i] + msg[i];
+                }
             }
             ++factorIt;
         }
-        var->setPosterior(std::make_unique<Categorical>(AlgoVMP::softmax(post_param)));
-    }
-
-    MatrixXd AlgoVMP::softmax(MatrixXd &vector) {
-        MatrixXd res = vector.array() - vector.maxCoeff();
-        res = res.array().exp();
-        double sum = res.sum();
-
-        if (sum == 0) {
-            return MatrixXd::Constant(vector.rows(), 1, 1.0 / res.size());
-        }
-        return res / sum;
+        var->posterior()->setParams(post_param);
     }
 
     double AlgoVMP::vfe(const std::vector<nodes::VarNode *> &vars) {
         double VFE = 0;
 
         for (auto v : vars) {
-            if (v->type() == HIDDEN) {
-                auto p  = v->posterior()->probability()[0];
-                auto lp = v->posterior()->logProbability()[0];
-                VFE += (p.transpose() * lp)(0, 0);
-            }
-            VFE -= v->parent()->vfe();
+            VFE += v->parent()->vfe();
         }
         return VFE;
     }

@@ -5,13 +5,14 @@
 #include "Transition.h"
 #include "nodes/VarNode.h"
 #include "nodes/TransitionNode.h"
+#include "math/Functions.h"
 #include "graphs/FactorGraph.h"
 #include "Categorical.h"
 #include <Eigen/Dense>
-#include <utility>
 
 using namespace hopi::nodes;
 using namespace hopi::graphs;
+using namespace hopi::math;
 using namespace Eigen;
 
 namespace hopi::distributions {
@@ -39,16 +40,27 @@ namespace hopi::distributions {
         return DistributionType::TRANSITION;
     }
 
-    std::vector<MatrixXd> Transition::logProbability() const {
+    std::vector<MatrixXd> Transition::logParams() const {
         MatrixXd copy = param;
         std::vector<MatrixXd> res{copy.array().log()};
         return res;
     }
 
-    std::vector<MatrixXd> Transition::probability() const {
+    std::vector<MatrixXd> Transition::params() const {
         MatrixXd copy = param;
         std::vector<MatrixXd> res{copy.array()};
         return res;
+    }
+
+    void Transition::setParams(std::vector<Eigen::MatrixXd> &p) {
+        if (p.size() != 1) {
+            throw std::runtime_error("Transition::setParams argument size must be equal to one.");
+        }
+        param = Functions::softmax(p[0]);
+    }
+
+    double Transition::entropy() {
+        throw std::runtime_error("Unsupported: Transition::entropy()");
     }
 
 }

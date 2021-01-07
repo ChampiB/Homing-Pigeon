@@ -24,7 +24,7 @@ namespace hopi::nodes {
         return childNode;
     }
 
-    Eigen::MatrixXd CategoricalNode::message(VarNode *t) {
+    std::vector<Eigen::MatrixXd> CategoricalNode::message(VarNode *t) {
         if (t == childNode) {
             return childMessage();
         } else {
@@ -32,14 +32,20 @@ namespace hopi::nodes {
         }
     }
 
-    Eigen::MatrixXd CategoricalNode::childMessage() {
-        return child()->prior()->logProbability()[0];
+    std::vector<Eigen::MatrixXd> CategoricalNode::childMessage() {
+        std::vector<Eigen::MatrixXd> msg{child()->prior()->logParams()[0]};
+        return msg;
     }
 
     double CategoricalNode::vfe() {
-        auto p  = child()->posterior()->probability()[0];
-        auto lp = child()->prior()->logProbability()[0];
-        return (p.transpose() * lp)(0, 0);
+        double VFE = 0;
+
+        if (child()->type() == HIDDEN) {
+            VFE -= child()->posterior()->entropy();
+        }
+        auto p  = child()->posterior()->params()[0];
+        auto lp = child()->prior()->logParams()[0];
+        return VFE - (p.transpose() * lp)(0, 0);
     }
 
 }

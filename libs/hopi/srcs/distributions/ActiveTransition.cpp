@@ -5,11 +5,13 @@
 #include "nodes/ActiveTransitionNode.h"
 #include "ActiveTransition.h"
 #include "nodes/VarNode.h"
+#include "math/Functions.h"
 #include "graphs/FactorGraph.h"
 #include "Categorical.h"
 
 using namespace hopi::nodes;
 using namespace hopi::graphs;
+using namespace hopi::math;
 using namespace Eigen;
 
 namespace hopi::distributions {
@@ -38,7 +40,7 @@ namespace hopi::distributions {
         return DistributionType::ACTIVE_TRANSITION;
     }
 
-    std::vector<MatrixXd> ActiveTransition::logProbability() const {
+    std::vector<MatrixXd> ActiveTransition::logParams() const {
         std::vector<MatrixXd> res(param.size());
 
         for (int i = 0; i < param.size(); ++i) {
@@ -48,13 +50,26 @@ namespace hopi::distributions {
         return res;
     }
 
-    std::vector<MatrixXd> ActiveTransition::probability() const {
+    std::vector<MatrixXd> ActiveTransition::params() const {
         std::vector<MatrixXd> res(param.size());
 
         for (int i = 0; i < param.size(); ++i) {
             res[i] = param[i];
         }
         return res;
+    }
+
+    void ActiveTransition::setParams(std::vector<Eigen::MatrixXd> &p) {
+        if (p.size() != param.size()) {
+            throw std::runtime_error("ActiveTransition::setParams argument size must match parameter size.");
+        }
+        for (int i = 0; i < p.size(); ++i) {
+            param[i] = Functions::softmax(p[i]);
+        }
+    }
+
+    double ActiveTransition::entropy() {
+        throw std::runtime_error("Unsupported: ActiveTransition::entropy()");
     }
 
 }

@@ -4,6 +4,8 @@
 
 #include "nodes/FactorNode.h"
 
+#include <utility>
+
 namespace hopi::nodes {
 
     std::string FactorNode::name() const {
@@ -11,7 +13,7 @@ namespace hopi::nodes {
     }
 
     void FactorNode::setName(std::string name) {
-        _name = name;
+        _name = std::move(name);
     }
 
 }

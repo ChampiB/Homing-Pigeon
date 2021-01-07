@@ -19,12 +19,12 @@ namespace hopi::nodes {
         TransitionNode(VarNode *from, VarNode *to);
         VarNode *parent(int index) override;
         VarNode *child() override;
-        Eigen::MatrixXd message(VarNode *to) override;
+        std::vector<Eigen::MatrixXd> message(VarNode *to) override; //TODO test
         double vfe() override;
 
     private:
-        Eigen::MatrixXd toMessage();
-        Eigen::MatrixXd fromMessage();
+        std::vector<Eigen::MatrixXd> toMessage(); //TODO test
+        std::vector<Eigen::MatrixXd> fromMessage(); //TODO test
 
     private:
         VarNode *from;

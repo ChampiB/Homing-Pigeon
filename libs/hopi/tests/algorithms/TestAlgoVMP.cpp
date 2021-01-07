@@ -86,8 +86,8 @@ TEST_CASE( "AlgoVMP.vfe() returns the variational free energy of the variables s
     res -= a0->parent()->vfe();
     res -= s0->parent()->vfe();
     res -= s1->parent()->vfe();
-    res += (a0->posterior()->probability()[0].transpose() * a0->posterior()->logProbability()[0])(0, 0);
-    res += (s0->posterior()->probability()[0].transpose() * s0->posterior()->logProbability()[0])(0, 0);
+    res += (a0->posterior()->params()[0].transpose() * a0->posterior()->logParams()[0])(0, 0);
+    res += (s0->posterior()->params()[0].transpose() * s0->posterior()->logParams()[0])(0, 0);
     REQUIRE( F == Approx(res).epsilon(0.1) );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }

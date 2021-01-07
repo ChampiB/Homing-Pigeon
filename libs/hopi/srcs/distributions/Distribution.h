@@ -14,8 +14,10 @@ namespace hopi::distributions {
     class Distribution {
     public:
         [[nodiscard]] virtual DistributionType type() const = 0;
-        [[nodiscard]] virtual std::vector<Eigen::MatrixXd> logProbability() const = 0;
-        [[nodiscard]] virtual std::vector<Eigen::MatrixXd> probability() const = 0;
+        [[nodiscard]] virtual std::vector<Eigen::MatrixXd> logParams() const = 0;
+        [[nodiscard]] virtual std::vector<Eigen::MatrixXd> params() const = 0;
+        virtual void setParams(std::vector<Eigen::MatrixXd> &param) = 0;
+        virtual double entropy() = 0;
     };
 
 }

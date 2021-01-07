@@ -19,7 +19,7 @@ TEST_CASE( "ActiveTransition distribution returns the proper type" ) {
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
-TEST_CASE( "ActiveTransition distribution returns the correct log probability" ) {
+TEST_CASE( "ActiveTransition distribution returns the correct log params" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     MatrixXd param1(3, 2);
     param1(0, 0) = 0.1;
@@ -30,7 +30,7 @@ TEST_CASE( "ActiveTransition distribution returns the correct log probability" )
     param1(2, 1) = 0.3;
     std::vector<MatrixXd> p1{ param1 };
     ActiveTransition d1 = ActiveTransition(p1);
-    auto lp1 = d1.logProbability();
+    auto lp1 = d1.logParams();
     REQUIRE( lp1.size() == 1 );
     REQUIRE( lp1[0](0, 0) == std::log(0.1) );
     REQUIRE( lp1[0](1, 0) == std::log(0.7) );
@@ -51,7 +51,7 @@ TEST_CASE( "ActiveTransition distribution returns the correct log probability" )
     param2_2(1, 1) = 0.95;
     std::vector<MatrixXd> p2{ param2_1, param2_2 };
     ActiveTransition d2 = ActiveTransition(p2);
-    auto lp2 = d2.logProbability();
+    auto lp2 = d2.logParams();
     REQUIRE( lp2.size() == 2 );
     REQUIRE( lp2[0](0,0) == std::log(0.5) );
     REQUIRE( lp2[0](1,0) == std::log(0.5) );

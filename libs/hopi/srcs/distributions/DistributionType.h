@@ -10,7 +10,8 @@ namespace hopi::distributions {
     enum DistributionType : int {
         CATEGORICAL,
         TRANSITION,
-        ACTIVE_TRANSITION
+        ACTIVE_TRANSITION,
+        DIRICHLET
     };
 
 }

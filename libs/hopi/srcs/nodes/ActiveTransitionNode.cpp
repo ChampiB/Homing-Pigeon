@@ -32,7 +32,7 @@ namespace hopi::nodes {
         return to;
     }
 
-    MatrixXd ActiveTransitionNode::message(VarNode *t) {
+    std::vector<Eigen::MatrixXd> ActiveTransitionNode::message(VarNode *t) {
         if (t == to) {
             return toMessage();
         } else if (t == from) {
@@ -44,10 +44,10 @@ namespace hopi::nodes {
         }
     }
 
-    Eigen::MatrixXd ActiveTransitionNode::toMessage() {
-        std::vector<MatrixXd> B = to->prior()->logProbability();
-        MatrixXd from_hat = from->posterior()->probability()[0];
-        MatrixXd action_hat = action->posterior()->probability()[0];
+    std::vector<Eigen::MatrixXd> ActiveTransitionNode::toMessage() {
+        std::vector<MatrixXd> B = to->prior()->logParams();
+        MatrixXd from_hat = from->posterior()->params()[0];
+        MatrixXd action_hat = action->posterior()->params()[0];
 
         for (int i = 0; i < B.size(); ++i) {
             B[i] = action_hat(i, 0) * B[i] * from_hat;
@@ -55,13 +55,14 @@ namespace hopi::nodes {
                 B[0] += B[i];
             }
         }
-        return B[0];
+        std::vector<Eigen::MatrixXd> msg{B[0]};
+        return msg;
     }
 
-    Eigen::MatrixXd ActiveTransitionNode::fromMessage() {
-        std::vector<MatrixXd> B = to->prior()->logProbability();
-        MatrixXd to_hat = to->posterior()->probability()[0];
-        MatrixXd action_hat = action->posterior()->probability()[0];
+    std::vector<Eigen::MatrixXd> ActiveTransitionNode::fromMessage() {
+        std::vector<MatrixXd> B = to->prior()->logParams();
+        MatrixXd to_hat = to->posterior()->params()[0];
+        MatrixXd action_hat = action->posterior()->params()[0];
 
         for (int i = 0; i < B.size(); ++i) {
             B[i] = action_hat(i, 0) * B[i].transpose() * to_hat;
@@ -69,30 +70,35 @@ namespace hopi::nodes {
                 B[0] += B[i];
             }
         }
-        return B[0];
+        std::vector<Eigen::MatrixXd> msg{B[0]};
+        return msg;
     }
 
-    Eigen::MatrixXd ActiveTransitionNode::actionMessage() {
-        std::vector<MatrixXd> B = to->prior()->logProbability();
-        MatrixXd to_hat = to->posterior()->probability()[0];
-        MatrixXd from_hat = from->posterior()->probability()[0];
-        MatrixXd msg(B.size(), 1);
+    std::vector<Eigen::MatrixXd> ActiveTransitionNode::actionMessage() {
+        std::vector<MatrixXd> B = to->prior()->logParams();
+        MatrixXd to_hat = to->posterior()->params()[0];
+        MatrixXd from_hat = from->posterior()->params()[0];
+        MatrixXd tmp(B.size(), 1);
 
         for (int i = 0; i < B.size(); ++i) {
-            msg(i, 0) = (to_hat.transpose() * B[i] * from_hat)(0, 0);
+            tmp(i, 0) = (to_hat.transpose() * B[i] * from_hat)(0, 0);
         }
+        std::vector<Eigen::MatrixXd> msg{tmp};
         return msg;
     }
 
     double ActiveTransitionNode::vfe() {
-        auto to_p     = to->posterior()->probability()[0];
-        auto from_p   = from->posterior()->probability()[0];
-        auto action_p = action->posterior()->probability()[0];
-        auto lp       = to->prior()->logProbability();
+        auto to_p     = to->posterior()->params()[0];
+        auto from_p   = from->posterior()->params()[0];
+        auto action_p = action->posterior()->params()[0];
+        auto lp       = to->prior()->logParams();
         double VFE    = 0;
 
+        if (child()->type() == HIDDEN) {
+            VFE -= child()->posterior()->entropy();
+        }
         for (int i = 0; i < lp.size(); ++i) {
-            VFE += action_p(i, 0) * (to_p.transpose() * lp[i] * from_p)(0, 0);
+            VFE -= action_p(i, 0) * (to_p.transpose() * lp[i] * from_p)(0, 0);
         }
         return VFE;
     }

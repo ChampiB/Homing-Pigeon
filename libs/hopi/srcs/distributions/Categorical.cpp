@@ -5,11 +5,13 @@
 #include "Categorical.h"
 #include "nodes/VarNode.h"
 #include "nodes/CategoricalNode.h"
+#include "math/Functions.h"
 #include "graphs/FactorGraph.h"
 #include <Eigen/Dense>
 
 using namespace hopi::nodes;
 using namespace hopi::graphs;
+using namespace hopi::math;
 using namespace Eigen;
 
 namespace hopi::distributions {
@@ -43,16 +45,27 @@ namespace hopi::distributions {
         return param(id);
     }
 
-    std::vector<MatrixXd> Categorical::logProbability() const {
+    std::vector<MatrixXd> Categorical::logParams() const {
         MatrixXd copy = param;
         std::vector<MatrixXd> res {copy.array().log()};
         return res;
     }
 
-    std::vector<MatrixXd> Categorical::probability() const {
+    std::vector<MatrixXd> Categorical::params() const {
         MatrixXd copy = param;
         std::vector<MatrixXd> res {copy.array()};
         return res;
+    }
+
+    void Categorical::setParams(std::vector<Eigen::MatrixXd> &p) {
+        if (p.size() != 1) {
+            throw std::runtime_error("Categorical::setParams argument size must be equal to one.");
+        }
+        param = Functions::softmax(p[0]);
+    }
+
+    double Categorical::entropy() {
+        return - (params()[0].transpose() * logParams()[0])(0, 0);
     }
 
 }

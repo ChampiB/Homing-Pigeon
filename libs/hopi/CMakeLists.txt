@@ -27,7 +27,7 @@ set(HOPI_SRCS
         srcs/iterators/AdjacentFactorsIter.h srcs/iterators/AdjacentFactorsIter.cpp
         srcs/iterators/HiddenVarIter.h srcs/iterators/HiddenVarIter.cpp
         srcs/iterators/ObservedVarIter.h srcs/iterators/ObservedVarIter.cpp
-        )
+        srcs/nodes/DirichletNode.cpp srcs/nodes/DirichletNode.h srcs/distributions/Dirichlet.cpp srcs/distributions/Dirichlet.h srcs/math/Functions.cpp srcs/math/Functions.h)
 
 add_library(hopi STATIC ${HOPI_SRCS})
 target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/hopi/srcs)
