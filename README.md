@@ -11,7 +11,7 @@ available:
 - ActiveTransition, i.e. P(s1|so,action)
 
 The third node allows the user to implement active inference agents and agents using planning as inference. Finally, the
-current version also allows planning using tree search, where three search here refers to dynamic expansion of the 
+current version also allows planning using tree search, where three search here refers to dynamic expansions of the 
 generative model. The tree expansion is driven by a heuristic (expected free energy) and the action selection is driven 
 by the number of times each root's child has been expanded (ties are broken based on the heuristic).
 
