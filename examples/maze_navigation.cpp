@@ -3,6 +3,7 @@
 #include "environments/Environment.h"
 #include "environments/MazeEnv.h"
 #include "nodes/VarNode.h"
+#include "math/Functions.h"
 #include "distributions/Categorical.h"
 #include "graphs/FactorGraph.h"
 #include "algorithms/AlgoTree.h"
@@ -13,6 +14,7 @@
 using namespace hopi::environments;
 using namespace hopi::distributions;
 using namespace hopi::nodes;
+using namespace hopi::math;
 using namespace hopi::graphs;
 using namespace hopi::algorithms;
 using namespace Eigen;
@@ -56,7 +58,7 @@ int main()
     for (int i = 0; i < env->observations(); ++i) {
         E_tilde(i, 0) = (env->observations() - i);
     }
-    E_tilde = AlgoVMP::softmax(E_tilde);
+    E_tilde = Functions::softmax(E_tilde);
 
     /**
      ** Run the simulation.

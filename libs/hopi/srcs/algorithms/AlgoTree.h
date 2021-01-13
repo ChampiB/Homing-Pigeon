@@ -33,8 +33,11 @@ namespace hopi::algorithms {
         );
         void evaluation(EvaluationType type = EvaluationType::KL);
         void expansion(nodes::VarNode *p, Eigen::MatrixXd& A, std::vector<Eigen::MatrixXd>& B);
+        void expansion(nodes::VarNode *p, nodes::VarNode *A, nodes::VarNode *B);
         static void backpropagation(nodes::VarNode *node, nodes::VarNode *root, bool back_prop_g = true);
         static int actionSelection(nodes::VarNode *root);
+
+    public:
         std::vector<int> unexploredActions(nodes::VarNode *node) const;
         [[nodiscard]] std::vector<nodes::VarNode*> lastExpansionNodes() const;
         static bool CompareQuality(

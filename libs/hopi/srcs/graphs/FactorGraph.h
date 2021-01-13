@@ -31,6 +31,12 @@ namespace hopi::graphs {
                 const Eigen::MatrixXd& A,
                 const std::vector<Eigen::MatrixXd>& B
         );
+        void integrate(
+                int action,
+                const Eigen::MatrixXd& observation,
+                nodes::VarNode *A,
+                nodes::VarNode *B
+        );
         void setTreeRoot(nodes::VarNode *root);
         nodes::VarNode *treeRoot();
         nodes::VarNode *addNode(std::unique_ptr<nodes::VarNode> node);
@@ -44,6 +50,7 @@ namespace hopi::graphs {
         nodes::FactorNode *factor(int index);
         void loadEvidence(int nobs, const std::string& file_name);
         static Eigen::MatrixXd oneHot(int size, int index);
+        void removeHiddenChildren(nodes::VarNode *node);
         void removeBranch(nodes::FactorNode *node);
         void removeNullNodes();
         void removeNullFactors();
@@ -54,6 +61,13 @@ namespace hopi::graphs {
         void writeGraphvizFactors(std::ofstream &file, std::pair<std::string,int> &dvn, std::pair<std::string,int> &dfn);
         void writeGraphvizData   (std::ofstream &file, const std::vector<nodes::VarNodeAttr> &display);
         static std::string getName(const std::string &name, std::pair<std::string, int> &default_name);
+
+        template<class T1, class T2>
+        void integrate(
+            const Eigen::MatrixXd& action_param,
+            const Eigen::MatrixXd& observation,
+            const T1 A, const T2 B
+        );
 
     private:
         std::vector<std::unique_ptr<nodes::VarNode>> _vars;
