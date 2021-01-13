@@ -18,6 +18,7 @@ namespace hopi::distributions {
     class Transition : public Distribution {
     public:
         static nodes::VarNode *create(nodes::VarNode *s, const Eigen::MatrixXd& param);
+        static nodes::VarNode *create(nodes::VarNode *s, nodes::VarNode *param); //TODO test
 
     public:
         explicit Transition(Eigen::MatrixXd param);

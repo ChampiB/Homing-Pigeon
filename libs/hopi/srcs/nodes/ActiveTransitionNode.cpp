@@ -4,18 +4,24 @@
 
 #include "ActiveTransitionNode.h"
 #include "distributions/Distribution.h"
+#include "distributions/Dirichlet.h"
 #include <Eigen/Dense>
 #include "VarNode.h"
 
 using namespace Eigen;
+using namespace hopi::distributions;
 
 namespace hopi::nodes {
 
-    ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t) {
+    ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t, VarNode *b) {
         from = f;
         action = a;
         to = t;
+        B = b;
     }
+
+    ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t)
+      : ActiveTransitionNode(f, a, t, nullptr) {}
 
     VarNode *ActiveTransitionNode::parent(int index) {
         switch (index) {
@@ -23,6 +29,8 @@ namespace hopi::nodes {
                 return from;
             case 1:
                 return action;
+            case 2:
+                return B;
             default:
                 return nullptr;
         }
@@ -39,51 +47,68 @@ namespace hopi::nodes {
             return fromMessage();
         } else if (t == action) {
             return actionMessage();
+        } else if (B && t == B) {
+            return bMessage();
         } else {
             throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
         }
     }
 
-    std::vector<Eigen::MatrixXd> ActiveTransitionNode::toMessage() {
-        std::vector<MatrixXd> B = to->prior()->logParams();
+    std::vector<MatrixXd> ActiveTransitionNode::toMessage() {
+        std::vector<MatrixXd> B_bar = getLogB();
         MatrixXd from_hat = from->posterior()->params()[0];
         MatrixXd action_hat = action->posterior()->params()[0];
 
-        for (int i = 0; i < B.size(); ++i) {
-            B[i] = action_hat(i, 0) * B[i] * from_hat;
+        for (int i = 0; i < B_bar.size(); ++i) {
+            B_bar[i] = action_hat(i, 0) * B_bar[i] * from_hat;
             if (i != 0) {
-                B[0] += B[i];
+                B_bar[0] += B_bar[i];
             }
         }
-        std::vector<Eigen::MatrixXd> msg{B[0]};
-        return msg;
+        return {B_bar[0]};
     }
 
-    std::vector<Eigen::MatrixXd> ActiveTransitionNode::fromMessage() {
-        std::vector<MatrixXd> B = to->prior()->logParams();
+    std::vector<MatrixXd> ActiveTransitionNode::fromMessage() {
+        std::vector<MatrixXd> B_bar = getLogB();
         MatrixXd to_hat = to->posterior()->params()[0];
         MatrixXd action_hat = action->posterior()->params()[0];
 
-        for (int i = 0; i < B.size(); ++i) {
-            B[i] = action_hat(i, 0) * B[i].transpose() * to_hat;
+        for (int i = 0; i < B_bar.size(); ++i) {
+            B_bar[i] = action_hat(i, 0) * B_bar[i].transpose() * to_hat;
             if (i != 0) {
-                B[0] += B[i];
+                B_bar[0] += B_bar[i];
             }
         }
-        std::vector<Eigen::MatrixXd> msg{B[0]};
-        return msg;
+        return {B_bar[0]};
     }
 
-    std::vector<Eigen::MatrixXd> ActiveTransitionNode::actionMessage() {
-        std::vector<MatrixXd> B = to->prior()->logParams();
-        MatrixXd to_hat = to->posterior()->params()[0];
+    std::vector<MatrixXd> ActiveTransitionNode::actionMessage() {
+        std::vector<MatrixXd> B_bar = getLogB();
+        MatrixXd to_hat   =   to->posterior()->params()[0];
         MatrixXd from_hat = from->posterior()->params()[0];
-        MatrixXd tmp(B.size(), 1);
+        MatrixXd msg(B_bar.size(), 1);
 
-        for (int i = 0; i < B.size(); ++i) {
-            tmp(i, 0) = (to_hat.transpose() * B[i] * from_hat)(0, 0);
+        for (int i = 0; i < B_bar.size(); ++i) {
+            msg(i, 0) = (to_hat.transpose() * B_bar[i] * from_hat)(0, 0);
         }
-        std::vector<Eigen::MatrixXd> msg{tmp};
+        return {msg};
+    }
+
+    std::vector<MatrixXd> ActiveTransitionNode::bMessage() {
+        MatrixXd to_hat     =     to->posterior()->params()[0];
+        MatrixXd from_hat   =   from->posterior()->params()[0];
+        MatrixXd action_hat = action->posterior()->params()[0];
+        int actions = action_hat.rows();
+        std::vector<MatrixXd> msg(actions);
+
+        msg[actions - 1] = to_hat * from_hat.transpose();
+        for (int i = 0; i < action_hat.size(); ++i) {
+            for (int j = 0; j < to_hat.size(); ++j) {
+                for (int k = 0; k < from_hat.size(); ++k) {
+                    msg[i](j,k) = action_hat(i,1) * msg[actions - 1](j,k);
+                }
+            }
+        }
         return msg;
     }
 
@@ -91,7 +116,7 @@ namespace hopi::nodes {
         auto to_p     = to->posterior()->params()[0];
         auto from_p   = from->posterior()->params()[0];
         auto action_p = action->posterior()->params()[0];
-        auto lp       = to->prior()->logParams();
+        auto lp       = getLogB();
         double VFE    = 0;
 
         if (child()->type() == HIDDEN) {
@@ -101,6 +126,14 @@ namespace hopi::nodes {
             VFE -= action_p(i, 0) * (to_p.transpose() * lp[i] * from_p)(0, 0);
         }
         return VFE;
+    }
+
+    std::vector<MatrixXd> ActiveTransitionNode::getLogB() {
+        if (B) {
+            return Dirichlet::expectedLog(B->posterior()->params());
+        } else {
+            return to->prior()->logParams();
+        }
     }
 
 }

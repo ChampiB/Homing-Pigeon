@@ -16,6 +16,7 @@ namespace hopi::nodes {
 
     class ActiveTransitionNode : public FactorNode {
     public:
+        ActiveTransitionNode(VarNode *from, VarNode *action, VarNode *to, VarNode *B);
         ActiveTransitionNode(VarNode *from, VarNode *action, VarNode *to);
         VarNode *parent(int index) override;
         VarNode *child() override;
@@ -26,11 +27,14 @@ namespace hopi::nodes {
         std::vector<Eigen::MatrixXd> toMessage(); //TODO test
         std::vector<Eigen::MatrixXd> fromMessage(); //TODO test
         std::vector<Eigen::MatrixXd> actionMessage(); //TODO test
+        std::vector<Eigen::MatrixXd> bMessage(); //TODO test
+        std::vector<Eigen::MatrixXd> getLogB(); //TODO test
 
     private:
         VarNode *from;
         VarNode *action;
         VarNode *to;
+        VarNode *B;
     };
 
 }

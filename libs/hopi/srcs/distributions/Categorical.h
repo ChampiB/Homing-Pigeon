@@ -18,6 +18,7 @@ namespace hopi::distributions {
     class Categorical : public Distribution {
     public:
         static nodes::VarNode *create(const Eigen::MatrixXd& param);
+        static nodes::VarNode *create(nodes::VarNode *param); //TODO test
 
     public:
         explicit Categorical(Eigen::MatrixXd param);

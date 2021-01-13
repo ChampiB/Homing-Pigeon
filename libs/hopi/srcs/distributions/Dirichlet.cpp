@@ -15,6 +15,11 @@ using namespace Eigen;
 
 namespace hopi::distributions {
 
+    VarNode *Dirichlet::create(const MatrixXd& param) {
+        std::vector<MatrixXd> p = { param };
+        return create(p);
+    }
+
     nodes::VarNode *Dirichlet::create(const std::vector<MatrixXd>& param) {
         std::shared_ptr<FactorGraph> fg = FactorGraph::current();
         VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
@@ -78,6 +83,20 @@ namespace hopi::distributions {
             }
         }
         return e;
+    }
+
+    std::vector<MatrixXd> Dirichlet::expectedLog(std::vector<MatrixXd> p) {
+        std::vector<MatrixXd> m = p;
+
+        for (int i = 0; i < p.size(); ++i) {
+            for (int k = 0; k < p[i].cols(); ++k) {
+                MatrixXd col = m[i].col(k);
+                for (int j = 0; j < p[i].rows(); ++j) {
+                    m[i](j,k) = Functions::digamma(m[i](j,k)) - Functions::digamma(col.sum());
+                }
+            }
+        }
+        return m;
     }
 
 }
