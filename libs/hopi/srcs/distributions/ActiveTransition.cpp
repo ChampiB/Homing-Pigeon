@@ -32,6 +32,23 @@ namespace hopi::distributions {
         return var;
     }
 
+    VarNode *ActiveTransition::create(VarNode *s, VarNode *a, VarNode *param) {
+        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
+        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
+        FactorNode *factor = fg->addFactor(std::make_unique<ActiveTransitionNode>(s, a, var, param));
+
+        var->setParent(factor);
+        auto dim = param->prior()->params()[0].rows();
+        var->setPosterior(std::make_unique<Categorical>(
+            MatrixXd::Constant(dim, 1, 1.0 / dim)
+        ));
+
+        s->addChild(factor);
+        a->addChild(factor);
+        param->addChild(factor);
+        return var;
+    }
+
     ActiveTransition::ActiveTransition(std::vector<MatrixXd> p) {
         param = std::move(p);
     }

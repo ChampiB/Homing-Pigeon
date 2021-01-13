@@ -17,9 +17,12 @@ namespace hopi::distributions {
 
     class ActiveTransition : public Distribution {
     public:
-        static hopi::nodes::VarNode *create(
+        static nodes::VarNode *create(
             nodes::VarNode *s, nodes::VarNode *a, const std::vector<Eigen::MatrixXd>& param
         );
+        static nodes::VarNode *create(
+            nodes::VarNode *s, nodes::VarNode *a, nodes::VarNode *param
+        ); //TODO test
 
     public:
         explicit ActiveTransition(std::vector<Eigen::MatrixXd> param);

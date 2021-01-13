@@ -17,6 +17,7 @@ namespace hopi::nodes {
 
     class CategoricalNode : public FactorNode {
     public:
+        CategoricalNode(VarNode *node, VarNode *d);
         explicit CategoricalNode(VarNode *node);
         VarNode *parent(int index) override;
         VarNode *child() override;
@@ -25,9 +26,12 @@ namespace hopi::nodes {
 
     private:
         std::vector<Eigen::MatrixXd> childMessage(); //TODO test
+        std::vector<Eigen::MatrixXd> dMessage(); //TODO test
+        Eigen::MatrixXd getLogD(); //TODO test
 
     private:
         VarNode *childNode;
+        VarNode *D;
     };
 
 }

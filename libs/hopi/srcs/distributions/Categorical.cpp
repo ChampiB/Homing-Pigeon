@@ -24,8 +24,23 @@ namespace hopi::distributions {
         var->setParent(factor);
         var->setPrior(std::make_unique<Categorical>(param));
         var->setPosterior(std::make_unique<Categorical>(
-            Eigen::MatrixXd::Constant(param.rows(), 1, 1.0 / param.rows())
+            MatrixXd::Constant(param.rows(), 1, 1.0 / param.rows())
         ));
+        return var;
+    }
+
+    VarNode *Categorical::create(VarNode *param) {
+        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
+        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
+        FactorNode *factor = fg->addFactor(std::make_unique<CategoricalNode>(var, param));
+
+        var->setParent(factor);
+        auto dim = param->prior()->params()[0].rows();
+        var->setPosterior(std::make_unique<Categorical>(
+            MatrixXd::Constant(dim, 1, 1.0 / dim)
+        ));
+
+        param->addChild(factor);
         return var;
     }
 
