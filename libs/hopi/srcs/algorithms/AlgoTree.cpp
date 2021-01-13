@@ -7,6 +7,7 @@
 #include <random>
 #include "distributions/Transition.h"
 #include "distributions/Categorical.h"
+#include "distributions/Dirichlet.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
 #include "graphs/FactorGraph.h"
@@ -129,6 +130,12 @@ namespace hopi::algorithms {
         if (_mtd == -1 || distance_from_root(s) < _mtd) {
             us.emplace_back(s, o);
         }
+    }
+
+    void AlgoTree::expansion(VarNode *node, VarNode *A, VarNode *B) {
+        auto A_param = Dirichlet::expectedLog(A->posterior()->params())[0];
+        auto B_param = Dirichlet::expectedLog(B->posterior()->params());
+        expansion(node, A_param, B_param);
     }
 
     void AlgoTree::backpropagation(VarNode *node, VarNode *root, bool back_prop_g) {

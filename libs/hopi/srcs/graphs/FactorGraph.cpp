@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <distributions/Transition.h>
+#include <distributions/Dirichlet.h>
 #include "distributions/Distribution.h"
 #include "distributions/Categorical.h"
 #include "distributions/ActiveTransition.h"
@@ -114,10 +115,22 @@ namespace hopi::graphs {
             const MatrixXd& A,
             const std::vector<MatrixXd>& B
     ) {
-        VarNode *new_root = nullptr;
+        removeHiddenChildren(_tree_root);
+        MatrixXd action_param = MatrixXd::Constant(B.size(), 1, 0.1 / (B.size() - 1));
+        action_param(action, 0) = 0.9;
+        integrate(action_param, observation, A, B);
+    }
 
-        // Cut off useless branches
-        for (auto it = _tree_root->firstChild(); it != _tree_root->lastChild() ; ++it) {
+    void FactorGraph::integrate(int action, const MatrixXd& observation, VarNode *A, VarNode *B) {
+        removeHiddenChildren(_tree_root);
+        int actions = B->prior()->params().size();
+        MatrixXd action_param = MatrixXd::Constant(actions, 1, 0.1 / (actions - 1));
+        action_param(action, 0) = 0.9;
+        integrate(action_param, observation, A, B);
+    }
+
+    void FactorGraph::removeHiddenChildren(VarNode *node) {
+        for (auto it = node->firstChild(); it != node->lastChild() ; ++it) {
             auto child = (*it)->child();
             if (child->type() == VarNodeType::OBSERVED) {
                 continue;
@@ -125,12 +138,18 @@ namespace hopi::graphs {
                 removeBranch(*it);
             }
         }
+    }
+
+    template<class T1, class T2>
+    void FactorGraph::integrate(
+            const Eigen::MatrixXd& action_param,
+            const Eigen::MatrixXd& observation,
+            T1 A, T2 B
+    ) {
         // Create new slide of action/state/observation.
-        MatrixXd action_param = MatrixXd::Constant(B.size(), 1, 0.1 / (B.size() - 1));
-        action_param(action, 0) = 0.9;
-        auto a   = Categorical::create(action_param);
-        new_root = ActiveTransition::create(_tree_root, a, B);
-        auto o   = Transition::create(new_root, A);
+        auto a         = Categorical::create(action_param);
+        auto *new_root = ActiveTransition::create(_tree_root, a, B);
+        auto o         = Transition::create(new_root, A);
         o->setPosterior(std::make_unique<Categorical>(observation));
         o->setType(VarNodeType::OBSERVED);
         // Clean up the factor graph

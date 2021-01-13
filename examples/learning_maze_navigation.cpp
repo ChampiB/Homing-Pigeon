@@ -5,6 +5,7 @@
 #include "nodes/VarNode.h"
 #include "distributions/Categorical.h"
 #include "distributions/Dirichlet.h"
+#include "math/Functions.h"
 #include "graphs/FactorGraph.h"
 #include "algorithms/AlgoTree.h"
 #include "algorithms/AlgoVMP.h"
@@ -15,6 +16,7 @@ using namespace hopi::environments;
 using namespace hopi::distributions;
 using namespace hopi::nodes;
 using namespace hopi::graphs;
+using namespace hopi::math;
 using namespace hopi::algorithms;
 using namespace Eigen;
 
@@ -28,12 +30,12 @@ int main()
     /**
      ** Create the model's parameters.
      **/
-    MatrixXd theta_U = Matrix::Ones(env->actions(), 1);
-    MatrixXd theta_A = Matrix::Ones(env->observations(), env->states());
-    MatrixXd theta_D = Matrix::Ones(env->states(), 1);
+    MatrixXd theta_U = MatrixXd::Ones(env->actions(), 1);
+    MatrixXd theta_A = MatrixXd::Ones(env->observations(), env->states());
+    MatrixXd theta_D = MatrixXd::Ones(env->states(), 1);
     std::vector<MatrixXd> theta_B(env->actions());
     for (int i = 0; i < env->actions(); ++i) {
-        theta_B = Matrix::Ones(env->states(), env->states());
+        theta_B[i] = MatrixXd::Ones(env->states(), env->states());
     }
 
 
@@ -65,7 +67,7 @@ int main()
     for (int i = 0; i < env->observations(); ++i) {
         E_tilde(i, 0) = (env->observations() - i);
     }
-    E_tilde = AlgoVMP::softmax(E_tilde);
+    E_tilde = Functions::softmax(E_tilde);
 
     /**
      ** Run the simulation.
