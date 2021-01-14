@@ -38,7 +38,6 @@ int main()
         theta_B[i] = MatrixXd::Ones(env->states(), env->states());
     }
 
-
     /**
      ** Create the generative model.
      **/

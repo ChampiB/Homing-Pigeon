@@ -80,7 +80,16 @@ namespace hopi::distributions {
     }
 
     double Categorical::entropy() {
-        return - (params()[0].transpose() * logParams()[0])(0, 0);
+        double e = 0;
+        auto p   = params()[0];
+        auto lp  = logParams()[0];
+
+        for (int i = 0; i < p.rows(); ++i) {
+            if (p(i,0) != 0) {
+                e -= p(i,0) * lp(i,0);
+            }
+        }
+        return e;
     }
 
 }

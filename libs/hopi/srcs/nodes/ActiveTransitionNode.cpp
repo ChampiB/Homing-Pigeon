@@ -103,9 +103,12 @@ namespace hopi::nodes {
 
         msg[actions - 1] = to_hat * from_hat.transpose();
         for (int i = 0; i < action_hat.size(); ++i) {
+            if (msg[i].rows() == 0 && msg[i].cols() == 0) {
+                msg[i] = MatrixXd::Zero(to_hat.rows(), from_hat.rows());
+            }
             for (int j = 0; j < to_hat.size(); ++j) {
                 for (int k = 0; k < from_hat.size(); ++k) {
-                    msg[i](j,k) = action_hat(i,1) * msg[actions - 1](j,k);
+                    msg[i](j,k) = action_hat(i,0) * msg[actions - 1](j,k);
                 }
             }
         }
