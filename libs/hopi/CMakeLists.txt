@@ -52,6 +52,7 @@ set (TEST_HOPI_SRCS
         tests/iterators/TestObservedVarIter.cpp
         tests/nodes/TestActiveTransitionNode.cpp
         tests/nodes/TestCategoricalNode.cpp
+        tests/nodes/TestDirichletNode.cpp
         tests/nodes/TestTransitionNode.cpp
         tests/nodes/TestVarNode.cpp
         tests/math/FunctionsTest.cpp

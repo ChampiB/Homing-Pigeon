@@ -15,15 +15,15 @@ namespace hopi::nodes {
 
     class DirichletNode : public FactorNode {
     public:
-        explicit DirichletNode(VarNode *node); //TODO test
-        VarNode *parent(int index) override; //TODO test
-        VarNode *child() override; //TODO test
-        std::vector<Eigen::MatrixXd> message(VarNode *to) override; //TODO test
-        double vfe() override; //TODO test
-        static double energy(Eigen::MatrixXd prior, Eigen::MatrixXd post); //TODO test
+        explicit DirichletNode(VarNode *node);
+        VarNode *parent(int index) override;
+        VarNode *child() override;
+        std::vector<Eigen::MatrixXd> message(VarNode *to) override;
+        double vfe() override;
+        static double energy(Eigen::MatrixXd prior, Eigen::MatrixXd post);
 
     private:
-        std::vector<Eigen::MatrixXd> childMessage(); //TODO test
+        std::vector<Eigen::MatrixXd> childMessage();
 
     private:
         VarNode *childNode;

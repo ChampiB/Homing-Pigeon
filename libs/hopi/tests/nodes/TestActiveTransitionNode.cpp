@@ -8,6 +8,7 @@
 #include "nodes/ActiveTransitionNode.h"
 #include "graphs/FactorGraph.h"
 #include "distributions/Distribution.h"
+#include "distributions/Dirichlet.h"
 #include "distributions/Categorical.h"
 #include "distributions/ActiveTransition.h"
 #include <Eigen/Dense>
@@ -81,7 +82,7 @@ TEST_CASE( "ActiveTransitionNode: A run_time error is thrown if the parameter is
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
-TEST_CASE( "ActiveTransitionNode's messages are correct" ) {
+TEST_CASE( "ActiveTransitionNode's (to, from and action) messages are correct (no Dirichlet prior)" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     FactorGraph::setCurrent(nullptr);
     MatrixXd U = MatrixXd::Constant(2, 1, 0.5);
@@ -129,5 +130,78 @@ TEST_CASE( "ActiveTransitionNode's messages are correct" ) {
     REQUIRE( m3[0].rows() == 2 );
     REQUIRE( m3[0](0, 0) == (evidence.transpose() * res31 * D)(0, 0) );
     REQUIRE( m3[0](1, 0) == (evidence.transpose() * res32 * D)(0, 0) );
+    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+}
+
+TEST_CASE( "ActiveTransitionNode's (to, from, param and action) messages are correct (Dirichlet prior)" ) {
+    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+    FactorGraph::setCurrent(nullptr);
+    MatrixXd U = MatrixXd::Constant(2, 1, 0.5);
+    MatrixXd D = MatrixXd::Constant(4, 1, 0.25);
+    MatrixXd evidence = MatrixXd::Constant(2, 1, 0.5);
+    std::vector<MatrixXd> B {
+            MatrixXd::Constant(2, 4, 0.25),
+            MatrixXd::Constant(2, 4, 0.25)
+    };
+    auto fg = FactorGraph::current();
+    auto c1 = Categorical::create(D);
+    auto c2 = Categorical::create(U);
+    auto d1 = Dirichlet::create(B);
+    auto t1 = ActiveTransition::create(c1, c2, d1);
+    t1->setPosterior(std::make_unique<Categorical>(evidence));
+    t1->setType(VarNodeType::OBSERVED);
+
+    MatrixXd res11 = Dirichlet::expectedLog(B)[0];
+    res11 = U(0 , 0) * res11 * D;
+    MatrixXd res12 = Dirichlet::expectedLog(B)[1];
+    res12 = U(1 , 0) * res12 * D;
+    MatrixXd res1 = res11 + res12;
+    auto m1 = t1->parent()->message(t1);
+    REQUIRE( m1[0].cols() == 1 );
+    REQUIRE( m1[0].rows() == 2 );
+    REQUIRE( m1[0](0, 0) == res1(0, 0) );
+    REQUIRE( m1[0](1, 0) == res1(1, 0) );
+
+    MatrixXd res21 = Dirichlet::expectedLog(B)[0];
+    res21 = U(0 , 0) * res21.transpose() * evidence;
+    MatrixXd res22 = Dirichlet::expectedLog(B)[1];
+    res22 = U(1 , 0) * res22.transpose() * evidence;
+    MatrixXd res2 = res21 + res22;
+    auto m2 = t1->parent()->message(c1);
+    REQUIRE( m2[0].cols() == 1 );
+    REQUIRE( m2[0].rows() == 4 );
+    REQUIRE( m2[0](0, 0) == res2(0, 0) );
+    REQUIRE( m2[0](1, 0) == res2(1, 0) );
+    REQUIRE( m2[0](2, 0) == res2(2, 0) );
+    REQUIRE( m2[0](3, 0) == res2(3, 0) );
+
+    MatrixXd res31 = Dirichlet::expectedLog(B)[0];
+    MatrixXd res32 = Dirichlet::expectedLog(B)[1];
+    auto m3 = t1->parent()->message(c2);
+    REQUIRE( m3[0].cols() == 1 );
+    REQUIRE( m3[0].rows() == 2 );
+    REQUIRE( m3[0](0, 0) == (evidence.transpose() * res31 * D)(0, 0) );
+    REQUIRE( m3[0](1, 0) == (evidence.transpose() * res32 * D)(0, 0) );
+
+    std::vector<MatrixXd> res4 {
+        MatrixXd::Zero(2, 4),
+        MatrixXd::Zero(2, 4)
+    };
+    for (int i = 0; i < res4.size(); ++i) {
+        res4[i] = evidence * D.transpose() * U(i, 0);
+    }
+    auto m4 = t1->parent()->message(d1);
+    REQUIRE( m4.size() == 2 );
+    REQUIRE( m4[0].cols() == 4 );
+    REQUIRE( m4[0].rows() == 2 );
+    REQUIRE( m4[1].cols() == 4 );
+    REQUIRE( m4[1].rows() == 2 );
+    for (int i = 0; i < 2; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            for (int k = 0; k < 4; ++k) {
+                REQUIRE( m4[i](j, k) == res4[i](j, k) );
+            }
+        }
+    }
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
