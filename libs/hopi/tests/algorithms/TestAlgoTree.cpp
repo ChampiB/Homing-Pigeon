@@ -23,7 +23,7 @@ using namespace hopi::math;
 using namespace tests;
 using namespace Eigen;
 
-TEST_CASE( "AlgoTree.lastExpansionNodes returns the nodes from the last expansion." ) {
+TEST_CASE( "AlgoTree.lastExpandedNodes returns the nodes from the last expansion." ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     auto fg = FactorGraphContexts::context2();
     auto algo = AlgoTree(3, MatrixXd::Constant(2, 1, 0.5), MatrixXd::Constant(2, 1, 0.5));
@@ -36,7 +36,7 @@ TEST_CASE( "AlgoTree.lastExpansionNodes returns the nodes from the last expansio
 
     auto n1 = algo.nodeSelection(fg, MIN);
     algo.expansion(n1, A, B);
-    auto vec = algo.lastExpansionNodes();
+    auto vec = algo.lastExpandedNodes();
     REQUIRE( vec.size() == 2 );
     REQUIRE( vec[0] == fg->node(fg->nodes() - 2) );
     REQUIRE( vec[1] == fg->node(fg->nodes() - 1) );

@@ -70,7 +70,7 @@ int main()
         for (int j = 0; j < 100; ++j) { // Planning
             VarNode *n = algoTree->nodeSelection(fg);
             algoTree->expansion(n, A, B);
-            AlgoVMP::inference(algoTree->lastExpansionNodes());
+            AlgoVMP::inference(algoTree->lastExpandedNodes());
             algoTree->evaluation();
             algoTree->backpropagation(n, fg->treeRoot());
         }

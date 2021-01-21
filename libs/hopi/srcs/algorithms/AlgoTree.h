@@ -39,7 +39,7 @@ namespace hopi::algorithms {
 
     public:
         std::vector<int> unexploredActions(nodes::VarNode *node) const;
-        [[nodiscard]] std::vector<nodes::VarNode*> lastExpansionNodes() const;
+        [[nodiscard]] std::vector<nodes::VarNode*> lastExpandedNodes() const;
         static bool CompareQuality(
                 std::pair<nodes::VarNode*,nodes::VarNode*> a1,
                 std::pair<nodes::VarNode*,nodes::VarNode*> a2
