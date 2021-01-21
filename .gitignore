@@ -2,6 +2,7 @@
 !examples/graphs/graph_format.md
 !examples/graphs/example.graph
 examples/graphs/*
+examples/data
 
 # Prerequisites
 *.d
