@@ -18,7 +18,7 @@ namespace hopi::distributions {
     class Categorical : public Distribution {
     public:
         static nodes::VarNode *create(const Eigen::MatrixXd& param);
-        static nodes::VarNode *create(nodes::VarNode *param); //TODO test
+        static nodes::VarNode *create(nodes::VarNode *param);
 
     public:
         explicit Categorical(Eigen::MatrixXd param);
@@ -27,8 +27,8 @@ namespace hopi::distributions {
         [[nodiscard]] double p(int id) const; // Probability of X = id.
         [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
         [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
-        void setParams(std::vector<Eigen::MatrixXd> &param) override; //TODO test
-        double entropy() override; //TODO test
+        void updateParams(std::vector<Eigen::MatrixXd> &param) override;
+        double entropy() override;
 
     private:
         Eigen::MatrixXd param;

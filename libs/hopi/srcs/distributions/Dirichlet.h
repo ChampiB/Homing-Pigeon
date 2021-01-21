@@ -15,18 +15,18 @@ namespace hopi::distributions {
 
     class Dirichlet : public Distribution {
     public:
-        static nodes::VarNode *create(const std::vector<Eigen::MatrixXd>& param); //TODO test
-        static nodes::VarNode *create(const Eigen::MatrixXd& param); //TODO test
+        static nodes::VarNode *create(const std::vector<Eigen::MatrixXd>& param);
+        static nodes::VarNode *create(const Eigen::MatrixXd& param);
 
     public:
-        explicit Dirichlet(const std::vector<Eigen::MatrixXd> &param); //TODO test
-        [[nodiscard]] DistributionType type() const override; //TODO test
-        [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override; //TODO test
-        [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override; //TODO test
-        void setParams(std::vector<Eigen::MatrixXd> &param) override; //TODO test
-        double entropy() override; //TODO test
-        static double entropy(Eigen::MatrixXd p); //TODO test
-        static std::vector<Eigen::MatrixXd> expectedLog(std::vector<Eigen::MatrixXd> p); //TODO test
+        explicit Dirichlet(const std::vector<Eigen::MatrixXd> &param);
+        [[nodiscard]] DistributionType type() const override;
+        [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
+        [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
+        void updateParams(std::vector<Eigen::MatrixXd> &param) override;
+        double entropy() override;
+        static double entropy(Eigen::MatrixXd p);
+        static std::vector<Eigen::MatrixXd> expectedLog(std::vector<Eigen::MatrixXd> p);
 
     private:
         std::vector<Eigen::MatrixXd> param;

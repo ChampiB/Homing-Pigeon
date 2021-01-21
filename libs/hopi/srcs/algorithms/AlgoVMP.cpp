@@ -58,7 +58,7 @@ namespace hopi::algorithms {
             }
             ++factorIt;
         }
-        var->posterior()->setParams(post_param);
+        var->posterior()->updateParams(post_param);
     }
 
     double AlgoVMP::vfe(const std::vector<nodes::VarNode *> &vars) {

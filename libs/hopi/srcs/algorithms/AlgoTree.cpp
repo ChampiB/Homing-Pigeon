@@ -198,8 +198,8 @@ namespace hopi::algorithms {
             parent_G = 0;
         }
         s->setG(parent_G \
-                 + Functions::KL(s->posterior(), s->biased()) \
-                 + Functions::KL(o->posterior(), o->biased()) );
+ + Functions::KL(s->posterior(), s->biased()) \
+ + Functions::KL(o->posterior(), o->biased()) );
     }
 
     void AlgoTree::evaluationAverage(nodes::VarNode *s, nodes::VarNode *o) {
@@ -210,13 +210,13 @@ namespace hopi::algorithms {
             parent_G = 0;
         }
         double g = Functions::KL(s->posterior(), s->biased()) \
-                 + Functions::KL(o->posterior(), o->biased());
+ + Functions::KL(o->posterior(), o->biased());
         s->setG(((d * parent_G) + g) / (double)(d + 1));
     }
 
     void AlgoTree::evaluationKL(nodes::VarNode *s, nodes::VarNode *o) {
         s->setG(Functions::KL(s->posterior(), s->biased()) \
-                 + Functions::KL(o->posterior(), o->biased()) );
+ + Functions::KL(o->posterior(), o->biased()) );
     }
 
     int AlgoTree::distance_from_root(nodes::VarNode *n) {

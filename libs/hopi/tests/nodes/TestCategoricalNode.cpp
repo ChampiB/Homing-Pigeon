@@ -8,7 +8,6 @@
 #include "nodes/CategoricalNode.h"
 #include "distributions/Categorical.h"
 #include "graphs/FactorGraph.h"
-#include "distributions/Distribution.h"
 #include <Eigen/Dense>
 
 using namespace hopi::nodes;
@@ -25,8 +24,12 @@ TEST_CASE( "CategoricalNode.vfe() returns the proper vfe contribution" ) {
     auto c1 = Categorical::create(param);
 
     auto poc1 = c1->posterior()->params()[0];
-    auto prt1 = c1->prior()->logParams()[0];
-    REQUIRE( c1->parent()->vfe() == (poc1.transpose() * prt1)(0, 0));
+    auto lpc1 = c1->posterior()->logParams()[0];
+    auto prc1 = c1->prior()->logParams()[0];
+
+    auto neg_entropy = (poc1.transpose() * lpc1)(0, 0);
+    auto energy = (poc1.transpose() * prc1)(0, 0);
+    REQUIRE( c1->parent()->vfe() == neg_entropy - energy);
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
@@ -78,26 +81,27 @@ TEST_CASE( "CategoricalNode's message is correct" ) {
     auto c1 = Categorical::create(param1);
     auto m1 = c1->parent()->message(c1);
 
-    REQUIRE( m1.cols() == 1 );
-    REQUIRE( m1.rows() == 4 );
-    REQUIRE( m1(0, 0) == std::log(0.25) );
-    REQUIRE( m1(1, 0) == std::log(0.25) );
-    REQUIRE( m1(2, 0) == std::log(0.25) );
-    REQUIRE( m1(3, 0) == std::log(0.25) );
+    REQUIRE( m1[0].cols() == 1 );
+    REQUIRE( m1[0].rows() == 4 );
+    REQUIRE( m1[0](0, 0) == std::log(0.25) );
+    REQUIRE( m1[0](1, 0) == std::log(0.25) );
+    REQUIRE( m1[0](2, 0) == std::log(0.25) );
+    REQUIRE( m1[0](3, 0) == std::log(0.25) );
 
     FactorGraph::setCurrent(nullptr);
-    fg = FactorGraph::current();
-    MatrixXd param2 = MatrixXd::Constant(4, 1, 0.25);
-    param2(1, 0) = 0.1;
-    param2(2, 0) = 0.4;
+    MatrixXd param2(4, 1);
+    param2 << 0.25,
+              0.1,
+              0.4,
+              0.25;
     auto c2 = Categorical::create(param2);
     auto m2 = c2->parent()->message(c2);
 
-    REQUIRE( m2.cols() == 1 );
-    REQUIRE( m2.rows() == 4 );
-    REQUIRE( m2(0, 0) == std::log(0.25) );
-    REQUIRE( m2(1, 0) == std::log(0.1) );
-    REQUIRE( m2(2, 0) == std::log(0.4) );
-    REQUIRE( m2(3, 0) == std::log(0.25) );
+    REQUIRE( m2[0].cols() == 1 );
+    REQUIRE( m2[0].rows() == 4 );
+    REQUIRE( m2[0](0, 0) == std::log(0.25) );
+    REQUIRE( m2[0](1, 0) == std::log(0.1) );
+    REQUIRE( m2[0](2, 0) == std::log(0.4) );
+    REQUIRE( m2[0](3, 0) == std::log(0.25) );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }

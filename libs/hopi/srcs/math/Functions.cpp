@@ -28,7 +28,7 @@ namespace hopi::math {
     double Functions::KL(Distribution *d1, Distribution *d2) {
         static map<int, double (*)(Distribution *, Distribution *)> mapping{
                 make_pair(DistributionType::CATEGORICAL, &Functions::KL_Categorical),
-                make_pair(DistributionType::DIRICHLET, &Functions::KL_Categorical)
+                make_pair(DistributionType::DIRICHLET, &Functions::KL_Dirichlet)
         };
 
         if (d1->type() != d2->type()) {
@@ -82,6 +82,16 @@ namespace hopi::math {
             res *= tgamma(x(i));
         }
         return res / tgamma(x.sum());
+    }
+
+    double Functions::log_beta(MatrixXd x)
+    {
+        double res = 0;
+
+        for (int i = 0; i < x.rows(); ++i) {
+            res += lgamma(x(i));
+        }
+        return res - lgamma(x.sum());
     }
 
     double Functions::digamma(double x) {
