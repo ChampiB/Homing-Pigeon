@@ -6,11 +6,11 @@
 
 #include "catch.hpp"
 #include "contexts/FactorGraphContexts.h"
+#include "math/Functions.h"
 #include "distributions/Distribution.h"
 #include "distributions/Categorical.h"
 #include "distributions/Transition.h"
 #include "algorithms/AlgoTree.h"
-#include "algorithms/AlgoVMP.h"
 #include "graphs/FactorGraph.h"
 #include "nodes/FactorNode.h"
 #include "nodes/VarNode.h"
@@ -19,6 +19,7 @@
 using namespace hopi::distributions;
 using namespace hopi::algorithms;
 using namespace hopi::nodes;
+using namespace hopi::math;
 using namespace tests;
 using namespace Eigen;
 
@@ -48,8 +49,8 @@ TEST_CASE( "Evaluation (AVERAGE) compute the quality of the last hidden state ex
     MatrixXd posterior = MatrixXd::Constant(2, 1, 0.5);
     auto d1 = std::make_unique<Categorical>(posterior);
     MatrixXd state_pref(2, 1);
-    state_pref(0, 0) = 0.3;
-    state_pref(1, 0) = 0.7;
+    state_pref << 0.3,
+                  0.7;
     auto d2 = std::make_unique<Categorical>(state_pref);
     auto algo = AlgoTree(3, state_pref, MatrixXd::Constant(2, 1, 0.5));
     MatrixXd A = MatrixXd::Constant(2, 2, 0.5);
@@ -58,7 +59,7 @@ TEST_CASE( "Evaluation (AVERAGE) compute the quality of the last hidden state ex
             MatrixXd::Constant(2, 2, 0.5),
             MatrixXd::Constant(2, 2, 0.5)
     };
-    auto kl = AlgoTree::KL(d1.get(), d2.get());
+    auto kl = Functions::KL(d1.get(), d2.get());
 
     auto n1 = algo.nodeSelection(fg, MIN);
     algo.expansion(n1, A, B); // First expansion
@@ -113,8 +114,8 @@ TEST_CASE( "Evaluation (KL) compute the quality of the last hidden state expande
     MatrixXd posterior = MatrixXd::Constant(2, 1, 0.5);
     auto d1 = std::make_unique<Categorical>(posterior);
     MatrixXd state_pref(2, 1);
-    state_pref(0, 0) = 0.3;
-    state_pref(1, 0) = 0.7;
+    state_pref << 0.3,
+                  0.7;
     auto d2 = std::make_unique<Categorical>(state_pref);
     auto algo = AlgoTree(3, state_pref, MatrixXd::Constant(2, 1, 0.5));
     MatrixXd A = MatrixXd::Constant(2, 2, 0.5);
@@ -123,7 +124,7 @@ TEST_CASE( "Evaluation (KL) compute the quality of the last hidden state expande
             MatrixXd::Constant(2, 2, 0.5),
             MatrixXd::Constant(2, 2, 0.5)
     };
-    auto kl = AlgoTree::KL(d1.get(), d2.get());
+    auto kl = Functions::KL(d1.get(), d2.get());
 
     auto n1 = algo.nodeSelection(fg, MIN);
     algo.expansion(n1, A, B); // First expansion
@@ -178,8 +179,8 @@ TEST_CASE( "Evaluation (SUM) compute the quality of the last hidden state expand
     MatrixXd posterior = MatrixXd::Constant(2, 1, 0.5);
     auto d1 = std::make_unique<Categorical>(posterior);
     MatrixXd state_pref(2, 1);
-    state_pref(0, 0) = 0.3;
-    state_pref(1, 0) = 0.7;
+    state_pref << 0.3,
+                  0.7;
     auto d2 = std::make_unique<Categorical>(state_pref);
     auto algo = AlgoTree(3, state_pref, MatrixXd::Constant(2, 1, 0.5));
     MatrixXd A = MatrixXd::Constant(2, 2, 0.5);
@@ -188,7 +189,7 @@ TEST_CASE( "Evaluation (SUM) compute the quality of the last hidden state expand
             MatrixXd::Constant(2, 2, 0.5),
             MatrixXd::Constant(2, 2, 0.5)
     };
-    auto kl = AlgoTree::KL(d1.get(), d2.get());
+    auto kl = Functions::KL(d1.get(), d2.get());
 
     auto n1 = algo.nodeSelection(fg, MIN);
     algo.expansion(n1, A, B); // First expansion
@@ -275,7 +276,7 @@ TEST_CASE( "Node selection (SOFTMAX_SAMPLING) returns well distributed nodes." )
     true_p(nodes[0]->action(), 0) = 0.19;
     true_p(nodes[1]->action(), 0) = 0.01;
     true_p(nodes[2]->action(), 0) = 0.8;
-    true_p = AlgoVMP::softmax(true_p);
+    true_p = Functions::softmax(true_p);
 
     // Compute the approximate probability distribution of node sampling
     MatrixXd probability = MatrixXd::Constant(3, 1, 0);
@@ -462,7 +463,7 @@ TEST_CASE( "AlgoTree stop to expand when reaching the maximal depth (max_depth =
         REQUIRE( false );
     } catch (std::runtime_error &e) {
         // Good, no expansion have been done.
-    };
+    }
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
@@ -684,7 +685,7 @@ TEST_CASE( "KL of identical distributions is zero." ) {
     std::unique_ptr<Distribution> d1 = std::make_unique<Categorical>(param);
     std::unique_ptr<Distribution> d2 = std::make_unique<Categorical>(param);
 
-    REQUIRE( AlgoTree::KL(d1.get(), d2.get()) == 0 );
+    REQUIRE(Functions::KL(d1.get(), d2.get()) == 0 );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
@@ -695,7 +696,7 @@ TEST_CASE( "KL between non-categorical distributions is not supported." ) {
     std::unique_ptr<Distribution> d2 = std::make_unique<Transition>(param);
 
     try {
-        AlgoTree::KL(d1.get(), d2.get());
+        Functions::KL(d1.get(), d2.get());
         REQUIRE( false );
     } catch (const std::runtime_error& error) {
         REQUIRE( true );
@@ -707,17 +708,17 @@ TEST_CASE( "KL of non identical distributions is not zero." ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     // First distribution
     MatrixXd param1 = MatrixXd(2, 1);
-    param1(0, 0) = 0.5;
-    param1(1, 0) = 0.5;
+    param1 << 0.5,
+              0.5;
     std::unique_ptr<Distribution> d1 = std::make_unique<Categorical>(param1);
     // Second distribution
     MatrixXd param2 = MatrixXd(2, 1);
-    param2(0, 0) = 0.1;
-    param2(1, 0) = 0.9;
+    param2 << 0.1,
+              0.9;
     std::unique_ptr<Distribution> d2 = std::make_unique<Categorical>(param2);
     // True KL divergence
     double kl_result = 0.5 * (std::log(0.5) - std::log(0.1)) + 0.5 * (std::log(0.5) - std::log(0.9));
 
-    REQUIRE( AlgoTree::KL(d1.get(), d2.get()) == kl_result );
+    REQUIRE(Functions::KL(d1.get(), d2.get()) == kl_result );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }

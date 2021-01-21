@@ -11,7 +11,8 @@ using namespace hopi::distributions;
 
 namespace hopi::nodes {
 
-    VarNode::VarNode(VarNodeType type) : N(0), G(-1), _type(type), A(-1), _parent(nullptr) {}
+    VarNode::VarNode(VarNodeType type) : N(0), G(-1), _type(type), A(-1),
+        _parent(nullptr), _prior(nullptr), _posterior(nullptr), _biased(nullptr) {}
 
     void VarNode::setPrior(std::unique_ptr<Distribution> p) {
         _prior = std::move(p);

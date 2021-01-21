@@ -15,15 +15,15 @@ namespace hopi::math {
 
     class Functions {
     public:
-        static Eigen::MatrixXd softmax(Eigen::MatrixXd &vector); //TODO move corresponding tests
-        static double KL(distributions::Distribution *d1, distributions::Distribution *d2); //TODO move corresponding tests
-        static double KL_Categorical(distributions::Distribution *d1, distributions::Distribution *d2); //TODO test
-        static double KL_Dirichlet(distributions::Distribution *d1, distributions::Distribution *d2); //TODO test
-        static double beta(Eigen::MatrixXd x); //TODO test
-        static double digamma(double x); //TODO test
+        static Eigen::MatrixXd softmax(Eigen::MatrixXd &vector);
+        static double KL(distributions::Distribution *d1, distributions::Distribution *d2);
+        static double KL_Categorical(distributions::Distribution *d1, distributions::Distribution *d2);
+        static double KL_Dirichlet(distributions::Distribution *d1, distributions::Distribution *d2);
+        static double log_beta(Eigen::MatrixXd x);
+        static double beta(Eigen::MatrixXd x);
+        static double digamma(double x);
     };
 
 }
-
 
 #endif //EXPERIMENTS_AI_TS_FUNCTIONS_H

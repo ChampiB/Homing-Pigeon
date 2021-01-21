@@ -27,7 +27,9 @@ set(HOPI_SRCS
         srcs/iterators/AdjacentFactorsIter.h srcs/iterators/AdjacentFactorsIter.cpp
         srcs/iterators/HiddenVarIter.h srcs/iterators/HiddenVarIter.cpp
         srcs/iterators/ObservedVarIter.h srcs/iterators/ObservedVarIter.cpp
-        srcs/nodes/DirichletNode.cpp srcs/nodes/DirichletNode.h srcs/distributions/Dirichlet.cpp srcs/distributions/Dirichlet.h srcs/math/Functions.cpp srcs/math/Functions.h)
+        srcs/nodes/DirichletNode.cpp srcs/nodes/DirichletNode.h
+        srcs/distributions/Dirichlet.cpp srcs/distributions/Dirichlet.h
+        srcs/math/Functions.cpp srcs/math/Functions.h)
 
 add_library(hopi STATIC ${HOPI_SRCS})
 target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/hopi/srcs)
@@ -42,6 +44,7 @@ set (TEST_HOPI_SRCS
         tests/distributions/TestActiveTransition.cpp
         tests/distributions/TestTransition.cpp
         tests/distributions/TestCategorical.cpp
+        tests/distributions/TestDirichlet.cpp
         tests/environments/TestMazeEnv.cpp
         tests/graphs/TestFactorGraph.cpp
         tests/iterators/TestAdjacentFactorsIter.cpp
@@ -51,6 +54,7 @@ set (TEST_HOPI_SRCS
         tests/nodes/TestCategoricalNode.cpp
         tests/nodes/TestTransitionNode.cpp
         tests/nodes/TestVarNode.cpp
+        tests/math/FunctionsTest.cpp
         tests/contexts/FactorGraphContexts.cpp tests/contexts/FactorGraphContexts.h
         tests/helpers/Files.cpp tests/helpers/Files.h)
 

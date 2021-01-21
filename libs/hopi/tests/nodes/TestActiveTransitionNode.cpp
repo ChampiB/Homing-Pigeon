@@ -34,11 +34,13 @@ TEST_CASE( "ActiveTransitionNode.vfe() returns the proper vfe contribution" ) {
     auto poc1 = c1->posterior()->params()[0];
     auto poc2 = c2->posterior()->params()[0];
     auto pot1 = t1->posterior()->params()[0];
+    auto lpt1 = t1->posterior()->logParams()[0];
     auto prt1 = t1->prior()->logParams();
 
-    double res  = poc2(0, 0) * (pot1.transpose() * prt1[0] * poc1)(0, 0);
-           res += poc2(1, 0) * (pot1.transpose() * prt1[1] * poc1)(0, 0);
-    REQUIRE( c1->parent()->vfe() == res);
+    double neg_entropy = (pot1.transpose() * lpt1)(0, 0);
+    double energy  = poc2(0, 0) * (pot1.transpose() * prt1[0] * poc1)(0, 0);
+           energy += poc2(1, 0) * (pot1.transpose() * prt1[1] * poc1)(0, 0);
+    REQUIRE( c1->parent()->vfe() == neg_entropy - energy);
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
@@ -102,10 +104,10 @@ TEST_CASE( "ActiveTransitionNode's messages are correct" ) {
     res12 = U(1 , 0) * res12 * D;
     MatrixXd res1 = res11 + res12;
     auto m1 = t1->parent()->message(t1);
-    REQUIRE( m1.cols() == 1 );
-    REQUIRE( m1.rows() == 2 );
-    REQUIRE( m1(0, 0) == res1(0, 0) );
-    REQUIRE( m1(1, 0) == res1(1, 0) );
+    REQUIRE( m1[0].cols() == 1 );
+    REQUIRE( m1[0].rows() == 2 );
+    REQUIRE( m1[0](0, 0) == res1(0, 0) );
+    REQUIRE( m1[0](1, 0) == res1(1, 0) );
 
     MatrixXd res21 = B[0].array().log();
     res21 = U(0 , 0) * res21.transpose() * evidence;
@@ -113,19 +115,19 @@ TEST_CASE( "ActiveTransitionNode's messages are correct" ) {
     res22 = U(1 , 0) * res22.transpose() * evidence;
     MatrixXd res2 = res21 + res22;
     auto m2 = t1->parent()->message(c1);
-    REQUIRE( m2.cols() == 1 );
-    REQUIRE( m2.rows() == 4 );
-    REQUIRE( m2(0, 0) == res2(0, 0) );
-    REQUIRE( m2(1, 0) == res2(1, 0) );
-    REQUIRE( m2(2, 0) == res2(2, 0) );
-    REQUIRE( m2(3, 0) == res2(3, 0) );
+    REQUIRE( m2[0].cols() == 1 );
+    REQUIRE( m2[0].rows() == 4 );
+    REQUIRE( m2[0](0, 0) == res2(0, 0) );
+    REQUIRE( m2[0](1, 0) == res2(1, 0) );
+    REQUIRE( m2[0](2, 0) == res2(2, 0) );
+    REQUIRE( m2[0](3, 0) == res2(3, 0) );
 
     MatrixXd res31 = B[0].array().log();
     MatrixXd res32 = B[1].array().log();
     auto m3 = t1->parent()->message(c2);
-    REQUIRE( m3.cols() == 1 );
-    REQUIRE( m3.rows() == 2 );
-    REQUIRE( m3(0, 0) == (evidence.transpose() * res31 * D)(0, 0) );
-    REQUIRE( m3(1, 0) == (evidence.transpose() * res32 * D)(0, 0) );
+    REQUIRE( m3[0].cols() == 1 );
+    REQUIRE( m3[0].rows() == 2 );
+    REQUIRE( m3[0](0, 0) == (evidence.transpose() * res31 * D)(0, 0) );
+    REQUIRE( m3[0](1, 0) == (evidence.transpose() * res32 * D)(0, 0) );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }

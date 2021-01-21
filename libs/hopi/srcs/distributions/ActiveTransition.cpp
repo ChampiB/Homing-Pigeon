@@ -76,9 +76,9 @@ namespace hopi::distributions {
         return res;
     }
 
-    void ActiveTransition::setParams(std::vector<Eigen::MatrixXd> &p) {
+    void ActiveTransition::updateParams(std::vector<Eigen::MatrixXd> &p) {
         if (p.size() != param.size()) {
-            throw std::runtime_error("ActiveTransition::setParams argument size must match parameter size.");
+            throw std::runtime_error("ActiveTransition::updateParams argument size must match parameter size.");
         }
         for (int i = 0; i < p.size(); ++i) {
             param[i] = Functions::softmax(p[i]);

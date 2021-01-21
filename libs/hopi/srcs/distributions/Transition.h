@@ -18,15 +18,15 @@ namespace hopi::distributions {
     class Transition : public Distribution {
     public:
         static nodes::VarNode *create(nodes::VarNode *s, const Eigen::MatrixXd& param);
-        static nodes::VarNode *create(nodes::VarNode *s, nodes::VarNode *param); //TODO test
+        static nodes::VarNode *create(nodes::VarNode *s, nodes::VarNode *param);
 
     public:
         explicit Transition(Eigen::MatrixXd param);
         [[nodiscard]] DistributionType type() const override;
         [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
         [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
-        void setParams(std::vector<Eigen::MatrixXd> &param) override; //TODO test
-        double entropy() override; //TODO test
+        void updateParams(std::vector<Eigen::MatrixXd> &param) override;
+        double entropy() override;
 
     private:
         Eigen::MatrixXd param;

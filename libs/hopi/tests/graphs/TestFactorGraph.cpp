@@ -9,6 +9,7 @@
 #include "graphs/FactorGraph.h"
 #include "distributions/Categorical.h"
 #include "distributions/Transition.h"
+#include "distributions/Dirichlet.h"
 #include "distributions/ActiveTransition.h"
 #include "helpers/Files.h"
 #include "contexts/FactorGraphContexts.h"
@@ -126,7 +127,7 @@ TEST_CASE( "FactorGraph allows addition and retrieval of nodes" ) {
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
-TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nodes" ) {
+TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nodes (no learning)" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     FactorGraph::setCurrent(nullptr);
     std::shared_ptr<FactorGraph> fg = FactorGraph::current();
@@ -180,6 +181,102 @@ TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nod
     REQUIRE( fg->factor(3)->parent(0) == s0 );         // parent of P_s1 is s0
     REQUIRE( *a0->firstChild() == fg->factor(3) );     // child of a0 is P_s1
     REQUIRE( fg->factor(3)->parent(1) == a0 );         // parent of P_s1 is a0
+    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+}
+
+TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nodes (Dirichlet learning)" ) {
+    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+    FactorGraph::setCurrent(nullptr);
+    std::shared_ptr<FactorGraph> fg = FactorGraph::current();
+    int actions = 2;
+    int observations = 2;
+    int states = 2;
+
+    /**
+     ** Create the model's parameters.
+     **/
+    MatrixXd theta_U = MatrixXd::Ones(actions, 1);
+    MatrixXd theta_A = MatrixXd::Ones(observations, states);
+    MatrixXd theta_D = MatrixXd::Ones(states, 1);
+    std::vector<MatrixXd> theta_B(actions);
+    for (int i = 0; i < actions; ++i) {
+        theta_B[i] = MatrixXd::Ones(states, states);
+    }
+
+    /**
+     ** Create the generative model.
+     **/
+    VarNode *U = Dirichlet::create(theta_U);
+    REQUIRE( fg->nodes() == 1 );
+    REQUIRE( fg->factors() == 1 );
+    REQUIRE( U->parent() == fg->factor(0) ); // parent of U is P_U
+    REQUIRE( fg->factor(0)->child() == U );  // child of P_U is U
+
+    VarNode *A = Dirichlet::create(theta_A);
+    REQUIRE( fg->nodes() == 2 );
+    REQUIRE( fg->factors() == 2 );
+    REQUIRE( A->parent() == fg->factor(1) ); // parent of A is P_A
+    REQUIRE( fg->factor(1)->child() == A );  // child of P_A is A
+
+    VarNode *B = Dirichlet::create(theta_B);
+    REQUIRE( fg->nodes() == 3 );
+    REQUIRE( fg->factors() == 3 );
+    REQUIRE( B->parent() == fg->factor(2) ); // parent of B is P_B
+    REQUIRE( fg->factor(2)->child() == B );  // child of P_B is B
+
+    VarNode *D = Dirichlet::create(theta_D);
+    REQUIRE( fg->nodes() == 4 );
+    REQUIRE( fg->factors() == 4 );
+    REQUIRE( D->parent() == fg->factor(3) ); // parent of D is P_D
+    REQUIRE( fg->factor(3)->child() == D );  // child of P_D is D
+
+    VarNode *a0 = Categorical::create(U);
+    REQUIRE( fg->nodes() == 5 );
+    REQUIRE( fg->factors() == 5 );
+    REQUIRE( a0->parent() == fg->factor(4) );     // parent of a0 is P_a0
+    REQUIRE( fg->factor(4)->child() == a0 );      // child of P_a0 is a0
+    REQUIRE( *U->firstChild() == fg->factor(4) ); // child of U is P_a0
+    REQUIRE( fg->factor(4)->parent(0) == U );     // parent of P_a0 is U
+
+    VarNode *s0 = Categorical::create(D);
+    REQUIRE( fg->nodes() == 6 );
+    REQUIRE( fg->factors() == 6 );
+    REQUIRE( s0->parent() == fg->factor(5) );     // parent of s0 is P_s0
+    REQUIRE( fg->factor(5)->child() == s0 );      // child of P_s0 is s0
+    REQUIRE( *D->firstChild() == fg->factor(5) ); // child of D is P_s0
+    REQUIRE( fg->factor(5)->parent(0) == D );     // parent of P_s0 is D
+
+    VarNode *o0 = Transition::create(s0, A);
+    REQUIRE( fg->nodes() == 7 );
+    REQUIRE( fg->factors() == 7 );
+    REQUIRE( o0->parent() == fg->factor(6) );      // parent of o0 is P_o0
+    REQUIRE( fg->factor(6)->child() == o0 );       // child of P_o0 is o0
+    REQUIRE( *s0->firstChild() == fg->factor(6) ); // child of s0 is P_o0
+    REQUIRE( fg->factor(6)->parent(0) == s0 );     // parent of P_o0 is s0
+    REQUIRE( *A->firstChild() == fg->factor(6) );  // child of A is P_o0
+    REQUIRE( fg->factor(6)->parent(1) == A );      // parent of P_o0 is A
+
+    VarNode *s1 = ActiveTransition::create(s0, a0, B);
+    REQUIRE( fg->nodes() == 8 );
+    REQUIRE( fg->factors() == 8 );
+    REQUIRE( s1->parent() == fg->factor(7) );          // parent of s1 is P_s1
+    REQUIRE( fg->factor(7)->child() == s1 );           // child of P_s1 is s1
+    REQUIRE( *(++s0->firstChild()) == fg->factor(7) ); // child of s0 is P_s1
+    REQUIRE( fg->factor(7)->parent(0) == s0 );         // parent of P_s1 is s0
+    REQUIRE( *a0->firstChild() == fg->factor(7) );     // child of a0 is P_s1
+    REQUIRE( fg->factor(7)->parent(1) == a0 );         // parent of P_s1 is a0
+    REQUIRE( *B->firstChild() == fg->factor(7) );      // child of B is P_s1
+    REQUIRE( fg->factor(7)->parent(2) == B );          // parent of P_s1 is B
+
+    VarNode *o1 = Transition::create(s1, A);
+    REQUIRE( fg->nodes() == 9 );
+    REQUIRE( fg->factors() == 9 );
+    REQUIRE( o1->parent() == fg->factor(8) );          // parent of o1 is P_o1
+    REQUIRE( fg->factor(8)->child() == o1 );           // child of P_o1 is o1
+    REQUIRE( *s1->firstChild() == fg->factor(8) );     // child of s1 is P_o1
+    REQUIRE( fg->factor(8)->parent(0) == s1 );         // parent of P_o1 is s1
+    REQUIRE( *(++A->firstChild()) == fg->factor(8) );  // child of A is P_o1
+    REQUIRE( fg->factor(8)->parent(1) == A );          // parent of P_o1 is A
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 

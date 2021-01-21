@@ -72,9 +72,9 @@ namespace hopi::distributions {
         return res;
     }
 
-    void Categorical::setParams(std::vector<Eigen::MatrixXd> &p) {
+    void Categorical::updateParams(std::vector<Eigen::MatrixXd> &p) {
         if (p.size() != 1) {
-            throw std::runtime_error("Categorical::setParams argument size must be equal to one.");
+            throw std::runtime_error("Categorical::updateParams argument size must be equal to one.");
         }
         param = Functions::softmax(p[0]);
     }

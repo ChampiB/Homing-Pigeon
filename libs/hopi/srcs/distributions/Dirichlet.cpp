@@ -56,7 +56,7 @@ namespace hopi::distributions {
         return param;
     }
 
-    void Dirichlet::setParams(std::vector<Eigen::MatrixXd> &p) {
+    void Dirichlet::updateParams(std::vector<Eigen::MatrixXd> &p) {
         param = p;
     }
 
@@ -68,7 +68,7 @@ namespace hopi::distributions {
         for (int k = 0; k < p.rows(); ++k) {
             acc += (p(k) - 1) * Functions::digamma(p(k));
         }
-        e += std::log(Functions::beta(p)) \
+        e += Functions::log_beta(p) \
           +  (s - p.rows()) * Functions::digamma(s) \
           -  acc;
         return e;
@@ -92,7 +92,7 @@ namespace hopi::distributions {
             for (int k = 0; k < p[i].cols(); ++k) {
                 MatrixXd col = m[i].col(k);
                 for (int j = 0; j < p[i].rows(); ++j) {
-                    m[i](j,k) = Functions::digamma(m[i](j,k)) - Functions::digamma(col.sum());
+                    m[i](j,k) = Functions::digamma(m[i](j, k)) - Functions::digamma(col.sum());
                 }
             }
         }
