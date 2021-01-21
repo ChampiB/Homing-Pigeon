@@ -135,6 +135,10 @@ namespace hopi::algorithms {
     void AlgoTree::expansion(VarNode *node, VarNode *A, VarNode *B) {
         auto A_param = Dirichlet::expectedLog(A->posterior()->params())[0];
         auto B_param = Dirichlet::expectedLog(B->posterior()->params());
+        A_param = A_param.array().exp();
+        for (auto & i : B_param) {
+            i = i.array().exp();
+        }
         expansion(node, A_param, B_param);
     }
 
@@ -183,7 +187,7 @@ namespace hopi::algorithms {
         return ua;
     }
 
-    std::vector<VarNode*> AlgoTree::lastExpansionNodes() const {
+    std::vector<VarNode*> AlgoTree::lastExpandedNodes() const {
         std::vector<VarNode*> vars;
 
         vars.push_back(last_expansion.first);
