@@ -227,7 +227,7 @@ TEST_CASE( "Dirichlet::expectedLog() returns the proper results (1D)" ) {
 
 TEST_CASE( "Dirichlet::expectedLog() returns the proper results (2D)" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    MatrixXd param(3, 1);
+    MatrixXd param(3, 2);
     param << 0.7, 1,
              0.2, 2,
              0.1, 3;
@@ -236,24 +236,24 @@ TEST_CASE( "Dirichlet::expectedLog() returns the proper results (2D)" ) {
     REQUIRE( predicted[0](0,0) == Approx(Functions::digamma(0.7) - Functions::digamma(1)) );
     REQUIRE( predicted[0](1,0) == Approx(Functions::digamma(0.2) - Functions::digamma(1)) );
     REQUIRE( predicted[0](2,0) == Approx(Functions::digamma(0.1) - Functions::digamma(1)) );
-    REQUIRE( predicted[0](0,1) == Approx(Functions::digamma(1) - Functions::digamma(6)) );
-    REQUIRE( predicted[0](1,1) == Approx(Functions::digamma(2) - Functions::digamma(6)) );
-    REQUIRE( predicted[0](2,1) == Approx(Functions::digamma(3) - Functions::digamma(6)) );
+    REQUIRE( predicted[0](0,1) == Approx(Functions::digamma(1)   - Functions::digamma(6)) );
+    REQUIRE( predicted[0](1,1) == Approx(Functions::digamma(2)   - Functions::digamma(6)) );
+    REQUIRE( predicted[0](2,1) == Approx(Functions::digamma(3)   - Functions::digamma(6)) );
 
-    MatrixXd param1(3, 1);
+    MatrixXd param1(3, 2);
     param1 << 5, 10,
               2, 2,
               3, 12;
     std::vector<MatrixXd> p1{param1};
     predicted = Dirichlet::expectedLog(p1);
-    REQUIRE( predicted[0](0,0) == Approx(Functions::digamma(5) - Functions::digamma(10)) );
-    REQUIRE( predicted[0](1,0) == Approx(Functions::digamma(2) - Functions::digamma(10)) );
-    REQUIRE( predicted[0](2,0) == Approx(Functions::digamma(3) - Functions::digamma(10)) );
+    REQUIRE( predicted[0](0,0) == Approx(Functions::digamma(5)  - Functions::digamma(10)) );
+    REQUIRE( predicted[0](1,0) == Approx(Functions::digamma(2)  - Functions::digamma(10)) );
+    REQUIRE( predicted[0](2,0) == Approx(Functions::digamma(3)  - Functions::digamma(10)) );
     REQUIRE( predicted[0](0,1) == Approx(Functions::digamma(10) - Functions::digamma(24)) );
     REQUIRE( predicted[0](1,1) == Approx(Functions::digamma(2)  - Functions::digamma(24)) );
     REQUIRE( predicted[0](2,1) == Approx(Functions::digamma(12) - Functions::digamma(24)) );
 
-    MatrixXd param2(3, 1);
+    MatrixXd param2(3, 2);
     param2 << 30, 1,
               30, 1,
               40, 1;
@@ -262,19 +262,19 @@ TEST_CASE( "Dirichlet::expectedLog() returns the proper results (2D)" ) {
     REQUIRE( predicted[0](0,0) == Approx(Functions::digamma(30) - Functions::digamma(100)) );
     REQUIRE( predicted[0](1,0) == Approx(Functions::digamma(30) - Functions::digamma(100)) );
     REQUIRE( predicted[0](2,0) == Approx(Functions::digamma(40) - Functions::digamma(100)) );
-    REQUIRE( predicted[0](0,1) == Approx(Functions::digamma(1) - Functions::digamma(3)) );
-    REQUIRE( predicted[0](1,1) == Approx(Functions::digamma(1) - Functions::digamma(3)) );
-    REQUIRE( predicted[0](2,1) == Approx(Functions::digamma(1) - Functions::digamma(3)) );
+    REQUIRE( predicted[0](0,1) == Approx(Functions::digamma(1)  - Functions::digamma(3)) );
+    REQUIRE( predicted[0](1,1) == Approx(Functions::digamma(1)  - Functions::digamma(3)) );
+    REQUIRE( predicted[0](2,1) == Approx(Functions::digamma(1)  - Functions::digamma(3)) );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
 TEST_CASE( "Dirichlet::expectedLog() returns the proper results (3D)" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    MatrixXd param0(3, 1);
+    MatrixXd param0(3, 2);
     param0 << 0.7, 1,
               0.2, 2,
               0.1, 3;
-    MatrixXd param1(3, 1);
+    MatrixXd param1(3, 2);
     param1 << 5, 10,
               2, 2,
               3, 12;
@@ -284,14 +284,14 @@ TEST_CASE( "Dirichlet::expectedLog() returns the proper results (3D)" ) {
     REQUIRE( predicted[0](0,0) == Approx(Functions::digamma(0.7) - Functions::digamma(1)) );
     REQUIRE( predicted[0](1,0) == Approx(Functions::digamma(0.2) - Functions::digamma(1)) );
     REQUIRE( predicted[0](2,0) == Approx(Functions::digamma(0.1) - Functions::digamma(1)) );
-    REQUIRE( predicted[0](0,1) == Approx(Functions::digamma(1) - Functions::digamma(6)) );
-    REQUIRE( predicted[0](1,1) == Approx(Functions::digamma(2) - Functions::digamma(6)) );
-    REQUIRE( predicted[0](2,1) == Approx(Functions::digamma(3) - Functions::digamma(6)) );
-    REQUIRE( predicted[1](0,0) == Approx(Functions::digamma(5) - Functions::digamma(10)) );
-    REQUIRE( predicted[1](1,0) == Approx(Functions::digamma(2) - Functions::digamma(10)) );
-    REQUIRE( predicted[1](2,0) == Approx(Functions::digamma(3) - Functions::digamma(10)) );
-    REQUIRE( predicted[1](0,1) == Approx(Functions::digamma(10) - Functions::digamma(24)) );
-    REQUIRE( predicted[1](1,1) == Approx(Functions::digamma(2)  - Functions::digamma(24)) );
-    REQUIRE( predicted[1](2,1) == Approx(Functions::digamma(12) - Functions::digamma(24)) );
+    REQUIRE( predicted[0](0,1) == Approx(Functions::digamma(1)   - Functions::digamma(6)) );
+    REQUIRE( predicted[0](1,1) == Approx(Functions::digamma(2)   - Functions::digamma(6)) );
+    REQUIRE( predicted[0](2,1) == Approx(Functions::digamma(3)   - Functions::digamma(6)) );
+    REQUIRE( predicted[1](0,0) == Approx(Functions::digamma(5)   - Functions::digamma(10)) );
+    REQUIRE( predicted[1](1,0) == Approx(Functions::digamma(2)   - Functions::digamma(10)) );
+    REQUIRE( predicted[1](2,0) == Approx(Functions::digamma(3)   - Functions::digamma(10)) );
+    REQUIRE( predicted[1](0,1) == Approx(Functions::digamma(10)  - Functions::digamma(24)) );
+    REQUIRE( predicted[1](1,1) == Approx(Functions::digamma(2)   - Functions::digamma(24)) );
+    REQUIRE( predicted[1](2,1) == Approx(Functions::digamma(12)  - Functions::digamma(24)) );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
