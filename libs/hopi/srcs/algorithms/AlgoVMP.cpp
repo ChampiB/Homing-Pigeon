@@ -22,6 +22,8 @@ namespace hopi::algorithms {
 
     void AlgoVMP::inference(const std::vector<VarNode*>& vars, double epsilon) {
         double VFE = std::numeric_limits<double>::max();
+        int max_iter = 10;
+        int iter = 0;
 
         while (true) {
             // Perform inference
@@ -39,6 +41,12 @@ namespace hopi::algorithms {
                 break;
             }
             VFE = new_VFE;
+
+            // Check if the maximum number of iterations have been reached
+            if (iter >= max_iter) {
+                break;
+            }
+            ++iter;
         }
     }
 

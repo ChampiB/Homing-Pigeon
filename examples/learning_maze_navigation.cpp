@@ -23,6 +23,15 @@ using namespace Eigen;
 int main()
 {
     /**
+     ** Hyper-parameter of the simulation.
+     **/
+    // Perfect updates and memory leads to poor representation
+    // double update_noise  = 0; // Perfect updates
+    // double weights_decay = 0; // Perfect memory
+    double update_noise  = 1; // Imperfect updates
+    double weights_decay = 0.1; // Imperfect memory
+
+    /**
      ** Create the environment and matrix generator.
      **/
     auto maze_file = "../examples/mazes/5.maze";
@@ -54,7 +63,7 @@ int main()
      ** Run the simulation.
      **/
     env->print();
-    for (int i = 0; i < 20; ++i) { // Trials
+    for (int i = 0; i < 5; ++i) { // Trials
         // Reset the environment.
         std::cout << "Trial number: " << i << std::endl;
         env = std::make_unique<MazeEnv>(maze_file);
@@ -65,6 +74,11 @@ int main()
         VarNode *A = Dirichlet::create(theta_A);
         VarNode *B = Dirichlet::create(theta_B);
         VarNode *D = Dirichlet::create(theta_D);
+        for (auto N : {U, A, B, D}) {
+            auto dir = dynamic_cast<Dirichlet *>(N->posterior());
+            dir->enableNoisyUpdate(update_noise);
+            dir->enableWeightsDecay(weights_decay);
+        }
         VarNode *a0 = Categorical::create(U);
         VarNode *s0 = Categorical::create(D);
         VarNode *o0 = Transition::create(s0, A);
