@@ -37,6 +37,8 @@ namespace hopi::distributions {
 
     Dirichlet::Dirichlet(const std::vector<Eigen::MatrixXd> &p) {
         param = p;
+        update_noise = 0;
+        weights_decay = 0;
     }
 
     DistributionType Dirichlet::type() const {
@@ -57,6 +59,11 @@ namespace hopi::distributions {
     }
 
     void Dirichlet::updateParams(std::vector<Eigen::MatrixXd> &p) {
+        for (auto & i : p) {
+            MatrixXd noise = MatrixXd::Random(i.rows(),i.cols()) * update_noise;
+            i = (i + noise).array() - weights_decay;
+            i = i.array().max(0); // Parameters remains positive
+        }
         param = p;
     }
 
@@ -97,6 +104,14 @@ namespace hopi::distributions {
             }
         }
         return m;
+    }
+
+    void Dirichlet::enableNoisyUpdate(double noise) {
+        update_noise = noise;
+    }
+
+    void Dirichlet::enableWeightsDecay(double decay) {
+        weights_decay = decay;
     }
 
 }
