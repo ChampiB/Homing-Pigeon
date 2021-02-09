@@ -467,7 +467,7 @@ TEST_CASE( "AlgoTree stop to expand when reaching the maximal depth (max_depth =
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
-TEST_CASE( "Back-propagation increases N and G on all ancestors." ) {
+TEST_CASE( "Back-propagation increases N and G on all ancestors (UPWARD_BP)." ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     auto fg = FactorGraphContexts::context2();
     auto algo = AlgoTree(3, MatrixXd::Constant(2, 1, 0.5), MatrixXd::Constant(2, 1, 0.5));
@@ -533,7 +533,7 @@ TEST_CASE( "Back-propagation increases N and G on all ancestors." ) {
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
-TEST_CASE( "Back-propagation increases N on all ancestors (no increase of G)." ) {
+TEST_CASE( "Back-propagation increases N on all ancestors (NO_BP)." ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     auto fg = FactorGraphContexts::context2();
     auto algo = AlgoTree(3, MatrixXd::Constant(2, 1, 0.5), MatrixXd::Constant(2, 1, 0.5));
@@ -557,7 +557,7 @@ TEST_CASE( "Back-propagation increases N on all ancestors (no increase of G)." )
     REQUIRE( c1->g() == 3 );
     REQUIRE( c2->g() == 4 );
 
-    AlgoTree::backpropagation(c0, root, false);
+    AlgoTree::backpropagation(c0, root, NO_BP);
     REQUIRE( root->n() == 1 );
     REQUIRE( c0->n() == 1 );
     REQUIRE( c1->n() == 0 );
@@ -567,7 +567,7 @@ TEST_CASE( "Back-propagation increases N on all ancestors (no increase of G)." )
     REQUIRE( c1->g() == 3 );
     REQUIRE( c2->g() == 4 );
 
-    AlgoTree::backpropagation(c1, root, false);
+    AlgoTree::backpropagation(c1, root, NO_BP);
     REQUIRE( root->n() == 2 );
     REQUIRE( c0->n() == 1 );
     REQUIRE( c1->n() == 1 );
@@ -577,7 +577,7 @@ TEST_CASE( "Back-propagation increases N on all ancestors (no increase of G)." )
     REQUIRE( c1->g() == 3 );
     REQUIRE( c2->g() == 4 );
 
-    AlgoTree::backpropagation(c2, root, false);
+    AlgoTree::backpropagation(c2, root, NO_BP);
     REQUIRE( root->n() == 3 );
     REQUIRE( c0->n() == 1 );
     REQUIRE( c1->n() == 1 );
@@ -587,7 +587,7 @@ TEST_CASE( "Back-propagation increases N on all ancestors (no increase of G)." )
     REQUIRE( c1->g() == 3 );
     REQUIRE( c2->g() == 4 );
 
-    AlgoTree::backpropagation(c1, root, false);
+    AlgoTree::backpropagation(c1, root, NO_BP);
     REQUIRE( root->n() == 4 );
     REQUIRE( c0->n() == 1 );
     REQUIRE( c1->n() == 2 );
@@ -596,6 +596,72 @@ TEST_CASE( "Back-propagation increases N on all ancestors (no increase of G)." )
     REQUIRE( c0->g() == 2 );
     REQUIRE( c1->g() == 3 );
     REQUIRE( c2->g() == 4 );
+    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+}
+
+TEST_CASE( "Back-propagation increases N on all ancestors (DOWNWARD_BP)." ) {
+    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+    auto fg = FactorGraphContexts::context2();
+    auto algo = AlgoTree(3, MatrixXd::Constant(2, 1, 0.5), MatrixXd::Constant(2, 1, 0.5));
+    auto root = fg->treeRoot();
+    auto B = MatrixXd::Constant(2, 2, 0.5);
+    auto c0 = Transition::create(root, B);
+    auto c1 = Transition::create(root, B);
+    auto c2 = Transition::create(root, B);
+
+    root->setG(1);
+    c0->setG(2);
+    c1->setG(3);
+    c2->setG(4);
+
+    REQUIRE( root->n() == 0 );
+    REQUIRE( c0->n() == 0 );
+    REQUIRE( c1->n() == 0 );
+    REQUIRE( c2->n() == 0 );
+    REQUIRE( root->g() == 1 );
+    REQUIRE( c0->g() == 2 );
+    REQUIRE( c1->g() == 3 );
+    REQUIRE( c2->g() == 4 );
+
+    AlgoTree::backpropagation(c0, root, DOWNWARD_BP);
+    REQUIRE( root->n() == 1 );
+    REQUIRE( c0->n() == 1 );
+    REQUIRE( c1->n() == 0 );
+    REQUIRE( c2->n() == 0 );
+    REQUIRE( root->g() == 1 );
+    REQUIRE( c0->g() == 3 );
+    REQUIRE( c1->g() == 3 );
+    REQUIRE( c2->g() == 4 );
+
+    AlgoTree::backpropagation(c1, root, DOWNWARD_BP);
+    REQUIRE( root->n() == 2 );
+    REQUIRE( c0->n() == 1 );
+    REQUIRE( c1->n() == 1 );
+    REQUIRE( c2->n() == 0 );
+    REQUIRE( root->g() == 1 );
+    REQUIRE( c0->g() == 3 );
+    REQUIRE( c1->g() == 4 );
+    REQUIRE( c2->g() == 4 );
+
+    AlgoTree::backpropagation(c2, root, DOWNWARD_BP);
+    REQUIRE( root->n() == 3 );
+    REQUIRE( c0->n() == 1 );
+    REQUIRE( c1->n() == 1 );
+    REQUIRE( c2->n() == 1 );
+    REQUIRE( root->g() == 1 );
+    REQUIRE( c0->g() == 3 );
+    REQUIRE( c1->g() == 4 );
+    REQUIRE( c2->g() == 5 );
+
+    AlgoTree::backpropagation(c1, root, DOWNWARD_BP);
+    REQUIRE( root->n() == 4 );
+    REQUIRE( c0->n() == 1 );
+    REQUIRE( c1->n() == 2 );
+    REQUIRE( c2->n() == 1 );
+    REQUIRE( root->g() == 1 );
+    REQUIRE( c0->g() == 3 );
+    REQUIRE( c1->g() == 5 );
+    REQUIRE( c2->g() == 5 );
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 

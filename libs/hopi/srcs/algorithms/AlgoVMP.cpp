@@ -5,7 +5,6 @@
 #include "AlgoVMP.h"
 #include <Eigen/Dense>
 #include <distributions/Categorical.h>
-#include <iostream>
 #include "graphs/FactorGraph.h"
 #include "nodes/FactorNode.h"
 #include "nodes/VarNode.h"
@@ -20,9 +19,8 @@ using namespace Eigen;
 
 namespace hopi::algorithms {
 
-    void AlgoVMP::inference(const std::vector<VarNode*>& vars, double epsilon) {
+    void AlgoVMP::inference(const std::vector<VarNode*>& vars, double epsilon, int max_iter) {
         double VFE = std::numeric_limits<double>::max();
-        int max_iter = 10;
         int iter = 0;
 
         while (true) {
