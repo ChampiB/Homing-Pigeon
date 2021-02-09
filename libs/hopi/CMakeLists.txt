@@ -10,6 +10,7 @@ set(HOPI_SRCS
         srcs/algorithms/AlgoVMP.h srcs/algorithms/AlgoVMP.cpp
         srcs/algorithms/EvaluationType.h
         srcs/algorithms/NodeSelectionType.h
+        srcs/algorithms/BackPropagationType.h
         srcs/distributions/ActiveTransition.h srcs/distributions/ActiveTransition.cpp
         srcs/distributions/Transition.h srcs/distributions/Transition.cpp
         srcs/distributions/Categorical.h srcs/distributions/Categorical.cpp
