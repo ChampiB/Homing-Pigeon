@@ -10,6 +10,7 @@
 #include <Eigen/Dense>
 #include <map>
 #include "EvaluationType.h"
+#include "BackPropagationType.h"
 #include "NodeSelectionType.h"
 
 namespace hopi::graphs {
@@ -31,10 +32,10 @@ namespace hopi::algorithms {
                 const std::shared_ptr<graphs::FactorGraph>& fg,
                 NodeSelectionType type = NodeSelectionType::SOFTMAX_SAMPLING
         );
-        void evaluation(EvaluationType type = EvaluationType::KL);
         void expansion(nodes::VarNode *p, Eigen::MatrixXd& A, std::vector<Eigen::MatrixXd>& B);
         void expansion(nodes::VarNode *p, nodes::VarNode *A, nodes::VarNode *B);
-        static void backpropagation(nodes::VarNode *node, nodes::VarNode *root, bool back_prop_g = true);
+        void evaluation(EvaluationType type = EvaluationType::KL);
+        static void backpropagation(nodes::VarNode *node, nodes::VarNode *root, BackPropagationType type = UPWARD_BP);
         static int actionSelection(nodes::VarNode *root);
 
     public:

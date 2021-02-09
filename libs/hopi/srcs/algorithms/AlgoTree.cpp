@@ -36,19 +36,25 @@ namespace hopi::algorithms {
         _mtd = max_tree_depth;
     }
 
-    bool AlgoTree::CompareQuality(std::pair<VarNode*,VarNode*> a1, std::pair<VarNode*,VarNode*> a2) {
-        return a1.first->g() < a2.first->g();
-    }
+    /**
+     * Step 1: Select the next node to be expanded
+     */
 
     VarNode *AlgoTree::nodeSelection(const std::shared_ptr<FactorGraph>& fg, NodeSelectionType type) {
         if (us.empty()) {
+            // If there are no unexplored states,
+            //    then add the root node as an unexplored states...
             tree_root = fg->treeRoot();
             us.emplace_back(tree_root, (*tree_root->firstChild())->child());
             tree_root->setG(std::numeric_limits<double>::min());
             return fg->treeRoot();
         } else if (us[0].first->g() == std::numeric_limits<double>::min()) {
+            // Else if the first unexplored state is the root node (i.e. g == -inf),
+            //    then return the root node...
             return us[0].first;
         } else {
+            // Otherwise uses the node selection procedure requested by the user,
+            //    i.e. MIN, SAMPLING, SOFTMAX_SAMPLING
             switch (type) {
                 case MIN:
                     return nodeSelectionMin(fg);
@@ -89,23 +95,24 @@ namespace hopi::algorithms {
         return us[rand_int(gen)].first;
     }
 
-    void AlgoTree::evaluation(EvaluationType type) {
-        switch (type) {
-            case EvaluationType::SUM:
-                evaluationSum(last_expansion.first, last_expansion.second);
-                break;
-            case EvaluationType::AVERAGE:
-                evaluationAverage(last_expansion.first, last_expansion.second);
-                break;
-            case EvaluationType::KL:
-                evaluationKL(last_expansion.first, last_expansion.second);
-                break;
-            default:
-                throw std::runtime_error("Unsupported evaluation type.");
+    /**
+     * Step 2: Expansion of the selected node
+     */
+
+    void AlgoTree::expansion(VarNode *node, VarNode *A, VarNode *B) {
+        // Gather A and B parameters from the variable nodes
+        auto A_param = Dirichlet::expectedLog(A->posterior()->params())[0];
+        auto B_param = Dirichlet::expectedLog(B->posterior()->params());
+        A_param = A_param.array().exp();
+        for (auto & i : B_param) {
+            i = i.array().exp();
         }
+        // Call the expansion taking matrices of parameters as arguments
+        expansion(node, A_param, B_param);
     }
 
     void AlgoTree::expansion(VarNode *node, MatrixXd& A, std::vector<MatrixXd>& B) {
+        // Select an unexplored action to expand the tree
         std::vector<int> ua = unexploredActions(node);
         if (ua.empty()) {
             throw std::runtime_error("No more unexplored action: this node cannot be expanded.");
@@ -132,27 +139,51 @@ namespace hopi::algorithms {
         }
     }
 
-    void AlgoTree::expansion(VarNode *node, VarNode *A, VarNode *B) {
-        auto A_param = Dirichlet::expectedLog(A->posterior()->params())[0];
-        auto B_param = Dirichlet::expectedLog(B->posterior()->params());
-        A_param = A_param.array().exp();
-        for (auto & i : B_param) {
-            i = i.array().exp();
+    /**
+     * Step 3: Evaluation of the newly expanded node
+     */
+
+    void AlgoTree::evaluation(EvaluationType type) {
+        switch (type) {
+            case EvaluationType::SUM:
+                evaluationSum(last_expansion.first, last_expansion.second);
+                break;
+            case EvaluationType::AVERAGE:
+                evaluationAverage(last_expansion.first, last_expansion.second);
+                break;
+            case EvaluationType::KL:
+                evaluationKL(last_expansion.first, last_expansion.second);
+                break;
+            default:
+                throw std::runtime_error("Unsupported evaluation type.");
         }
-        expansion(node, A_param, B_param);
     }
 
-    void AlgoTree::backpropagation(VarNode *node, VarNode *root, bool back_prop_g) {
+    /**
+     * Step 4: Back-propagation of the information in the tree
+     */
+
+    void AlgoTree::backpropagation(VarNode *node, VarNode *root, BackPropagationType type) {
+        // If type == NO_BP then do nothing
+        // If type == DOWNWARD_BP then G_child = G_parent + G_child
+        if (type == DOWNWARD_BP) {
+            node->setG(node->g() + node->parent()->parent(0)->g());
+        }
         while (node != root) {
-            node->incrementN();
+            node->incrementN(); // N_ancestors++
             auto parent = node->parent()->parent(0);
-            if (back_prop_g) {
+            // If type == UPWARD_BP then G_parent = G_parent + G_child
+            if (type == UPWARD_BP) {
                 parent->setG(parent->g() + node->g());
             }
             node = parent;
         }
-        root->incrementN();
+        root->incrementN(); // N_ancestors++
     }
+
+    /**
+     * Step 5: Selection of the best action to perform
+     */
 
     int AlgoTree::actionSelection(VarNode *root) {
         double best_g      = std::numeric_limits<double>::max();
@@ -172,6 +203,14 @@ namespace hopi::algorithms {
             }
         }
         return best_action;
+    }
+
+    /**
+     * Auxiliary functions
+     */
+
+    bool AlgoTree::CompareQuality(std::pair<VarNode*,VarNode*> a1, std::pair<VarNode*,VarNode*> a2) {
+        return a1.first->g() < a2.first->g();
     }
 
     std::vector<int> AlgoTree::unexploredActions(VarNode *node) const {
@@ -202,8 +241,8 @@ namespace hopi::algorithms {
             parent_G = 0;
         }
         s->setG(parent_G \
- + Functions::KL(s->posterior(), s->biased()) \
- + Functions::KL(o->posterior(), o->biased()) );
+                 + Functions::KL(s->posterior(), s->biased()) \
+                 + Functions::KL(o->posterior(), o->biased()) );
     }
 
     void AlgoTree::evaluationAverage(nodes::VarNode *s, nodes::VarNode *o) {
@@ -214,13 +253,13 @@ namespace hopi::algorithms {
             parent_G = 0;
         }
         double g = Functions::KL(s->posterior(), s->biased()) \
- + Functions::KL(o->posterior(), o->biased());
+                 + Functions::KL(o->posterior(), o->biased());
         s->setG(((d * parent_G) + g) / (double)(d + 1));
     }
 
     void AlgoTree::evaluationKL(nodes::VarNode *s, nodes::VarNode *o) {
         s->setG(Functions::KL(s->posterior(), s->biased()) \
- + Functions::KL(o->posterior(), o->biased()) );
+                 + Functions::KL(o->posterior(), o->biased()) );
     }
 
     int AlgoTree::distance_from_root(nodes::VarNode *n) {
