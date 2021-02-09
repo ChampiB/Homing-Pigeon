@@ -17,7 +17,7 @@ namespace hopi::algorithms {
 
     class AlgoVMP {
     public:
-        static void inference(const std::vector<nodes::VarNode*>& vars, double epsilon = 0.01);
+        static void inference(const std::vector<nodes::VarNode*>& vars, double epsilon = 0.01, int max_iter = 2147483647);
         static void inference(nodes::VarNode *var);
         static double vfe(const std::vector<nodes::VarNode*>& vars);
     };
