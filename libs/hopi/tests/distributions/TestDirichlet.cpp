@@ -191,6 +191,38 @@ TEST_CASE( "Dirichlet parameters setter and getter work properly" ) {
     std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
 }
 
+TEST_CASE( "Dirichlet parameters can be increased properly" ) {
+    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+    MatrixXd param1(2, 1);
+    param1 << 0.2,
+              0.8;
+    std::vector<MatrixXd> p1{ param1 };
+    Dirichlet d = Dirichlet(p1);
+    auto param = d.params();
+    REQUIRE( param.size() == 1 );
+    REQUIRE( param[0](0,0) == 0.2 );
+    REQUIRE( param[0](1,0) == 0.8 );
+
+    d.increaseParam(0,0,0);
+    param = d.params();
+    REQUIRE( param.size() == 1 );
+    REQUIRE( param[0](0,0) == 1.2 );
+    REQUIRE( param[0](1,0) == 0.8 );
+
+    d.increaseParam(0,0,0);
+    param = d.params();
+    REQUIRE( param.size() == 1 );
+    REQUIRE( param[0](0,0) == 2.2 );
+    REQUIRE( param[0](1,0) == 0.8 );
+
+    d.increaseParam(0,1,0);
+    param = d.params();
+    REQUIRE( param.size() == 1 );
+    REQUIRE( param[0](0,0) == 2.2 );
+    REQUIRE( param[0](1,0) == 1.8 );
+    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+}
+
 TEST_CASE( "Dirichlet::expectedLog() returns the proper results (1D)" ) {
     std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     MatrixXd param(3, 1);

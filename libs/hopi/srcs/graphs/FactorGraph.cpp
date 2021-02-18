@@ -5,7 +5,6 @@
 #include <fstream>
 #include <distributions/Transition.h>
 #include <distributions/Dirichlet.h>
-#include "distributions/Distribution.h"
 #include "distributions/Categorical.h"
 #include "distributions/ActiveTransition.h"
 #include "nodes/VarNode.h"
@@ -109,26 +108,6 @@ namespace hopi::graphs {
         return vec;
     }
 
-    void FactorGraph::integrate(
-            int action,
-            const MatrixXd& observation,
-            const MatrixXd& A,
-            const std::vector<MatrixXd>& B
-    ) {
-        removeHiddenChildren(_tree_root);
-        MatrixXd action_param = MatrixXd::Constant(B.size(), 1, 0.1 / (B.size() - 1));
-        action_param(action, 0) = 0.9;
-        integrate(action_param, observation, A, B);
-    }
-
-    void FactorGraph::integrate(int action, const MatrixXd& observation, VarNode *A, VarNode *B) {
-        removeHiddenChildren(_tree_root);
-        int actions = B->prior()->params().size();
-        MatrixXd action_param = MatrixXd::Constant(actions, 1, 0.1 / (actions - 1));
-        action_param(action, 0) = 0.9;
-        integrate(action_param, observation, A, B);
-    }
-
     void FactorGraph::removeHiddenChildren(VarNode *node) {
         for (auto it = node->firstChild(); it != node->lastChild() ; ++it) {
             auto child = (*it)->child();
@@ -140,14 +119,58 @@ namespace hopi::graphs {
         }
     }
 
+    void FactorGraph::integrate(
+            int action,
+            const MatrixXd& observation,
+            const MatrixXd& A,
+            const std::vector<MatrixXd>& B
+    ) {
+        removeHiddenChildren(_tree_root);
+        MatrixXd action_param = MatrixXd::Constant(B.size(), 1, 0.1 / (B.size() - 1));
+        action_param(action, 0) = 0.9;
+        auto a = Categorical::create(action_param);
+        integrate(a, observation, A, B);
+    }
+
+    void FactorGraph::integrate(
+            int action,
+            const MatrixXd& observation,
+            VarNode *A,
+            VarNode *B
+    ) {
+        removeHiddenChildren(_tree_root);
+        int actions = B->prior()->params().size();
+        MatrixXd action_param = MatrixXd::Constant(actions, 1, 0.1 / (actions - 1));
+        action_param(action, 0) = 0.9;
+        auto a = Categorical::create(action_param);
+        integrate(a, observation, A, B);
+    }
+
+    void FactorGraph::integrate(
+            VarNode *U,
+            int action,
+            const MatrixXd &observation,
+            VarNode *A,
+            VarNode *B
+    ) {
+        // Check that U is a Dirichlet node.
+        if (U->prior()->type() != DIRICHLET) {
+            throw std::runtime_error("Integrate(U, action, observation, A, B) assumes U is a Dirichlet.");
+        }
+        // Create new slide of action/state/observation.
+        auto d = dynamic_cast<Dirichlet*>(U->prior());
+        d->increaseParam(0, action, 0);
+        auto a = Categorical::create(U);
+        integrate(a, observation, A, B);
+    }
+
     template<class T1, class T2>
     void FactorGraph::integrate(
-            const Eigen::MatrixXd& action_param,
+            VarNode *a,
             const Eigen::MatrixXd& observation,
             T1 A, T2 B
     ) {
         // Create new slide of action/state/observation.
-        auto a         = Categorical::create(action_param);
         auto *new_root = ActiveTransition::create(_tree_root, a, B);
         auto o         = Transition::create(new_root, A);
         o->setPosterior(std::make_unique<Categorical>(observation));

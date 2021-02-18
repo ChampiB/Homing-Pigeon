@@ -15,9 +15,17 @@ function(add_example)
         message(WARNING "Unparsed argument: ${arg}")
     endforeach()
 
-    # Add the executable and link the hopi library
+    # Add the executable and link the libraries: hopi and tensorflow
     add_executable(${ADD_EXAMPLE_NAME} ${HOMING_PIGEON_ROOT}/examples/${ADD_EXAMPLE_NAME}.cpp)
     add_dependencies(${ADD_EXAMPLE_NAME} hopi)
-    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC hopi)
+#TODO    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC hopi TENSORFLOW24)
+    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/tensorflow/tensorflow.dll)
+#TODO    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/tensorflow/tensorflow.lib)
+#TODO    message(INFO $ENV{TENSORFLOW_LIBRARY_DIRS})
+#TODO    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC $ENV{TENSORFLOW_LIBRARY_DIRS}/tensorflow.lib)
+#TODO    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/libs/tensorflow/version_info.lib)
     target_include_directories(${ADD_EXAMPLE_NAME} PUBLIC ${HOMING_PIGEON_ROOT}/libs/eigen)
+    target_include_directories(${ADD_EXAMPLE_NAME} PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow)
+    target_include_directories(${ADD_EXAMPLE_NAME} PUBLIC $ENV{PROTOBUF_INCLUDE_DIRS})
+
 endfunction()

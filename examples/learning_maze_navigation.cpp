@@ -3,6 +3,7 @@
 #include "environments/Environment.h"
 #include "environments/MazeEnv.h"
 #include "nodes/VarNode.h"
+#include "nodes/FactorNode.h"
 #include "distributions/Categorical.h"
 #include "distributions/Dirichlet.h"
 #include "math/Functions.h"
@@ -20,17 +21,24 @@ using namespace hopi::math;
 using namespace hopi::algorithms;
 using namespace Eigen;
 
+void applyFilter(VarNode *N, std::vector<int> &filters, int nb_states) {
+    // Update the Dirichlet (prior and posterior)
+    auto d = dynamic_cast<Dirichlet*>(N->prior());
+    d->setFilters(filters);
+    d = dynamic_cast<Dirichlet*>(N->posterior());
+    d->setFilters(filters);
+    // Update the Dirichlet's children (posterior)
+    for (auto i = N->firstChild(); i < N->lastChild(); ++i) {
+        if ((*i)->child()->type() != OBSERVED) {
+            auto c = dynamic_cast<Categorical*>((*i)->child()->posterior());
+            c->setFilters(nb_states);
+        }
+    }
+}
+
+
 int main()
 {
-    /**
-     ** Hyper-parameter of the simulation.
-     **/
-    // Perfect updates and memory leads to poor representation
-    // double update_noise  = 0; // Perfect updates
-    // double weights_decay = 0; // Perfect memory
-    double update_noise  = 1; // Imperfect updates
-    double weights_decay = 0.1; // Imperfect memory
-
     /**
      ** Create the environment and matrix generator.
      **/
@@ -39,9 +47,21 @@ int main()
     auto env = std::make_unique<MazeEnv>(maze_file);
 
     /**
+     ** Hyper-parameter of the simulation.
+     **/
+    int initial_nb_states = 1; // Number of hidden state at the beginning of the simulation
+    int nb_iter_expand = 2;    // How many trials between each expansion of the state space.
+    int nb_trials = 10;
+    int nb_cycles = 25;
+    int nb_planning_steps = 100;
+
+    /**
      ** Create the model's parameters.
      **/
-    MatrixXd theta_U = MatrixXd::Ones(env->actions(), 1);
+    std::vector<MatrixXd> theta_Us(nb_cycles);
+    for (int i = 0; i < nb_cycles; ++i) {
+        theta_Us[i] = MatrixXd::Ones(env->actions(), 1);
+    }
     MatrixXd theta_A = MatrixXd::Ones(env->observations(), env->states());
     MatrixXd theta_D = MatrixXd::Ones(env->states(), 1);
     std::vector<MatrixXd> theta_B(env->actions());
@@ -60,26 +80,31 @@ int main()
     E_tilde = Functions::softmax(E_tilde);
 
     /**
+     * Create Dirichlet filters progressively expanding the latent space.
+     */
+    std::vector<int> A_filters{1, env->observations(), initial_nb_states};
+    std::vector<int> D_filters{1, initial_nb_states, 1};
+    std::vector<int> B_filters{env->actions(), initial_nb_states, initial_nb_states};
+
+    /**
      ** Run the simulation.
      **/
     env->print();
-    for (int i = 0; i < 5; ++i) { // Trials
+    for (int i = 0; i < nb_trials; ++i) { // Trials
         // Reset the environment.
         std::cout << "Trial number: " << i << std::endl;
         env = std::make_unique<MazeEnv>(maze_file);
 
         // Create the generative model.
         FactorGraph::setCurrent(nullptr);
-        VarNode *U = Dirichlet::create(theta_U);
+        std::vector<VarNode*> Us(nb_cycles);
+        for (int ii = 0; ii < Us.size(); ++ii) {
+            Us[ii] = Dirichlet::create(theta_Us[ii]);
+        }
         VarNode *A = Dirichlet::create(theta_A);
         VarNode *B = Dirichlet::create(theta_B);
         VarNode *D = Dirichlet::create(theta_D);
-        for (auto N : {U, A, B, D}) {
-            auto dir = dynamic_cast<Dirichlet *>(N->posterior());
-            dir->enableNoisyUpdate(update_noise);
-            dir->enableWeightsDecay(weights_decay);
-        }
-        VarNode *a0 = Categorical::create(U);
+        VarNode *a0 = Categorical::create(Us[0]);
         VarNode *s0 = Categorical::create(D);
         VarNode *o0 = Transition::create(s0, A);
         o0->setType(VarNodeType::OBSERVED);
@@ -92,10 +117,26 @@ int main()
         fg->setTreeRoot(s1);
         fg->loadEvidence(env->observations(), evidence_file);
 
-        for (int j = 0; j < 20; ++j) { // Action perception cycle
+        // Update the Dirichlet filters if required.
+        // Note that filters hide/mask part of the hidden states.
+        // For example: D_filters = [1,2,1] means that only two hidden states are visible.
+        // For example: A_filters = [1,3,2] means that only two hidden states are visible.
+        // For example: B_filters = [5,2,2] means that only two hidden states are visible.
+        if (i != 0 && D_filters[1] < env->states() - 1 && i % nb_iter_expand == 0) {
+            ++D_filters[1];
+            ++A_filters[2];
+            ++B_filters[1];
+            ++B_filters[2];
+        }
+        applyFilter(D, D_filters, D_filters[1]);
+        applyFilter(A, A_filters, A_filters[2]);
+        applyFilter(B, B_filters, B_filters[1]);
+
+        for (int j = 0; j < nb_cycles; ++j) { // Action perception cycle
+            // Inference, planning, action selection, action execution and model integration.
             AlgoVMP::inference(fg->getNodes());
             auto algoTree = std::make_unique<AlgoTree>(env->actions(), D_tilde, E_tilde);
-            for (int k = 0; k < 50; ++k) { // Planning
+            for (int k = 0; k < nb_planning_steps; ++k) { // Planning
                 VarNode *n = algoTree->nodeSelection(fg);
                 algoTree->expansion(n, A, B);
                 AlgoVMP::inference(algoTree->lastExpandedNodes());
@@ -104,23 +145,28 @@ int main()
             }
             int a = algoTree->actionSelection(fg->treeRoot());
             int o = env->execute(a);
-            fg->integrate(a, fg->oneHot(env->observations(), o), A, B);
+            fg->integrate(Us[j], a, fg->oneHot(env->observations(), o), A, B);
             env->print();
         }
 
         // Performs empirical prior:
         // i.e. posterior parameters become prior parameters for the next time point
-        theta_U = U->posterior()->params()[0];
-        theta_A = A->posterior()->params()[0];
-        theta_D = D->posterior()->params()[0];
+        for (int ii = 0; ii < nb_cycles; ++ii) {
+            theta_Us[ii] = Us[ii]->posterior()->params()[0];
+        }
+        theta_A.block(0,0,A_filters[1],A_filters[2]) = A->posterior()->params()[0];
+        theta_D.block(0,0,D_filters[1],D_filters[2]) = D->posterior()->params()[0];
         for (int ii = 0; ii < env->actions(); ++ii) {
-            theta_B[ii] = B->posterior()->params()[ii];
+            theta_B[ii].block(0,0,B_filters[1],B_filters[2]) = B->posterior()->params()[ii];
         }
 
         std::cout << "VFE: " << AlgoVMP::vfe(fg->getNodes()) << std::endl;
     }
 
-    std::cout << "U: " << theta_U << std::endl;
+    // Display the matrices of parameters.
+    for (int i = 0; i < theta_Us.size(); ++i) {
+        std::cout << "U[" << i << "]: " << theta_Us[i] << std::endl;
+    }
     std::cout << "A: " << theta_A << std::endl;
     for (int i = 0; i < theta_B.size(); ++i) {
         std::cout << "B[" << i << "]: " << theta_B[i] << std::endl;

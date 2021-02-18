@@ -26,6 +26,13 @@ namespace hopi::graphs {
     public:
         FactorGraph();
         void integrate(
+                nodes::VarNode *U,
+                int action,
+                const Eigen::MatrixXd& observation,
+                nodes::VarNode *A,
+                nodes::VarNode *B
+        );
+        void integrate(
                 int action,
                 const Eigen::MatrixXd& observation,
                 const Eigen::MatrixXd& A,
@@ -64,9 +71,9 @@ namespace hopi::graphs {
 
         template<class T1, class T2>
         void integrate(
-            const Eigen::MatrixXd& action_param,
-            const Eigen::MatrixXd& observation,
-            const T1 A, const T2 B
+                nodes::VarNode *a,
+                const Eigen::MatrixXd& observation,
+                T1 A, T2 B
         );
 
     private:
