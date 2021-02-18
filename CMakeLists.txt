@@ -10,10 +10,6 @@ SET(HOMING_PIGEON_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 include(AddExample.cmake)
 include(AddUnitTests.cmake)
 
-# Library: Tensorflow
-#TODO add_library(TENSORFLOW24 ${CMAKE_SOURCE_DIR}/libs/tensorflow/tensorflow.dll)
-#TODO set_target_properties(TENSORFLOW24 PROPERTIES LINKER_LANGUAGE CXX)
-
 # Library: Homing Pigeon
 add_subdirectory(libs/hopi)
 
