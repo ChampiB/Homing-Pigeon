@@ -46,6 +46,7 @@ namespace hopi::distributions {
 
     Categorical::Categorical(Eigen::MatrixXd p) {
         param = std::move(p);
+        filter = param.size();
     }
 
     DistributionType Categorical::type() const {
@@ -53,7 +54,7 @@ namespace hopi::distributions {
     }
 
     int Categorical::cardinality() const {
-        return param.rows();
+        return filter;
     }
 
     double Categorical::p(int id) const{
@@ -61,14 +62,14 @@ namespace hopi::distributions {
     }
 
     std::vector<MatrixXd> Categorical::logParams() const {
-        MatrixXd copy = param;
+        MatrixXd copy = param.block(0,0,filter,1);
         std::vector<MatrixXd> res {copy.array().log()};
         return res;
     }
 
     std::vector<MatrixXd> Categorical::params() const {
-        MatrixXd copy = param;
-        std::vector<MatrixXd> res {copy.array()};
+        MatrixXd copy = param.block(0,0,filter,1);
+        std::vector<MatrixXd> res {copy};
         return res;
     }
 
@@ -76,7 +77,7 @@ namespace hopi::distributions {
         if (p.size() != 1) {
             throw std::runtime_error("Categorical::updateParams argument size must be equal to one.");
         }
-        param = Functions::softmax(p[0]);
+        param.block(0,0,filter,1) = Functions::softmax(p[0]);
     }
 
     double Categorical::entropy() {
@@ -84,12 +85,19 @@ namespace hopi::distributions {
         auto p   = params()[0];
         auto lp  = logParams()[0];
 
-        for (int i = 0; i < p.rows(); ++i) {
+        for (int i = 0; i < filter; ++i) {
             if (p(i,0) != 0) {
                 e -= p(i,0) * lp(i,0);
             }
         }
         return e;
+    }
+
+    void Categorical::setFilters(int f) {
+        filter = f;
+        // Normalise the parameters
+        param.block(0,0,filter,1) = \
+                param.block(0,0,filter,1).array() / param.sum();
     }
 
 }
