@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <type_traits>
 
+#include "tensorflow/core/platform/macros.h"
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/framework/tensor.pb.h"
 #include "tensorflow/core/graph/graph.h"
@@ -37,7 +38,7 @@ class Output;
 class Operation {
  public:
   Operation() : node_(nullptr) {}
-  explicit Operation(Node* n);
+  TF_EXPORT explicit Operation(Node* n);
 
   int32 num_inputs() const { return node_->num_inputs(); }
   DataType input_type(int32 o) const { return node_->input_type(o); }
@@ -165,7 +166,7 @@ class Input {
     /// initializer lists, so such invalid initializers cannot be disallowed at
     /// compile time. This function performs checks to make sure that the nested
     /// initializer list is indeed a valid multi-dimensional tensor.
-    Initializer(const std::initializer_list<Initializer>& v);
+    TF_EXPORT Initializer(const std::initializer_list<Initializer>& v);
 
     // START_SKIP_DOXYGEN
     template <typename T, bool = std::is_convertible<T, string>::value>

@@ -312,7 +312,8 @@ class Session {
 /// `*out_session`, the caller will take ownership of the returned
 /// `*out_session`, and this function will return `OK()`. Otherwise, this
 /// function will return an error status and set *out_session to nullptr.
-TF_EXPORT Status NewSession(const SessionOptions& options, Session** out_session);
+TF_EXPORT Status NewSession(const SessionOptions& options,
+                            Session** out_session);
 
 /// \brief Resets resource containers associated with a target.
 ///

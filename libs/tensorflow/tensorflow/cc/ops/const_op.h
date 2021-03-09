@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <vector>
 
+#include "tensorflow/core/platform/macros.h"
 #include "tensorflow/cc/framework/ops.h"
 #include "tensorflow/cc/framework/scope.h"
 #include "tensorflow/core/graph/node_builder.h"
@@ -28,7 +29,7 @@ namespace ops {
 /// @defgroup const_op Const Op
 /// @{
 
-Output Const(const Scope& scope, const Input::Initializer& val);
+TF_EXPORT Output Const(const Scope& scope, const Input::Initializer& val);
 
 Output ConstFromProto(const Scope& scope, const TensorProto& proto);
 

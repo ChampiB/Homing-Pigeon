@@ -23,6 +23,7 @@ limitations under the License.
 #include <vector>
 
 #include "absl/strings/str_cat.h"
+#include "tensorflow/core/platform/macros.h"
 #include "tensorflow/cc/framework/ops.h"
 #include "tensorflow/core/common_runtime/graph_constructor.h"
 #include "tensorflow/core/lib/core/status.h"
@@ -97,8 +98,8 @@ struct CompositeOpScopes;
 /// op-constructor functions on the same `Scope` object.
 class Scope {
  public:
-  Scope(const Scope& other);
-  ~Scope();
+  TF_EXPORT Scope(const Scope& other);
+  TF_EXPORT ~Scope();
   Scope& operator=(const Scope& other);
 
   // The following functions are for users making graphs. They return brand new
@@ -107,7 +108,7 @@ class Scope {
   /// Return a new scope.
   /// This creates a new graph and all operations constructed in this graph
   /// should use the returned object as the "root" scope.
-  static Scope NewRootScope();
+  TF_EXPORT static Scope NewRootScope();
 
   /// Return a new scope. Ops created with this scope will have
   /// `name/child_scope_name` as the prefix. The actual name will be unique
@@ -238,7 +239,7 @@ class Scope {
   // END_SKIP_DOXYGEN
 
  private:
-  Scope WithOpNameImpl(const string& op_name) const;
+  TF_EXPORT Scope WithOpNameImpl(const string& op_name) const;
 
   friend class InternalScope;
   std::unique_ptr<Impl> impl_;
