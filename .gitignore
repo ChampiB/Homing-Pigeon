@@ -3,6 +3,13 @@
 !examples/graphs/example.graph
 examples/graphs/*
 examples/data
+examples/cats_and_dogs/*
+examples/images/*
+
+.vs/*
+out/*
+cmake-build-relwithdebinfo/*
+cmake-build-release/*
 
 # Prerequisites
 *.d
