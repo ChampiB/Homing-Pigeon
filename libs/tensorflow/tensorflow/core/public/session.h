@@ -90,7 +90,7 @@ struct ThreadPoolOptions;
 /// after all other calls to Run() have returned.
 class Session {
  public:
-  TF_EXPORT Session();
+  Session();
   virtual ~Session();
 
   /// \brief Create the graph to be used for the session.
@@ -312,7 +312,7 @@ class Session {
 /// `*out_session`, the caller will take ownership of the returned
 /// `*out_session`, and this function will return `OK()`. Otherwise, this
 /// function will return an error status and set *out_session to nullptr.
-TF_EXPORT Status NewSession(const SessionOptions& options,
+Status NewSession(const SessionOptions& options,
                             Session** out_session);
 
 /// \brief Resets resource containers associated with a target.
@@ -350,7 +350,7 @@ Status Reset(const SessionOptions& options,
 ///
 /// *Strongly prefer* the version of NewSession that returns Status,
 /// which contains more helpful error information.
-TF_EXPORT Session* NewSession(const SessionOptions& options);
+Session* NewSession(const SessionOptions& options);
 
 }  // end namespace tensorflow
 

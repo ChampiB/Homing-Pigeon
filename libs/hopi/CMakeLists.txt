@@ -38,9 +38,15 @@ target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/hopi/srcs)
 target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/eigen)
 
 # Link tensorflow to Homing-Pigeon
-target_link_libraries(hopi PUBLIC ${CMAKE_SOURCE_DIR}/libs/tensorflow/tensorflow_cc.lib)
+target_link_libraries(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/libtensorflow_cc.so)
+target_link_libraries(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/libtensorflow_framework.so)
 target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow)
 target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/src)
+
+# Link protobuf to Homing-Pigeon
+include(FindProtobuf)
+find_package(Protobuf REQUIRED)
+target_link_libraries(hopi PUBLIC ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${PROTOBUF_LIBRARY})
 
 #
 # Homing Pigeon: Unit tests

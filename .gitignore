@@ -25,7 +25,6 @@ cmake-build-release/*
 *.pch
 
 # Compiled Dynamic libraries
-*.so
 *.dylib
 *.dll
 
