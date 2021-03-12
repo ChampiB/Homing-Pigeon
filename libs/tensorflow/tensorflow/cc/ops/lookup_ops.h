@@ -106,7 +106,7 @@ class HashTable {
 /// split line based on `delimiter` or the line number (starting from zero).
 /// Where to extract the key and value from a line is specified by `key_index` and
 /// `value_index`.
-/// 
+///
 /// - A value of -1 means use the line number(starting from zero), expects `int64`.
 /// - A value of -2 means use the whole line content, expects `string`.
 /// - A value >= 0 means use the index (starting at zero) of the split line based
@@ -215,7 +215,7 @@ class LookupTableExport {
 ///
 /// The tensor `keys` must of the same type as the keys of the table.
 /// The output `values` is of the type of the table values.
-/// 
+///
 /// The scalar `default_value` is the value output for keys not present in the
 /// table. It must also be of the same type as the table values.
 ///
@@ -310,7 +310,7 @@ class LookupTableSize {
 ///
 /// It uses "open addressing" with quadratic reprobing to resolve
 /// collisions.
-/// 
+///
 /// This op creates a mutable hash table, specifying the type of its keys and
 /// values. Each value must be a scalar. Data can be inserted into the table using
 /// the insert operations. It does not support the initialization operation.

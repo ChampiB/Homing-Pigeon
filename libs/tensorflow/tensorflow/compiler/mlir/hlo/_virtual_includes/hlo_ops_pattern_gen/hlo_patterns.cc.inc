@@ -16,16 +16,16 @@ struct DynamicBroadcastToOwnShape_1 : public ::mlir::RewritePattern {
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
     ::mlir::DenseIntElementsAttr attr;
-    ::mlir::mhlo::DynamicBroadcastInDimOp op;
     ::mlir::Operation::operand_range x(op0->getOperands());
     ::mlir::Operation::operand_range x0(op0->getOperands());
+    ::mlir::mhlo::DynamicBroadcastInDimOp op;
     ::mlir::Operation *tblgen_ops[3];
 
     // Match
     tblgen_ops[0] = op0;
     auto castedOp0 = ::llvm::dyn_cast_or_null<::mlir::mhlo::DynamicBroadcastInDimOp>(op0); (void)castedOp0;
     op = castedOp0;
-    x = castedOp0.getODSOperands(0);
+    x0 = castedOp0.getODSOperands(0);
     {
       auto *op1 = (*castedOp0.getODSOperands(1).begin()).getDefiningOp();
       auto castedOp1 = ::llvm::dyn_cast_or_null<::mlir::shape::ToExtentTensorOp>(op1); (void)castedOp1;
@@ -34,7 +34,7 @@ struct DynamicBroadcastToOwnShape_1 : public ::mlir::RewritePattern {
         auto *op2 = (*castedOp1.getODSOperands(0).begin()).getDefiningOp();
         auto castedOp2 = ::llvm::dyn_cast_or_null<::mlir::shape::ShapeOfOp>(op2); (void)castedOp2;
         if (!castedOp2) return failure();
-        x0 = castedOp2.getODSOperands(0);
+        x = castedOp2.getODSOperands(0);
         tblgen_ops[1] = op2;
       }
       tblgen_ops[2] = op1;
@@ -77,21 +77,21 @@ struct DynamicBroadcastToOwnShape_2 : public ::mlir::RewritePattern {
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
     ::mlir::DenseIntElementsAttr attr;
-    ::mlir::mhlo::DynamicBroadcastInDimOp op;
     ::mlir::Operation::operand_range x(op0->getOperands());
     ::mlir::Operation::operand_range x0(op0->getOperands());
+    ::mlir::mhlo::DynamicBroadcastInDimOp op;
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
     tblgen_ops[0] = op0;
     auto castedOp0 = ::llvm::dyn_cast_or_null<::mlir::mhlo::DynamicBroadcastInDimOp>(op0); (void)castedOp0;
     op = castedOp0;
-    x = castedOp0.getODSOperands(0);
+    x0 = castedOp0.getODSOperands(0);
     {
       auto *op1 = (*castedOp0.getODSOperands(1).begin()).getDefiningOp();
       auto castedOp1 = ::llvm::dyn_cast_or_null<::mlir::shape::ShapeOfOp>(op1); (void)castedOp1;
       if (!castedOp1) return failure();
-      x0 = castedOp1.getODSOperands(0);
+      x = castedOp1.getODSOperands(0);
       tblgen_ops[1] = op1;
     }
     {

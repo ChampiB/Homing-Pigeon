@@ -5,14 +5,7 @@
 
 
 /* How to obtain function inlining. */
-#if defined(__GNUC__)
-#define INLINE inline __attribute__((always_inline))
-#elif defined(_MSC_VER)
-#define INLINE __forceinline
-#else
-#define INLINE
-#endif
-
+#define INLINE  inline __attribute__((always_inline))
 
 /* How to obtain thread-local storage */
 #define THREAD_LOCAL  @THREAD_LOCAL@
@@ -24,7 +17,7 @@
 #define VERSION  "2.0.0"
 
 /* The size of `size_t', as computed by sizeof. */
-#if (__WORDSIZE==64)
+#if (__WORDSIZE==64 && !defined(__native_client__))
 #define SIZEOF_SIZE_T 8
 #else
 #define SIZEOF_SIZE_T 4
@@ -32,7 +25,7 @@
 
 
 /* Define if your compiler has __builtin_ctzl() and sizeof(unsigned long) == sizeof(size_t). */
-
+#define HAVE_BUILTIN_CTZL
 
 /* Define to 1 if you have the <intrin.h> header file. */
 

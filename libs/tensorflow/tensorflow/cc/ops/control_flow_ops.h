@@ -22,7 +22,7 @@ namespace ops {
 ///
 /// If exit_without_error is true, the process will exit normally,
 /// otherwise it will exit with a SIGABORT signal.
-/// 
+///
 /// Returns nothing but an exception.
 ///
 /// Arguments:
@@ -113,7 +113,7 @@ class LoopCond {
 ///
 /// `Merge` waits for at least one of the tensors in `inputs` to become available.
 /// It is usually combined with `Switch` to implement branching.
-/// 
+///
 /// `Merge` forwards the first tensor to become available to `output`, and sets
 /// `value_index` to its index in `inputs`.
 ///
@@ -196,7 +196,7 @@ class RefSelect {
 ///
 /// If `pred` is true, the `data` input is forwarded to `output_true`. Otherwise,
 /// the data goes to `output_false`.
-/// 
+///
 /// See also `Switch` and `Merge`.
 ///
 /// Arguments:
@@ -221,7 +221,7 @@ class RefSwitch {
 ///
 /// If `pred` is true, the `data` input is forwarded to `output_true`. Otherwise,
 /// the data goes to `output_false`.
-/// 
+///
 /// See also `RefSwitch` and `Merge`.
 ///
 /// Arguments:

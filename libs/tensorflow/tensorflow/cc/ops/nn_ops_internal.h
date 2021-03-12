@@ -123,11 +123,11 @@ class EluGrad {
 /// Optional attributes (see `Attrs`):
 /// * overlapping: When set to True, it means when pooling, the values at the boundary
 /// of adjacent pooling cells are used by both cells. For example:
-/// 
+///
 /// `index  0  1  2  3  4`
-/// 
+///
 /// `value  20 5  16 3  7`
-/// 
+///
 /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
 /// The result would be [41/3, 26/3] for fractional avg pooling.
 ///
@@ -139,11 +139,11 @@ class FractionalAvgPoolGrad {
   struct Attrs {
     /// When set to True, it means when pooling, the values at the boundary
     /// of adjacent pooling cells are used by both cells. For example:
-    /// 
+    ///
     /// `index  0  1  2  3  4`
-    /// 
+    ///
     /// `value  20 5  16 3  7`
-    /// 
+    ///
     /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
     /// The result would be [41/3, 26/3] for fractional avg pooling.
     ///
@@ -193,11 +193,11 @@ class FractionalAvgPoolGrad {
 /// Optional attributes (see `Attrs`):
 /// * overlapping: When set to True, it means when pooling, the values at the boundary
 /// of adjacent pooling cells are used by both cells. For example:
-/// 
+///
 /// `index  0  1  2  3  4`
-/// 
+///
 /// `value  20 5  16 3  7`
-/// 
+///
 /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
 /// The result would be [20, 16] for fractional max pooling.
 ///
@@ -209,11 +209,11 @@ class FractionalMaxPoolGrad {
   struct Attrs {
     /// When set to True, it means when pooling, the values at the boundary
     /// of adjacent pooling cells are used by both cells. For example:
-    /// 
+    ///
     /// `index  0  1  2  3  4`
-    /// 
+    ///
     /// `value  20 5  16 3  7`
-    /// 
+    ///
     /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
     /// The result would be [20, 16] for fractional max pooling.
     ///

@@ -62,8 +62,8 @@ struct ConvertLogicalNotOfIEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -112,8 +112,8 @@ struct ConvertLogicalNotOfINotEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -162,8 +162,8 @@ struct ConvertLogicalNotOfLogicalEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -212,8 +212,8 @@ struct ConvertLogicalNotOfLogicalNotEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match

@@ -27,7 +27,7 @@ namespace internal {
 /// regular expression to be matched with every element of the input tensor.
 /// The boolean values (True or False) of the output tensor indicate
 /// if the input matches the regex pattern provided.
-/// 
+///
 /// The pattern follows the re2 syntax (https://github.com/google/re2/wiki/Syntax)
 ///
 /// Arguments:
@@ -102,13 +102,13 @@ class StaticRegexReplace {
 ///
 /// The character codepoints for all strings are returned using a single vector
 /// `char_values`, with strings expanded to characters in row-major order.
-/// 
+///
 /// The `row_splits` tensor indicates where the codepoints for
 /// each input string begin and end within the `char_values` tensor.
 /// In particular, the values for the `i`th
 /// string (in row-major order) are stored in the slice
 /// `[row_splits[i]:row_splits[i+1]]`. Thus:
-/// 
+///
 /// * `char_values[row_splits[i]+j]` is the Unicode codepoint for the `j`th
 ///   character in the `i`th string (in row-major order).
 /// * `row_splits[i+1] - row_splits[i]` is the number of characters in the `i`th
@@ -221,13 +221,13 @@ class UnicodeDecode {
 /// `char_values`, with strings expanded to characters in row-major order.
 /// Similarly, the character start byte offsets are returned using a single vector
 /// `char_to_byte_starts`, with strings expanded in row-major order.
-/// 
+///
 /// The `row_splits` tensor indicates where the codepoints and start offsets for
 /// each input string begin and end within the `char_values` and
 /// `char_to_byte_starts` tensors.  In particular, the values for the `i`th
 /// string (in row-major order) are stored in the slice
 /// `[row_splits[i]:row_splits[i+1]]`. Thus:
-/// 
+///
 /// * `char_values[row_splits[i]+j]` is the Unicode codepoint for the `j`th
 ///   character in the `i`th string (in row-major order).
 /// * `char_to_bytes_starts[row_splits[i]+j]` is the start byte offset for the `j`th
@@ -345,16 +345,16 @@ class UnicodeDecodeWithOffsets {
 /// Returns a vector of strings, where `output[i]` is constructed by encoding the
 /// Unicode codepoints in `input_values[input_splits[i]:input_splits[i+1]]`
 /// using `output_encoding`.
-/// 
+///
 /// ---
-/// 
+///
 /// Example:
-/// 
+///
 /// ```
 /// input_values = [72, 101, 108, 108, 111, 87, 111, 114, 108, 100]
 /// input_splits = [0, 5, 10]
 /// output_encoding = 'UTF-8'
-/// 
+///
 /// output = ['Hello', 'World']
 /// ```
 ///

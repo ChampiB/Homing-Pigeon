@@ -22,9 +22,9 @@ namespace ops {
 ///
 /// See explanations of candidate sampling and the data formats at
 /// go/candidate-sampling.
-/// 
+///
 /// For each batch, this op picks a single set of sampled candidate labels.
-/// 
+///
 /// The advantages of sampling candidates per-batch are simplicity and the
 /// possibility of efficient dense matrix multiplication. The disadvantage is that
 /// the sampled candidates must be chosen independently of the context and of the
@@ -182,12 +182,12 @@ class ComputeAccidentalHits {
 /// file or passed in as an in-memory array instead of building up the distribution
 /// from data on the fly. There is also an option to skew the distribution by
 /// applying a distortion power to the weights.
-/// 
+///
 /// The vocabulary file should be in CSV-like format, with the last field
 /// being the weight associated with the word.
-/// 
+///
 /// For each batch, this op picks a single set of sampled candidate labels.
-/// 
+///
 /// The advantages of sampling candidates per-batch are simplicity and the
 /// possibility of efficient dense matrix multiplication. The disadvantage is that
 /// the sampled candidates must be chosen independently of the context and of the
@@ -390,9 +390,9 @@ class FixedUnigramCandidateSampler {
 ///
 /// See explanations of candidate sampling and the data formats at
 /// go/candidate-sampling.
-/// 
+///
 /// For each batch, this op picks a single set of sampled candidate labels.
-/// 
+///
 /// The advantages of sampling candidates per-batch are simplicity and the
 /// possibility of efficient dense matrix multiplication. The disadvantage is that
 /// the sampled candidates must be chosen independently of the context and of the
@@ -479,9 +479,9 @@ class LearnedUnigramCandidateSampler {
 ///
 /// See explanations of candidate sampling and the data formats at
 /// go/candidate-sampling.
-/// 
+///
 /// For each batch, this op picks a single set of sampled candidate labels.
-/// 
+///
 /// The advantages of sampling candidates per-batch are simplicity and the
 /// possibility of efficient dense matrix multiplication. The disadvantage is that
 /// the sampled candidates must be chosen independently of the context and of the
@@ -566,9 +566,9 @@ class LogUniformCandidateSampler {
 ///
 /// See explanations of candidate sampling and the data formats at
 /// go/candidate-sampling.
-/// 
+///
 /// For each batch, this op picks a single set of sampled candidate labels.
-/// 
+///
 /// The advantages of sampling candidates per-batch are simplicity and the
 /// possibility of efficient dense matrix multiplication. The disadvantage is that
 /// the sampled candidates must be chosen independently of the context and of the

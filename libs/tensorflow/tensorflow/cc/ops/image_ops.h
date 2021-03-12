@@ -23,9 +23,9 @@ namespace ops {
 /// `images` is a tensor of at least 3 dimensions.  The last 3 dimensions are
 /// interpreted as `[height, width, channels]`.  The other dimensions only
 /// represent a collection of images, such as `[batch, height, width, channels].`
-/// 
+///
 /// Contrast is adjusted independently for each channel of each image.
-/// 
+///
 /// For each channel, the Op first computes the mean of the image pixels in the
 /// channel and then adjusts each component of each pixel to
 /// `(x - mean) * contrast_factor + mean`.
@@ -53,7 +53,7 @@ class AdjustContrast {
 ///
 /// `images` is a tensor of at least 3 dimensions.  The last dimension is
 /// interpreted as channels, and must be three.
-/// 
+///
 /// The input image is considered in the RGB colorspace. Conceptually, the RGB
 /// colors are first mapped into HSV. A delta is then applied all the hue values,
 /// and then remapped back to RGB colorspace.
@@ -81,7 +81,7 @@ class AdjustHue {
 ///
 /// `images` is a tensor of at least 3 dimensions.  The last dimension is
 /// interpreted as channels, and must be three.
-/// 
+///
 /// The input image is considered in the RGB colorspace. Conceptually, the RGB
 /// colors are first mapped into HSV. A scale is then applied all the saturation
 /// values, and then remapped back to RGB colorspace.
@@ -223,7 +223,7 @@ class CombinedNonMaxSuppression {
 /// common output size specified by `crop_size`. This is more general than the
 /// `crop_to_bounding_box` op which extracts a fixed size slice from the input image
 /// and does not allow resizing or aspect ratio change.
-/// 
+///
 /// Returns a tensor with `crops` from the input `image` at positions defined at the
 /// bounding box locations in `boxes`. The cropped boxes are all resized (with
 /// bilinear or nearest neighbor interpolation) to a fixed
@@ -438,21 +438,21 @@ class CropAndResizeGradImage {
 ///
 /// The attr `channels` indicates the desired number of color channels for the
 /// decoded image.
-/// 
+///
 /// Accepted values are:
-/// 
+///
 /// *   0: Use the number of channels in the JPEG-encoded image.
 /// *   1: output a grayscale image.
 /// *   3: output an RGB image.
-/// 
+///
 /// If needed, the JPEG-encoded image is transformed to match the requested number
 /// of color channels.
-/// 
+///
 /// The attr `ratio` allows downscaling the image by an integer factor during
 /// decoding.  Allowed values are: 1, 2, 4, and 8.  This is much faster than
 /// downscaling the image later.
-/// 
-/// 
+///
+///
 /// It is equivalent to a combination of decode and crop, but much faster by only
 /// decoding partial jpeg image.
 ///
@@ -586,9 +586,9 @@ class DecodeAndCropJpeg {
 ///
 /// The attr `channels` indicates the desired number of color channels for the
 /// decoded image.
-/// 
+///
 /// Accepted values are:
-/// 
+///
 /// *   0: Use the number of channels in the BMP-encoded image.
 /// *   3: output an RGB image.
 /// *   4: output an RGBA image.
@@ -632,9 +632,9 @@ class DecodeBmp {
 /// GIF images with frame or transparency compression are not supported.
 /// On Linux and MacOS systems, convert animated GIFs from compressed to
 /// uncompressed by running:
-/// 
+///
 ///     convert $src.gif -coalesce $dst.gif
-/// 
+///
 /// This op also supports decoding JPEGs and PNGs, though it is cleaner to use
 /// `tf.io.decode_image`.
 ///
@@ -660,7 +660,7 @@ class DecodeGif {
 /// Detects whether an image is a BMP, GIF, JPEG, or PNG, and performs the
 /// appropriate operation to convert the input bytes string into a Tensor of type
 /// dtype.
-/// 
+///
 /// *NOTE*: decode_gif returns a 4-D array [num_frames, height, width, 3], as
 /// opposed to decode_bmp, decode_jpeg and decode_png, which return 3-D arrays
 /// [height, width, num_channels]. Make sure to take this into account when
@@ -668,7 +668,7 @@ class DecodeGif {
 /// PNG files. Alternately, set the expand_animations argument of this function to
 /// False, in which case the op will return 3-dimensional tensors and will truncate
 /// animated GIF files to the first frame.
-/// 
+///
 /// *NOTE*: If the first frame of an animated GIF does not occupy the entire
 /// canvas (maximum frame width x maximum frame height), then it fills the
 /// unoccupied areas (in the first frame) with zeros (black). For frames after the
@@ -753,21 +753,21 @@ class DecodeImage {
 ///
 /// The attr `channels` indicates the desired number of color channels for the
 /// decoded image.
-/// 
+///
 /// Accepted values are:
-/// 
+///
 /// *   0: Use the number of channels in the JPEG-encoded image.
 /// *   1: output a grayscale image.
 /// *   3: output an RGB image.
-/// 
+///
 /// If needed, the JPEG-encoded image is transformed to match the requested number
 /// of color channels.
-/// 
+///
 /// The attr `ratio` allows downscaling the image by an integer factor during
 /// decoding.  Allowed values are: 1, 2, 4, and 8.  This is much faster than
 /// downscaling the image later.
-/// 
-/// 
+///
+///
 /// This op also supports decoding PNGs and non-animated GIFs since the interface is
 /// the same, though it is cleaner to use `tf.io.decode_image`.
 ///
@@ -898,17 +898,17 @@ class DecodeJpeg {
 ///
 /// The attr `channels` indicates the desired number of color channels for the
 /// decoded image.
-/// 
+///
 /// Accepted values are:
-/// 
+///
 /// *   0: Use the number of channels in the PNG-encoded image.
 /// *   1: output a grayscale image.
 /// *   3: output an RGB image.
 /// *   4: output an RGBA image.
-/// 
+///
 /// If needed, the PNG-encoded image is transformed to match the requested number
 /// of color channels.
-/// 
+///
 /// This op also supports decoding JPEGs and non-animated GIFs since the interface
 /// is the same, though it is cleaner to use `tf.io.decode_image`.
 ///
@@ -969,11 +969,11 @@ class DecodePng {
 /// bounding box in `boxes` are encoded as `[y_min, x_min, y_max, x_max]`. The
 /// bounding box coordinates are floats in `[0.0, 1.0]` relative to the width and
 /// height of the underlying image.
-/// 
+///
 /// For example, if an image is 100 x 200 pixels (height x width) and the bounding
 /// box is `[0.1, 0.2, 0.5, 0.9]`, the upper-left and bottom-right coordinates of
 /// the bounding box will be `(40, 10)` to `(180, 50)` (in (x,y) coordinates).
-/// 
+///
 /// Parts of the bounding box may fall outside the image.
 ///
 /// Arguments:
@@ -1004,11 +1004,11 @@ class DrawBoundingBoxes {
 /// bounding box in `boxes` are encoded as `[y_min, x_min, y_max, x_max]`. The
 /// bounding box coordinates are floats in `[0.0, 1.0]` relative to the width and
 /// height of the underlying image.
-/// 
+///
 /// For example, if an image is 100 x 200 pixels (height x width) and the bounding
 /// box is `[0.1, 0.2, 0.5, 0.9]`, the upper-left and bottom-right coordinates of
 /// the bounding box will be `(40, 10)` to `(100, 50)` (in (x,y) coordinates).
-/// 
+///
 /// Parts of the bounding box may fall outside the image.
 ///
 /// Arguments:
@@ -1037,19 +1037,19 @@ class DrawBoundingBoxesV2 {
 /// JPEG-encode an image.
 ///
 /// `image` is a 3-D uint8 Tensor of shape `[height, width, channels]`.
-/// 
+///
 /// The attr `format` can be used to override the color format of the encoded
 /// output.  Values can be:
-/// 
+///
 /// *   `''`: Use a default format based on the number of channels in the image.
 /// *   `grayscale`: Output a grayscale JPEG image.  The `channels` dimension
 ///     of `image` must be 1.
 /// *   `rgb`: Output an RGB JPEG image. The `channels` dimension
 ///     of `image` must be 3.
-/// 
+///
 /// If `format` is not specified or is the empty string, a default format is picked
 /// in function of the number of channels in `image`:
-/// 
+///
 /// *   1: Output a grayscale image.
 /// *   3: Output an RGB image.
 ///
@@ -1210,7 +1210,7 @@ class EncodeJpeg {
 ///
 /// `image` is a 3-D uint8 Tensor of shape `[height, width, channels]`.
 /// `quality` is an int32 jpeg compression quality value between 0 and 100.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -1235,12 +1235,12 @@ class EncodeJpegVariableQuality {
 ///
 /// `image` is a 3-D uint8 or uint16 Tensor of shape `[height, width, channels]`
 /// where `channels` is:
-/// 
+///
 /// *   1: for grayscale.
 /// *   2: for grayscale + alpha.
 /// *   3: for RGB.
 /// *   4: for RGBA.
-/// 
+///
 /// The ZLIB compression level, `compression`, can be -1 for the PNG-encoder
 /// default or a value from 0 to 9.  9 is the highest compression level, generating
 /// the smallest output, but is slower.
@@ -1290,14 +1290,14 @@ class EncodePng {
 /// `offsets` from the input tensor. If the windows only partially
 /// overlaps the inputs, the non overlapping areas will be filled with
 /// random noise.
-/// 
+///
 /// The result is a 4-D tensor of shape `[batch_size, glimpse_height,
 /// glimpse_width, channels]`. The channels and batch dimensions are the
 /// same as that of the input tensor. The height and width of the output
 /// windows are specified in the `size` parameter.
-/// 
+///
 /// The argument `normalized` and `centered` controls how the windows are built:
-/// 
+///
 /// * If the coordinates are normalized but not centered, 0.0 and 1.0
 ///   correspond to the minimum and maximum of each height and width
 ///   dimension.
@@ -1460,7 +1460,7 @@ class ExtractJpegShape {
 /// Outputs a tensor of the same shape as the `images` tensor, containing the RGB
 /// value of the pixels. The output is only well defined if the value in `images`
 /// are in `[0,1]`.
-/// 
+///
 /// See `rgb_to_hsv` for a description of the HSV encoding.
 ///
 /// Arguments:
@@ -1559,12 +1559,12 @@ class NonMaxSuppression {
 /// algorithm is invariant to orthogonal transformations and translations
 /// of the coordinate system; thus translating or reflections of the coordinate
 /// system result in the same boxes being selected by the algorithm.
-/// 
+///
 /// The output of this operation is a set of integers indexing into the input
 /// collection of bounding boxes representing the selected boxes.  The bounding
 /// box coordinates corresponding to the selected indices can then be obtained
 /// using the `tf.gather operation`.  For example:
-/// 
+///
 ///   selected_indices = tf.image.non_max_suppression_v2(
 ///       boxes, scores, max_output_size, iou_threshold)
 ///   selected_boxes = tf.gather(boxes, selected_indices)
@@ -1817,12 +1817,12 @@ class NonMaxSuppressionV5 {
 /// `score_threshold` are removed. N-by-n overlap values are supplied as square matrix,
 /// which allows for defining a custom overlap criterium (eg. intersection over union,
 /// intersection over area, etc.).
-/// 
+///
 /// The output of this operation is a set of integers indexing into the input
 /// collection of bounding boxes representing the selected boxes.  The bounding
 /// box coordinates corresponding to the selected indices can then be obtained
 /// using the `tf.gather operation`.  For example:
-/// 
+///
 ///   selected_indices = tf.image.non_max_suppression_with_overlaps(
 ///       overlaps, scores, max_output_size, overlap_threshold, score_threshold)
 ///   selected_boxes = tf.gather(boxes, selected_indices)
@@ -1927,13 +1927,13 @@ class QuantizedResizeBilinear {
 /// Outputs a tensor of the same shape as the `images` tensor, containing the HSV
 /// value of the pixels. The output is only well defined if the value in `images`
 /// are in `[0,1]`.
-/// 
+///
 /// `output[..., 0]` contains hue, `output[..., 1]` contains saturation, and
 /// `output[..., 2]` contains value. All HSV values are in `[0,1]`. A hue of 0
 /// corresponds to pure red, hue 1/3 is pure green, and 2/3 is pure blue.
-/// 
+///
 /// Usage Example:
-/// 
+///
 /// >>> blue_image = tf.stack([
 /// ...    tf.zeros([5,5]),
 /// ...    tf.zeros([5,5]),
@@ -1942,7 +1942,7 @@ class QuantizedResizeBilinear {
 /// >>> blue_hsv_image = tf.image.rgb_to_hsv(blue_image)
 /// >>> blue_hsv_image[0,0].numpy()
 /// array([0.6666667, 1. , 1. ], dtype=float32)
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -1964,12 +1964,12 @@ class RGBToHSV {
 /// Resize `images` to `size` using area interpolation.
 ///
 /// Input images can be of different types but output images are always float.
-/// 
+///
 /// The range of pixel values for the output image might be slightly different
 /// from the range for the input image because of limited numerical precision.
 /// To guarantee an output range, for example `[0.0, 1.0]`, apply
 /// `tf.clip_by_value` to the output.
-/// 
+///
 /// Each output pixel is computed by first transforming the pixel's footprint into
 /// the input tensor and then averaging the pixels that intersect the footprint. An
 /// input pixel's contribution to the average is weighted by the fraction of its
@@ -2207,34 +2207,34 @@ class ResizeNearestNeighbor {
 /// its content, i.e. *data augmentation*. This Op outputs a randomly distorted
 /// localization of an object, i.e. bounding box, given an `image_size`,
 /// `bounding_boxes` and a series of constraints.
-/// 
+///
 /// The output of this Op is a single bounding box that may be used to crop the
 /// original image. The output is returned as 3 tensors: `begin`, `size` and
 /// `bboxes`. The first 2 tensors can be fed directly into `tf.slice` to crop the
 /// image. The latter may be supplied to `tf.image.draw_bounding_boxes` to visualize
 /// what the bounding box looks like.
-/// 
+///
 /// Bounding boxes are supplied and returned as `[y_min, x_min, y_max, x_max]`. The
 /// bounding box coordinates are floats in `[0.0, 1.0]` relative to the width and
 /// height of the underlying image.
-/// 
+///
 /// For example,
-/// 
+///
 /// ```python
 ///     # Generate a single distorted bounding box.
 ///     begin, size, bbox_for_draw = tf.image.sample_distorted_bounding_box(
 ///         tf.shape(image),
 ///         bounding_boxes=bounding_boxes)
-/// 
+///
 ///     # Draw the bounding box in an image summary.
 ///     image_with_box = tf.image.draw_bounding_boxes(tf.expand_dims(image, 0),
 ///                                                   bbox_for_draw)
 ///     tf.summary.image('images_with_box', image_with_box)
-/// 
+///
 ///     # Employ the bounding box to distort the image.
 ///     distorted_image = tf.slice(image, begin, size)
 /// ```
-/// 
+///
 /// Note that if no bounding box information is available, setting
 /// `use_image_if_no_bounding_boxes = true` will assume there is a single implicit
 /// bounding box covering the whole image. If `use_image_if_no_bounding_boxes` is
@@ -2412,34 +2412,34 @@ class SampleDistortedBoundingBox {
 /// its content, i.e. *data augmentation*. This Op outputs a randomly distorted
 /// localization of an object, i.e. bounding box, given an `image_size`,
 /// `bounding_boxes` and a series of constraints.
-/// 
+///
 /// The output of this Op is a single bounding box that may be used to crop the
 /// original image. The output is returned as 3 tensors: `begin`, `size` and
 /// `bboxes`. The first 2 tensors can be fed directly into `tf.slice` to crop the
 /// image. The latter may be supplied to `tf.image.draw_bounding_boxes` to visualize
 /// what the bounding box looks like.
-/// 
+///
 /// Bounding boxes are supplied and returned as `[y_min, x_min, y_max, x_max]`. The
 /// bounding box coordinates are floats in `[0.0, 1.0]` relative to the width and
 /// height of the underlying image.
-/// 
+///
 /// For example,
-/// 
+///
 /// ```python
 ///     # Generate a single distorted bounding box.
 ///     begin, size, bbox_for_draw = tf.image.sample_distorted_bounding_box(
 ///         tf.shape(image),
 ///         bounding_boxes=bounding_boxes)
-/// 
+///
 ///     # Draw the bounding box in an image summary.
 ///     image_with_box = tf.image.draw_bounding_boxes(tf.expand_dims(image, 0),
 ///                                                   bbox_for_draw)
 ///     tf.summary.image('images_with_box', image_with_box)
-/// 
+///
 ///     # Employ the bounding box to distort the image.
 ///     distorted_image = tf.slice(image, begin, size)
 /// ```
-/// 
+///
 /// Note that if no bounding box information is available, setting
 /// `use_image_if_no_bounding_boxes = true` will assume there is a single implicit
 /// bounding box covering the whole image. If `use_image_if_no_bounding_boxes` is
@@ -2654,23 +2654,23 @@ class ScaleAndTranslate {
 /// deterministically outputs a randomly distorted localization of an object, i.e.
 /// bounding box, given an `image_size`, `bounding_boxes` and a series of
 /// constraints.
-/// 
+///
 /// The output of this Op is a single bounding box that may be used to crop the
 /// original image. The output is returned as 3 tensors: `begin`, `size` and
 /// `bboxes`. The first 2 tensors can be fed directly into `tf.slice` to crop the
 /// image. The latter may be supplied to `tf.image.draw_bounding_boxes` to visualize
 /// what the bounding box looks like.
-/// 
+///
 /// Bounding boxes are supplied and returned as `[y_min, x_min, y_max, x_max]`. The
 /// bounding box coordinates are floats in `[0.0, 1.0]` relative to the width and
 /// the height of the underlying image.
-/// 
+///
 /// The output of this Op is guaranteed to be the same given the same `seed` and is
 /// independent of how many times the function is called, and independent of global
 /// seed settings (e.g. `tf.random.set_seed`).
-/// 
+///
 /// Example usage:
-/// 
+///
 /// >>> image = np.array([[[1], [2], [3]], [[4], [5], [6]], [[7], [8], [9]]])
 /// >>> bbox = tf.constant(
 /// ...   [0.0, 0.0, 1.0, 1.0], dtype=tf.float32, shape=[1, 1, 4])
@@ -2700,7 +2700,7 @@ class ScaleAndTranslate {
 ///         [[7.],
 ///          [8.],
 ///          [9.]]]], dtype=float32)>
-/// 
+///
 /// Note that if no bounding box information is available, setting
 /// `use_image_if_no_bounding_boxes = true` will assume there is a single implicit
 /// bounding box covering the whole image. If `use_image_if_no_bounding_boxes` is

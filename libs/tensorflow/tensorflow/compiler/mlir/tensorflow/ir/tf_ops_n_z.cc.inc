@@ -685,7 +685,6 @@ bool NextAfterOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void NextAfterOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -5591,7 +5590,6 @@ bool PowOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void PowOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -8298,7 +8296,6 @@ bool RandomGammaGradOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void RandomGammaGradOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -10841,7 +10838,6 @@ bool RealDivOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void RealDivOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -22411,7 +22407,6 @@ bool RightShiftOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void RightShiftOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -32477,7 +32472,6 @@ bool SquaredDifferenceOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void SquaredDifferenceOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -38453,7 +38447,6 @@ bool SubOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void SubOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -48167,7 +48160,6 @@ bool ToBoolOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void ToBoolOp::build(OpBuilder &builder, OperationState &result, Value value) {
-
       build(builder, result, RankedTensorType::get({}, builder.getI1Type()),
             value);
     
@@ -48945,7 +48937,6 @@ bool TruncateDivOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void TruncateDivOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -49119,7 +49110,6 @@ bool TruncateModOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void TruncateModOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -53668,7 +53658,6 @@ bool XdivyOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void XdivyOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -58252,7 +58241,6 @@ bool XlogyOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void XlogyOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)

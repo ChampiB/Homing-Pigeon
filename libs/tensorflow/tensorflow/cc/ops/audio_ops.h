@@ -24,7 +24,7 @@ namespace ops {
 /// slices of frequency information, one slice for each window of time. By joining
 /// these together into a sequence, they form a distinctive fingerprint of the sound
 /// over time.
-/// 
+///
 /// This op expects to receive audio data as an input, stored as floats in the range
 /// -1 to 1, together with a window width in samples, and a stride specifying how
 /// far to move the window between slices. From this it generates a three
@@ -32,16 +32,16 @@ namespace ops {
 /// stereo audio input would have two here for example. The second dimension is time,
 /// with successive frequency slices. The third dimension has an amplitude value for
 /// each frequency during that time slice.
-/// 
+///
 /// This means the layout when converted and saved as an image is rotated 90 degrees
 /// clockwise from a typical spectrogram. Time is descending down the Y axis, and
 /// the frequency decreases from left to right.
-/// 
+///
 /// Each value in the result represents the square root of the sum of the real and
 /// imaginary parts of an FFT on the current window of samples. In this way, the
 /// lowest dimension represents the power of each frequency in the current window,
 /// and adjacent windows are concatenated in the next dimension.
-/// 
+///
 /// To get a more intuitive and visual look at what this operation does, you can run
 /// tensorflow/examples/wav_to_spectrogram to read in an audio file and save out the
 /// resulting spectrogram as a PNG image.
@@ -95,15 +95,15 @@ class AudioSpectrogram {
 /// Decode a 16-bit PCM WAV file to a float tensor.
 ///
 /// The -32768 to 32767 signed 16-bit values will be scaled to -1.0 to 1.0 in float.
-/// 
+///
 /// When desired_channels is set, if the input contains fewer channels than this
 /// then the last channel will be duplicated to give the requested number, else if
 /// the input has more channels than requested then the additional channels will be
 /// ignored.
-/// 
+///
 /// If desired_samples is set, then the audio will be cropped or padded with zeroes
 /// to the requested length.
-/// 
+///
 /// The first output contains a Tensor with the content of the audio samples. The
 /// lowest dimension will be the number of channels, and the second will be the
 /// number of samples. For example, a ten-sample-long stereo WAV file should give an
@@ -167,7 +167,7 @@ class DecodeWav {
 /// audio file. It will be encoded in the 16-bit PCM format. It takes in float
 /// values in the range -1.0f to 1.0f, and any outside that value will be clamped to
 /// that range.
-/// 
+///
 /// `audio` is a 2-D float Tensor of shape `[length, channels]`.
 /// `sample_rate` is a scalar Tensor holding the rate to use (e.g. 44100).
 ///

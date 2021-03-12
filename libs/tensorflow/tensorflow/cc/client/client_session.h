@@ -64,12 +64,12 @@ class ClientSession {
   ClientSession(const Scope& scope, const string& target);
 
   /// Same as above, but use the empty string ("") as the target specification.
-  TF_EXPORT explicit ClientSession(const Scope& scope);
+  explicit ClientSession(const Scope& scope);
 
   /// Create a new session, configuring it with `session_options`.
   ClientSession(const Scope& scope, const SessionOptions& session_options);
 
-  TF_EXPORT ~ClientSession();
+  ~ClientSession();
 
   /// Evaluate the tensors in `fetch_outputs`. The values are returned as
   /// `Tensor` objects in `outputs`. The number and order of `outputs` will
@@ -78,8 +78,7 @@ class ClientSession {
              std::vector<Tensor>* outputs) const;
 
   /// Same as above, but use the mapping in `inputs` as feeds.
-  TF_EXPORT Status Run(const FeedType& inputs,
-                       const std::vector<Output>& fetch_outputs,
+  Status Run(const FeedType& inputs, const std::vector<Output>& fetch_outputs,
              std::vector<Tensor>* outputs) const;
 
   /// Same as above. Additionally runs the operations ins `run_outputs`.

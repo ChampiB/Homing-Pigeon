@@ -15,8 +15,8 @@ struct AddToAddV2 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -69,8 +69,8 @@ struct AddV2OfNegLeft : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -119,8 +119,8 @@ struct AddV2OfNegRight : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -169,10 +169,10 @@ struct BatchMatMulToMatMul : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range x(op0->getOperands());
-    ::mlir::Operation::operand_range y(op0->getOperands());
     ::mlir::BoolAttr adj_x;
     ::mlir::BoolAttr adj_y;
+    ::mlir::Operation::operand_range y(op0->getOperands());
+    ::mlir::Operation::operand_range x(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -243,10 +243,10 @@ struct BatchMatMulV2ToMatMul : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range x(op0->getOperands());
-    ::mlir::Operation::operand_range y(op0->getOperands());
     ::mlir::BoolAttr adj_x;
     ::mlir::BoolAttr adj_y;
+    ::mlir::Operation::operand_range y(op0->getOperands());
+    ::mlir::Operation::operand_range x(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -317,9 +317,9 @@ struct BatchToSpaceToBatchToSpaceND : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range input(op0->getOperands());
-    ::mlir::Operation::operand_range crops(op0->getOperands());
     ::mlir::IntegerAttr block_size;
+    ::mlir::Operation::operand_range crops(op0->getOperands());
+    ::mlir::Operation::operand_range input(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -390,8 +390,8 @@ struct BiasAddV1ToBiasAdd : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -484,8 +484,8 @@ struct BitcastSameType : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::TF::BitcastOp res;
     ::mlir::Operation::operand_range arg(op0->getOperands());
+    ::mlir::TF::BitcastOp res;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -557,8 +557,8 @@ struct ConvertToConcatV2 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range axis(op0->getOperands());
     ::mlir::Operation::operand_range inputs(op0->getOperands());
+    ::mlir::Operation::operand_range axis(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -603,8 +603,8 @@ struct DivWithSqrtDivisor : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -837,9 +837,9 @@ struct LogicalNotOfEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
     ::mlir::BoolAttr shape_error;
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -896,8 +896,8 @@ struct LogicalNotOfGreater : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -946,8 +946,8 @@ struct LogicalNotOfGreaterEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -996,8 +996,8 @@ struct LogicalNotOfLess : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1046,8 +1046,8 @@ struct LogicalNotOfLessEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1096,9 +1096,9 @@ struct LogicalNotOfNotEqual : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
     ::mlir::BoolAttr shape_error;
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1191,9 +1191,9 @@ struct ReadVariableOfCast : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::TF::CastOp output;
     ::mlir::BoolAttr Truncate;
     ::mlir::Operation::operand_range x(op0->getOperands());
+    ::mlir::TF::CastOp output;
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1256,8 +1256,8 @@ struct RealDivWithConstDivisor : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::ElementsAttr value;
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1332,8 +1332,8 @@ struct RealDivWithSqrtDivisor : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1425,9 +1425,9 @@ struct RedundantReshape : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg(op0->getOperands());
-    ::mlir::Operation::operand_range unused(op0->getOperands());
     ::mlir::Operation::operand_range shape(op0->getOperands());
+    ::mlir::Operation::operand_range unused(op0->getOperands());
+    ::mlir::Operation::operand_range arg(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1484,12 +1484,12 @@ struct ReshapeToSelfShape : public ::mlir::RewritePattern {
     // Match
     tblgen_ops[0] = op0;
     auto castedOp0 = ::llvm::dyn_cast_or_null<::mlir::TF::ReshapeOp>(op0); (void)castedOp0;
-    x = castedOp0.getODSOperands(0);
+    x0 = castedOp0.getODSOperands(0);
     {
       auto *op1 = (*castedOp0.getODSOperands(1).begin()).getDefiningOp();
       auto castedOp1 = ::llvm::dyn_cast_or_null<::mlir::TF::ShapeOp>(op1); (void)castedOp1;
       if (!castedOp1) return failure();
-      x0 = castedOp1.getODSOperands(0);
+      x = castedOp1.getODSOperands(0);
       tblgen_ops[1] = op1;
     }
     if (!(*x.begin() == *x0.begin())){
@@ -1520,10 +1520,10 @@ struct SelectToSelectV2 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::TF::SelectOp op;
-    ::mlir::Operation::operand_range cond(op0->getOperands());
     ::mlir::Operation::operand_range t(op0->getOperands());
     ::mlir::Operation::operand_range e(op0->getOperands());
+    ::mlir::Operation::operand_range cond(op0->getOperands());
+    ::mlir::TF::SelectOp op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1584,8 +1584,8 @@ struct SquareOfSub : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1634,8 +1634,8 @@ struct SubOfNeg : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1684,8 +1684,8 @@ struct TruncateDivWithSqrtDivisor : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match
@@ -1741,8 +1741,8 @@ struct XdivyWithSqrtDivisor : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation::operand_range arg1(op0->getOperands());
+    ::mlir::Operation::operand_range arg0(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match

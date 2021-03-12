@@ -126,7 +126,6 @@ std::pair<unsigned, unsigned> ControlTriggerOp::getODSResultIndexAndLength(unsig
 }
 
 void ControlTriggerOp::build(OpBuilder &builder, OperationState &result, ArrayRef<Value> operands, ArrayRef<NamedAttribute> attributes ) {
-
       assert(operands.size() >= 1 && "tf_executor.ControlTrigger builder "
              "expects at least one operand");
       result.operands.insert(result.operands.end(), operands.begin(),
@@ -811,7 +810,6 @@ std::pair<unsigned, unsigned> FetchOp::getODSResultIndexAndLength(unsigned index
 }
 
 void FetchOp::build(OpBuilder &builder, OperationState &result) {
-
       build(builder, result, {});
     
 }
@@ -1726,7 +1724,6 @@ std::pair<unsigned, unsigned> NextIterationSinkOp::getODSResultIndexAndLength(un
 }
 
 void NextIterationSinkOp::build(OpBuilder &builder, OperationState &result, Value token, ArrayRef<Value> operands, ArrayRef<NamedAttribute> attributes ) {
-
       assert(operands.size() >= 1 && "tf_executor.NextIteration.Sink builder "
              "expects at least one operand");
       result.operands.push_back(token);
@@ -1939,7 +1936,6 @@ std::pair<unsigned, unsigned> NextIterationSourceOp::getODSResultIndexAndLength(
 }
 
 void NextIterationSourceOp::build(OpBuilder &builder, OperationState &result, Type result_type, ArrayRef<NamedAttribute> attributes ) {
-
       Type token_type = TokenType::get(builder.getContext());
       Type control_type = ControlType::get(builder.getContext());
       result.types = { result_type, token_type, control_type };
@@ -2650,7 +2646,6 @@ std::pair<unsigned, unsigned> YieldOp::getODSResultIndexAndLength(unsigned index
 }
 
 void YieldOp::build(OpBuilder &builder, OperationState &result) {
-
       build(builder, result, {});
     
 }

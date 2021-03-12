@@ -115,7 +115,7 @@ class AccumulatorTakeGradient {
 ///
 /// A barrier represents a key-value map, where each key is a string, and
 /// each value is a tuple of tensors.
-/// 
+///
 /// At runtime, the barrier contains 'complete' and 'incomplete'
 /// elements. A complete element has defined tensors for all components of
 /// its value tuple, and may be accessed using BarrierTakeMany. An
@@ -334,7 +334,7 @@ class BarrierReadySize {
 ///
 /// This operation concatenates completed-element component tensors along
 /// the 0th dimension to make a single component tensor.
-/// 
+///
 /// Elements come out of the barrier when they are complete, and in the order
 /// in which they were placed into the barrier.  The indices output provides
 /// information about the batch in which each element was originally inserted
@@ -524,17 +524,17 @@ class DeleteSessionTensor {
 /// are placed in `outputs[i]` in lexicographic order of `js`, and the first
 /// dimension of `outputs[i]` is the number of entries in `partitions` equal to `i`.
 /// In detail,
-/// 
+///
 /// ```python
 ///     outputs[i].shape = [sum(partitions == i)] + data.shape[partitions.ndim:]
-/// 
+///
 ///     outputs[i] = pack([data[js, ...] for js if partitions[js] == i])
 /// ```
-/// 
+///
 /// `data.shape` must start with `partitions.shape`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 ///     # Scalar partitions.
 ///     partitions = 1
@@ -542,7 +542,7 @@ class DeleteSessionTensor {
 ///     data = [10, 20]
 ///     outputs[0] = []  # Empty with shape [0, 2]
 ///     outputs[1] = [[10, 20]]
-/// 
+///
 ///     # Vector partitions.
 ///     partitions = [0, 0, 1, 1, 0]
 ///     num_partitions = 2
@@ -550,9 +550,9 @@ class DeleteSessionTensor {
 ///     outputs[0] = [10, 20, 50]
 ///     outputs[1] = [30, 40]
 /// ```
-/// 
+///
 /// See `dynamic_stitch` for an example on how to merge partitions back.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/DynamicPartition.png" alt>
 /// </div>
@@ -578,35 +578,35 @@ class DynamicPartition {
 /// Interleave the values from the `data` tensors into a single tensor.
 ///
 /// Builds a merged tensor such that
-/// 
+///
 /// ```python
 ///     merged[indices[m][i, ..., j], ...] = data[m][i, ..., j, ...]
 /// ```
-/// 
+///
 /// For example, if each `indices[m]` is scalar or vector, we have
-/// 
+///
 /// ```python
 ///     # Scalar indices:
 ///     merged[indices[m], ...] = data[m][...]
-/// 
+///
 ///     # Vector indices:
 ///     merged[indices[m][i], ...] = data[m][i, ...]
 /// ```
-/// 
+///
 /// Each `data[i].shape` must start with the corresponding `indices[i].shape`,
 /// and the rest of `data[i].shape` must be constant w.r.t. `i`.  That is, we
 /// must have `data[i].shape = indices[i].shape + constant`.  In terms of this
 /// `constant`, the output shape is
-/// 
+///
 ///     merged.shape = [max(indices)] + constant
-/// 
+///
 /// Values are merged in order, so if an index appears in both `indices[m][i]` and
 /// `indices[n][j]` for `(m,i) < (n,j)` the slice `data[n][j]` will appear in the
 /// merged result. If you do not need this guarantee, ParallelDynamicStitch might
 /// perform better on some devices.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 ///     indices[0] = 6
 ///     indices[1] = [4, 1]
@@ -617,10 +617,10 @@ class DynamicPartition {
 ///     merged = [[1, 2], [11, 12], [21, 22], [31, 32], [41, 42],
 ///               [51, 52], [61, 62]]
 /// ```
-/// 
+///
 /// This method can be used to merge partitions created by `dynamic_partition`
 /// as illustrated on the following example:
-/// 
+///
 /// ```python
 ///     # Apply function (increments x_i) on elements for which a certain condition
 ///     # apply (x_i != -1 in this example).
@@ -635,7 +635,7 @@ class DynamicPartition {
 ///     # Here x=[1.1, -1., 6.2, 5.3, -1, 8.4], the -1. values remain
 ///     # unchanged.
 /// ```
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/DynamicStitch.png" alt>
 /// </div>
@@ -1937,34 +1937,34 @@ class PaddingFIFOQueue {
 /// Interleave the values from the `data` tensors into a single tensor.
 ///
 /// Builds a merged tensor such that
-/// 
+///
 /// ```python
 ///     merged[indices[m][i, ..., j], ...] = data[m][i, ..., j, ...]
 /// ```
-/// 
+///
 /// For example, if each `indices[m]` is scalar or vector, we have
-/// 
+///
 /// ```python
 ///     # Scalar indices:
 ///     merged[indices[m], ...] = data[m][...]
-/// 
+///
 ///     # Vector indices:
 ///     merged[indices[m][i], ...] = data[m][i, ...]
 /// ```
-/// 
+///
 /// Each `data[i].shape` must start with the corresponding `indices[i].shape`,
 /// and the rest of `data[i].shape` must be constant w.r.t. `i`.  That is, we
 /// must have `data[i].shape = indices[i].shape + constant`.  In terms of this
 /// `constant`, the output shape is
-/// 
+///
 ///     merged.shape = [max(indices)] + constant
-/// 
+///
 /// Values may be merged in parallel, so if an index appears in both `indices[m][i]`
 /// and `indices[n][j]`, the result may be invalid. This differs from the normal
 /// DynamicStitch operator that defines the behavior in that case.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 ///     indices[0] = 6
 ///     indices[1] = [4, 1]
@@ -1975,10 +1975,10 @@ class PaddingFIFOQueue {
 ///     merged = [[1, 2], [11, 12], [21, 22], [31, 32], [41, 42],
 ///               [51, 52], [61, 62]]
 /// ```
-/// 
+///
 /// This method can be used to merge partitions created by `dynamic_partition`
 /// as illustrated on the following example:
-/// 
+///
 /// ```python
 ///     # Apply function (increments x_i) on elements for which a certain condition
 ///     # apply (x_i != -1 in this example).
@@ -1993,7 +1993,7 @@ class PaddingFIFOQueue {
 ///     # Here x=[1.1, -1., 6.2, 5.3, -1, 8.4], the -1. values remain
 ///     # unchanged.
 /// ```
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/DynamicStitch.png" alt>
 /// </div>
@@ -2165,15 +2165,15 @@ class QueueClose {
 ///
 /// If the queue is closed and there are fewer than `n` elements, then an
 /// OutOfRange error is returned.
-/// 
+///
 /// This operation concatenates queue-element component tensors along the
 /// 0th dimension to make a single component tensor.  All of the components
 /// in the dequeued tuple will have size `n` in the 0th dimension.
-/// 
+///
 /// This operation has `k` outputs, where `k` is the number of components in
 /// the tuples stored in the given queue, and output `i` is the ith
 /// component of the dequeued tuple.
-/// 
+///
 /// N.B. If the queue is empty, this operation will block until `n` elements
 /// have been dequeued (or 'timeout_ms' elapses, if specified).
 ///
@@ -2227,18 +2227,18 @@ class QueueDequeueMany {
 ///
 /// This operation is not supported by all queues.  If a queue does not support
 /// DequeueUpTo, then an Unimplemented error is returned.
-/// 
+///
 /// If the queue is closed and there are more than 0 but less than `n`
 /// elements remaining, then instead of returning an OutOfRange error like
 /// QueueDequeueMany, less than `n` elements are returned immediately.  If
 /// the queue is closed and there are 0 elements left in the queue, then
 /// an OutOfRange error is returned just like in QueueDequeueMany.
 /// Otherwise the behavior is identical to QueueDequeueMany:
-/// 
+///
 /// This operation concatenates queue-element component tensors along the
 /// 0th dimension to make a single component tensor.  All of the components
 /// in the dequeued tuple will have size n in the 0th dimension.
-/// 
+///
 /// This operation has `k` outputs, where `k` is the number of components in
 /// the tuples stored in the given queue, and output `i` is the ith
 /// component of the dequeued tuple.
@@ -2294,7 +2294,7 @@ class QueueDequeueUpTo {
 /// This operation has k outputs, where k is the number of components
 /// in the tuples stored in the given queue, and output i is the ith
 /// component of the dequeued tuple.
-/// 
+///
 /// N.B. If the queue is empty, this operation will block until an element
 /// has been dequeued (or 'timeout_ms' elapses, if specified).
 ///
@@ -2348,10 +2348,10 @@ class QueueDequeue {
 /// This operation slices each component tensor along the 0th dimension to
 /// make multiple queue elements. All of the tuple components must have the
 /// same size in the 0th dimension.
-/// 
+///
 /// The components input has k elements, which correspond to the components of
 /// tuples stored in the given queue.
-/// 
+///
 /// N.B. If the queue is full, this operation will block until the given
 /// elements have been enqueued (or 'timeout_ms' elapses, if specified).
 ///
@@ -2403,7 +2403,7 @@ class QueueEnqueueMany {
 ///
 /// The components input has k elements, which correspond to the components of
 /// tuples stored in the given queue.
-/// 
+///
 /// N.B. If the queue is full, this operation will block until the given
 /// element has been enqueued (or 'timeout_ms' elapses, if specified).
 ///
@@ -3234,15 +3234,15 @@ class TensorArrayClose {
 /// Concat the elements from the TensorArray into value `value`.
 ///
 /// Takes `T` elements of shapes
-/// 
+///
 ///   ```
 ///   (n0 x d0 x d1 x ...), (n1 x d0 x d1 x ...), ..., (n(T-1) x d0 x d1 x ...)
 ///   ```
-/// 
+///
 /// and concatenates them into a Tensor of shape:
-/// 
+///
 ///   ```(n0 + n1 + ... + n(T-1) x d0 x d1 x ...)```
-/// 
+///
 /// All elements must have the same shape (excepting the first dimension).
 ///
 /// Arguments:
@@ -3353,11 +3353,11 @@ class TensorArrayGather {
 /// Creates a TensorArray for storing the gradients of values in the given handle.
 ///
 /// If the given TensorArray gradient already exists, returns a reference to it.
-/// 
+///
 /// Locks the size of the original TensorArray by disabling its dynamic size flag.
-/// 
+///
 /// **A note about the input flow_in:**
-/// 
+///
 /// The handle flow_in forces the execution of the gradient lookup to occur
 /// only after certain other operations have occurred.  For example, when
 /// the forward TensorArray is dynamically sized, writes to this TensorArray
@@ -3366,25 +3366,25 @@ class TensorArrayGather {
 /// Furthermore, the size of the forward TensorArray is frozen by this call.
 /// As a result, the flow is used to ensure that the call to generate the gradient
 /// TensorArray only happens after all writes are executed.
-/// 
+///
 /// In the case of dynamically sized TensorArrays, gradient computation should
 /// only be performed on read operations that have themselves been chained via
 /// flow to occur only after all writes have executed. That way the final size
 /// of the forward TensorArray is known when this operation is called.
-/// 
+///
 /// **A note about the source attribute:**
-/// 
+///
 /// TensorArray gradient calls use an accumulator TensorArray object.  If
 /// multiple gradients are calculated and run in the same session, the multiple
 /// gradient nodes may accidentally flow through the same accumulator TensorArray.
 /// This double counts and generally breaks the TensorArray gradient flow.
-/// 
+///
 /// The solution is to identify which gradient call this particular
 /// TensorArray gradient is being called in.  This is performed by identifying
 /// a unique string (e.g. "gradients", "gradients_1", ...) from the input
 /// gradient Tensor's name.  This string is used as a suffix when creating
 /// the TensorArray gradient object here (the attribute `source`).
-/// 
+///
 /// The attribute `source` is added as a suffix to the forward TensorArray's
 /// name when performing the creation / lookup, so that each separate gradient
 /// calculation gets its own TensorArray accumulator.
@@ -3514,21 +3514,21 @@ class TensorArraySize {
 /// Split the data from the input value into TensorArray elements.
 ///
 /// Assuming that `lengths` takes on values
-/// 
+///
 ///   ```(n0, n1, ..., n(T-1))```
-/// 
+///
 /// and that `value` has shape
-/// 
+///
 ///   ```(n0 + n1 + ... + n(T-1) x d0 x d1 x ...)```,
-/// 
+///
 /// this splits values into a TensorArray with T tensors.
-/// 
+///
 /// TensorArray index t will be the subtensor of values with starting position
-/// 
+///
 ///   ```(n0 + n1 + ... + n(t-1), 0, 0, ...)```
-/// 
+///
 /// and having size
-/// 
+///
 ///   ```nt x d0 x d1 x ...```
 ///
 /// Arguments:

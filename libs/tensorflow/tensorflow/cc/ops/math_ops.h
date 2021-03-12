@@ -46,9 +46,9 @@ class Abs {
 /// wait for all of its inputs to be ready before beginning to sum. This can
 /// save memory if inputs are ready at different times, since minimum temporary
 /// storage is proportional to the output size rather than the inputs size.
-/// 
+///
 /// Unlike the original `accumulate_n`, `accumulate_n_v2` is differentiable.
-/// 
+///
 /// Returns a `Tensor` of same shape and type as the elements of `inputs`.
 ///
 /// Arguments:
@@ -72,11 +72,11 @@ class AccumulateNV2 {
 
 /// Computes acos of x element-wise.
 ///
-/// 
+///
 ///   Provided an input tensor, the `tf.math.acos` operation returns the inverse cosine of each element of the tensor. If `y = tf.math.cos(x)` then, `x = tf.math.acos(y)`.
-/// 
+///
 ///   Input range is `[-1, 1]` and the output has a range of `[0, pi]`.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -98,7 +98,7 @@ class Acos {
 ///
 /// Given an input tensor, the function computes inverse hyperbolic cosine of every element.
 /// Input range is `[1, inf]`. It returns `nan` if the input lies outside the range.
-/// 
+///
 /// ```python
 /// x = tf.constant([-2, -0.5, 1, 1.2, 200, 10000, float("inf")])
 /// tf.math.acosh(x) ==> [nan nan 0. 0.62236255 5.9914584 9.903487 inf]
@@ -124,11 +124,11 @@ class Acosh {
 ///
 /// *NOTE*: `Add` supports broadcasting. `AddN` does not. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-/// 
+///
 /// Given two input tensors, the `tf.add` operation computes the sum for every element in the tensor.
-/// 
+///
 /// Both input and output have a range `(-inf, inf)`.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -150,7 +150,7 @@ class Add {
 /// Add all input tensors element wise.
 ///
 ///   Inputs must be of same size and shape.
-/// 
+///
 ///   ```python
 ///   x = [9, 7, 10]
 ///   tf.math.add_n(x) ==> 26
@@ -253,16 +253,16 @@ typedef All ReduceAll;
 /// type `float` that is the argument of each element in `input`. All elements in
 /// `input` must be complex numbers of the form \\(a + bj\\), where *a*
 /// is the real part and *b* is the imaginary part.
-/// 
+///
 /// The argument returned by this operation is of the form \\(atan2(b, a)\\).
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'input' is [-2.25 + 4.75j, 3.25 + 5.75j]
 /// tf.angle(input) ==> [2.0132, 1.056]
 /// ```
-/// 
+///
 /// @compatibility(numpy)
 /// Equivalent to np.angle.
 /// @end_compatibility
@@ -392,7 +392,7 @@ class ApproximateEqual {
 /// Returns the index with the largest value across dimensions of a tensor.
 ///
 /// Note that in case of ties the identity of the return value is not guaranteed.
-/// 
+///
 /// Usage:
 ///   ```python
 ///   import tensorflow as tf
@@ -443,7 +443,7 @@ class ArgMax {
 /// Returns the index with the smallest value across dimensions of a tensor.
 ///
 /// Note that in case of ties the identity of the return value is not guaranteed.
-/// 
+///
 /// Usage:
 ///   ```python
 ///   import tensorflow as tf
@@ -495,20 +495,20 @@ class ArgMin {
 ///
 /// The `tf.math.asin` operation returns the inverse of `tf.math.sin`, such that
 /// if `y = tf.math.sin(x)` then, `x = tf.math.asin(y)`.
-/// 
+///
 /// **Note**: The output of `tf.math.asin` will lie within the invertible range
 /// of sine, i.e [-pi/2, pi/2].
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 /// # Note: [1.047, 0.785] ~= [(pi/3), (pi/4)]
 /// x = tf.constant([1.047, 0.785])
 /// y = tf.math.sin(x) # [0.8659266, 0.7068252]
-/// 
+///
 /// tf.math.asin(y) # [1.047, 0.785] = x
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -531,7 +531,7 @@ class Asin {
 ///   Given an input tensor, this function computes inverse hyperbolic sine
 ///   for every element in the tensor. Both input and output has a range of
 ///   `[-inf, inf]`.
-/// 
+///
 ///   ```python
 ///   x = tf.constant([-float("inf"), -2, -0.5, 1, 1.2, 200, 10000, float("inf")])
 ///   tf.math.asinh(x) ==> [-inf -1.4436355 -0.4812118 0.8813736 1.0159732 5.991471 9.903487 inf]
@@ -557,20 +557,20 @@ class Asinh {
 ///
 /// The `tf.math.atan` operation returns the inverse of `tf.math.tan`, such that
 /// if `y = tf.math.tan(x)` then, `x = tf.math.atan(y)`.
-/// 
+///
 /// **Note**: The output of `tf.math.atan` will lie within the invertible range
 /// of tan, i.e (-pi/2, pi/2).
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 /// # Note: [1.047, 0.785] ~= [(pi/3), (pi/4)]
 /// x = tf.constant([1.047, 0.785])
 /// y = tf.math.tan(x) # [1.731261, 0.99920404]
-/// 
+///
 /// tf.math.atan(y) # [1.047, 0.785] = x
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -620,7 +620,7 @@ class Atan2 {
 ///   `[-inf, inf]`. If input is `-1`, output will be `-inf` and if the
 ///   input is `1`, output will be `inf`. Values outside the range will have
 ///   `nan` as output.
-/// 
+///
 ///   ```python
 ///   x = tf.constant([-float("inf"), -1, -0.5, 1, 0, 0.5, 10, float("inf")])
 ///   tf.math.atanh(x) ==> [nan -inf -0.54930615 inf  0. 0.54930615 nan nan]
@@ -650,17 +650,17 @@ class Atanh {
 /// individual slices can optionally be adjointed (to adjoint a matrix
 /// means to transpose and conjugate it) before multiplication by setting
 /// the `adj_x` or `adj_y` flag to `True`, which are by default `False`.
-/// 
+///
 /// The input tensors `x` and `y` are 2-D or higher with shape `[..., r_x, c_x]`
 /// and `[..., r_y, c_y]`.
-/// 
+///
 /// The output tensor is 2-D or higher with shape `[..., r_o, c_o]`, where:
-/// 
+///
 ///     r_o = c_x if adj_x else r_x
 ///     c_o = r_y if adj_y else c_y
-/// 
+///
 /// It is computed as:
-/// 
+///
 ///     output[..., :, :] = matrix(x[..., :, :]) * matrix(y[..., :, :])
 ///
 /// Arguments:
@@ -726,23 +726,23 @@ class BatchMatMul {
 /// individual slices can optionally be adjointed (to adjoint a matrix
 /// means to transpose and conjugate it) before multiplication by setting
 /// the `adj_x` or `adj_y` flag to `True`, which are by default `False`.
-/// 
+///
 /// The input tensors `x` and `y` are 2-D or higher with shape `[..., r_x, c_x]`
 /// and `[..., r_y, c_y]`.
-/// 
+///
 /// The output tensor is 2-D or higher with shape `[..., r_o, c_o]`, where:
-/// 
+///
 ///     r_o = c_x if adj_x else r_x
 ///     c_o = r_y if adj_y else c_y
-/// 
+///
 /// It is computed as:
-/// 
+///
 ///     output[..., :, :] = matrix(x[..., :, :]) * matrix(y[..., :, :])
-/// 
+///
 /// *NOTE*: `BatchMatMulV2` supports broadcasting in the batch dimensions. More
 /// about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html).
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -802,16 +802,16 @@ class BatchMatMulV2 {
 /// Compute the regularized incomplete beta integral \\(I_x(a, b)\\).
 ///
 /// The regularized incomplete beta integral is defined as:
-/// 
-/// 
+///
+///
 /// \\(I_x(a, b) = \frac{B(x; a, b)}{B(a, b)}\\)
-/// 
+///
 /// where
-/// 
-/// 
+///
+///
 /// \\(B(x; a, b) = \int_0^x t^{a-1} (1 - t)^{b-1} dt\\)
-/// 
-/// 
+///
+///
 /// is the incomplete beta function and \\(B(a, b)\\) is the *complete*
 /// beta function.
 ///
@@ -839,7 +839,7 @@ class Betainc {
 /// counted in `arr`. If `weights` are non-empty, then index `i` stores the sum of
 /// the value in `weights` at each index where the corresponding value in `arr` is
 /// `i`.
-/// 
+///
 /// Values in `arr` outside of the range [0, size) are ignored.
 ///
 /// Arguments:
@@ -872,7 +872,7 @@ class Bincount {
 ///     input = [[-5, 10000]
 ///              [150,   10]
 ///              [5,    100]]
-/// 
+///
 /// then the output will be
 ///     output = [[0, 3]
 ///               [3, 2]
@@ -885,7 +885,7 @@ class Bincount {
 ///
 /// Returns:
 /// * `Output`: Same shape with 'input', each value of input replaced with bucket index.
-/// 
+///
 /// @compatibility(numpy)
 /// Equivalent to np.digitize.
 /// @end_compatibility
@@ -988,11 +988,11 @@ class ClipByValue {
 ///
 /// Each comparison returns a boolean `true` (if `input_value > threshold`)
 /// or and `false` otherwise.
-/// 
+///
 /// This operation is useful for Locality-Sensitive-Hashing (LSH) and other
 /// algorithms that use hashing approximations of cosine and `L2` distances;
 /// codes can be generated from an input via:
-/// 
+///
 /// ```python
 /// codebook_size = 50
 /// codebook_bits = codebook_size * 32
@@ -1003,10 +1003,10 @@ class ClipByValue {
 /// codes = tf.bitcast(codes, tf.int32)  # go from uint8 to int32
 /// # now codes has shape x.shape[:-1] + [codebook_size]
 /// ```
-/// 
+///
 /// **NOTE**: Currently, the innermost dimension of the tensor must be divisible
 /// by 8.
-/// 
+///
 /// Given an `input` shaped `[s0, s1, ..., s_n]`, the output is
 /// a `uint8` tensor shaped `[s0, s1, ..., s_n / 8]`.
 ///
@@ -1035,11 +1035,11 @@ class CompareAndBitpack {
 /// tensor `imag` representing the imaginary part of a complex number, this
 /// operation returns complex numbers elementwise of the form \\(a + bj\\), where
 /// *a* represents the `real` part and *b* represents the `imag` part.
-/// 
+///
 /// The input tensors `real` and `imag` must have the same shape.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'real' is [2.25, 3.25]
 /// # tensor `imag` is [4.75, 5.75]
@@ -1126,11 +1126,11 @@ class ComplexAbs {
 /// complex numbers that are the complex conjugate of each element in `input`. The
 /// complex numbers in `input` must be of the form \\(a + bj\\), where *a* is the
 /// real part and *b* is the imaginary part.
-/// 
+///
 /// The complex conjugate returned by this operation is of the form \\(a - bj\\).
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'input' is [-2.25 + 4.75j, 3.25 + 5.75j]
 /// tf.conj(input) ==> [-2.25 - 4.75j, 3.25 - 5.75j]
@@ -1158,7 +1158,7 @@ class Conj {
 ///   element in the tensor. Input range is `(-inf, inf)` and
 ///   output range is `[-1,1]`. If input lies outside the boundary, `nan`
 ///   is returned.
-/// 
+///
 ///   ```python
 ///   x = tf.constant([-float("inf"), -9, -0.5, 1, 1.2, 200, 10000, float("inf")])
 ///   tf.math.cos(x) ==> [nan -0.91113025 0.87758255 0.5403023 0.36235774 0.48718765 -0.95215535 nan]
@@ -1185,7 +1185,7 @@ class Cos {
 ///   Given an input tensor, this function computes hyperbolic cosine of every
 ///   element in the tensor. Input range is `[-inf, inf]` and output range
 ///   is `[1, inf]`.
-/// 
+///
 ///   ```python
 ///   x = tf.constant([-float("inf"), -9, -0.5, 1, 1.2, 2, 10, float("inf")])
 ///   tf.math.cosh(x) ==> [inf 4.0515420e+03 1.1276259e+00 1.5430807e+00 1.8106556e+00 3.7621956e+00 1.1013233e+04 inf]
@@ -1236,29 +1236,29 @@ class Cross {
 ///
 /// By default, this op performs an inclusive cumprod, which means that the first
 /// element of the input is identical to the first element of the output:
-/// 
+///
 /// ```python
 /// tf.cumprod([a, b, c])  # => [a, a * b, a * b * c]
 /// ```
-/// 
+///
 /// By setting the `exclusive` kwarg to `True`, an exclusive cumprod is
 /// performed instead:
-/// 
+///
 /// ```python
 /// tf.cumprod([a, b, c], exclusive=True)  # => [1, a, a * b]
 /// ```
-/// 
+///
 /// By setting the `reverse` kwarg to `True`, the cumprod is performed in the
 /// opposite direction:
-/// 
+///
 /// ```python
 /// tf.cumprod([a, b, c], reverse=True)  # => [a * b * c, b * c, c]
 /// ```
-/// 
+///
 /// This is more efficient than using separate `tf.reverse` ops.
-/// 
+///
 /// The `reverse` and `exclusive` kwargs can also be combined:
-/// 
+///
 /// ```python
 /// tf.cumprod([a, b, c], exclusive=True, reverse=True)  # => [b * c, c, 1]
 /// ```
@@ -1325,29 +1325,29 @@ class Cumprod {
 ///
 /// By default, this op performs an inclusive cumsum, which means that the first
 /// element of the input is identical to the first element of the output:
-/// 
+///
 /// ```python
 /// tf.cumsum([a, b, c])  # => [a, a + b, a + b + c]
 /// ```
-/// 
+///
 /// By setting the `exclusive` kwarg to `True`, an exclusive cumsum is
 /// performed instead:
-/// 
+///
 /// ```python
 /// tf.cumsum([a, b, c], exclusive=True)  # => [0, a, a + b]
 /// ```
-/// 
+///
 /// By setting the `reverse` kwarg to `True`, the cumsum is performed in the
 /// opposite direction:
-/// 
+///
 /// ```python
 /// tf.cumsum([a, b, c], reverse=True)  # => [a + b + c, b + c, c]
 /// ```
-/// 
+///
 /// This is more efficient than using separate `tf.reverse` ops.
-/// 
+///
 /// The `reverse` and `exclusive` kwargs can also be combined:
-/// 
+///
 /// ```python
 /// tf.cumsum([a, b, c], exclusive=True, reverse=True)  # => [b + c, c, 0]
 /// ```
@@ -1417,7 +1417,7 @@ class Cumsum {
 /// counted in `arr`. If `weights` are non-empty, then index `i` stores the sum of
 /// the value in `weights` at each index where the corresponding value in `arr` is
 /// `i`.
-/// 
+///
 /// Values in `arr` outside of the range [0, size) are ignored.
 ///
 /// Arguments:
@@ -1510,7 +1510,7 @@ class Div {
 
 /// Returns 0 if the denominator is zero.
 ///
-/// 
+///
 /// *NOTE*: `DivNoNan` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 ///
@@ -1535,12 +1535,12 @@ class DivNoNan {
 ///
 /// *NOTE*: `Equal` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-/// 
+///
 /// ```python
 /// x = tf.constant([2, 4])
 /// y = tf.constant(2)
 /// tf.math.equal(x, y) ==> array([True, False])
-/// 
+///
 /// x = tf.constant([2, 4])
 /// y = tf.constant([2, 4])
 /// tf.math.equal(x, y) ==> array([True,  True])
@@ -1689,24 +1689,24 @@ class EuclideanNorm {
 ///   i.e. `exp(x)` or `e^(x)`, where `x` is the input tensor.
 ///   `e` denotes Euler's number and is approximately equal to 2.718281.
 ///   Output is positive for any real input.
-/// 
+///
 ///   ```python
 ///   x = tf.constant(2.0)
 ///   tf.math.exp(x) ==> 7.389056
-/// 
+///
 ///   x = tf.constant([2.0, 8.0])
 ///   tf.math.exp(x) ==> array([7.389056, 2980.958], dtype=float32)
 ///   ```
-/// 
+///
 ///   For complex numbers, the exponential value is calculated as follows:
-/// 
+///
 ///   ```
 ///   e^(x+iy) = e^x * e^iy = e^x * (cos y + i sin y)
 ///   ```
-/// 
+///
 ///   Let's consider complex number 1+1j as an example.
 ///   e^1 * (cos 1 + i sin 1) = 2.7182818284590 * (0.54030230586+0.8414709848j)
-/// 
+///
 ///   ```python
 ///   x = tf.constant(1 + 1j)
 ///   tf.math.exp(x) ==> 1.4686939399158851+2.2873552871788423j
@@ -1732,14 +1732,14 @@ class Exp {
 ///
 ///   i.e. `exp(x) - 1` or `e^(x) - 1`, where `x` is the input tensor.
 ///   `e` denotes Euler's number and is approximately equal to 2.718281.
-/// 
+///
 ///   ```python
 ///   x = tf.constant(2.0)
 ///   tf.math.expm1(x) ==> 6.389056
-/// 
+///
 ///   x = tf.constant([2.0, 8.0])
 ///   tf.math.expm1(x) ==> array([6.389056, 2979.958], dtype=float32)
-/// 
+///
 ///   x = tf.constant(1 + 1j)
 ///   tf.math.expm1(x) ==> (0.46869393991588515+2.2873552871788423j)
 ///   ```
@@ -1804,7 +1804,7 @@ class FloorDiv {
 ///
 /// true, this follows Python semantics in that the result here is consistent
 /// with a flooring divide. E.g. `floor(x / y) * y + mod(x, y) = x`.
-/// 
+///
 /// *NOTE*: `FloorMod` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 ///
@@ -1829,14 +1829,14 @@ class FloorMod {
 ///
 /// *NOTE*: `Greater` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([5, 4, 6])
 /// y = tf.constant([5, 2, 5])
 /// tf.math.greater(x, y) ==> [False, True, True]
-/// 
+///
 /// x = tf.constant([5, 4, 6])
 /// y = tf.constant([5])
 /// tf.math.greater(x, y) ==> [False, False, True]
@@ -1863,14 +1863,14 @@ class Greater {
 ///
 /// *NOTE*: `GreaterEqual` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([5, 4, 6, 7])
 /// y = tf.constant([5, 2, 5, 10])
 /// tf.math.greater_equal(x, y) ==> [True, True, True, False]
-/// 
+///
 /// x = tf.constant([5, 4, 6, 7])
 /// y = tf.constant([5])
 /// tf.math.greater_equal(x, y) ==> [True, False, True, True]
@@ -1898,13 +1898,13 @@ class GreaterEqual {
 /// Given the tensor `values`, this operation returns a rank 1 histogram counting
 /// the number of entries in `values` that fall into every bin.  The bins are
 /// equal width and determined by the arguments `value_range` and `nbins`.
-/// 
+///
 /// ```python
 /// # Bins will be:  (-inf, 1), [1, 2), [2, 3), [3, 4), [4, inf)
 /// nbins = 5
 /// value_range = [0.0, 5.0]
 /// new_values = [-1.0, 0.0, 1.5, 2.0, 5.0, 15]
-/// 
+///
 /// with tf.get_default_session() as sess:
 ///   hist = tf.histogram_fixed_width(new_values, value_range, nbins=5)
 ///   variables.global_variables_initializer().run()
@@ -1956,16 +1956,16 @@ class HistogramFixedWidth {
 /// Compute the lower regularized incomplete Gamma function `P(a, x)`.
 ///
 /// The lower regularized incomplete Gamma function is defined as:
-/// 
-/// 
+///
+///
 /// \\(P(a, x) = gamma(a, x) / Gamma(a) = 1 - Q(a, x)\\)
-/// 
+///
 /// where
-/// 
+///
 /// \\(gamma(a, x) = \\int_{0}^{x} t^{a-1} exp(-t) dt\\)
-/// 
+///
 /// is the lower incomplete Gamma function.
-/// 
+///
 /// Note, above `Q(a, x)` (`Igammac`) is the upper regularized complete
 /// Gamma function.
 ///
@@ -1989,15 +1989,15 @@ class Igamma {
 /// Compute the upper regularized incomplete Gamma function `Q(a, x)`.
 ///
 /// The upper regularized incomplete Gamma function is defined as:
-/// 
+///
 /// \\(Q(a, x) = Gamma(a, x) / Gamma(a) = 1 - P(a, x)\\)
-/// 
+///
 /// where
-/// 
+///
 /// \\(Gamma(a, x) = int_{x}^{\infty} t^{a-1} exp(-t) dt\\)
-/// 
+///
 /// is the upper incomplete Gama function.
-/// 
+///
 /// Note, above `P(a, x)` (`Igamma`) is the lower regularized complete
 /// Gamma function.
 ///
@@ -2024,9 +2024,9 @@ class Igammac {
 /// type `float` that is the imaginary part of each element in `input`. All
 /// elements in `input` must be complex numbers of the form \\(a + bj\\), where *a*
 /// is the real part and *b* is the imaginary part returned by this operation.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'input' is [-2.25 + 4.75j, 3.25 + 5.75j]
 /// tf.imag(input) ==> [4.75, 5.75]
@@ -2090,9 +2090,9 @@ class Inv {
 /// @compatibility(numpy)
 /// Equivalent to np.isfinite
 /// @end_compatibility
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([5.0, 4.8, 6.8, np.inf, np.nan])
 /// tf.math.is_finite(x) ==> [True, True, True, False, False]
@@ -2119,9 +2119,9 @@ class IsFinite {
 /// @compatibility(numpy)
 /// Equivalent to np.isinf
 /// @end_compatibility
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([5.0, np.inf, 6.8, np.inf])
 /// tf.math.is_inf(x) ==> [False, True, False, True]
@@ -2148,9 +2148,9 @@ class IsInf {
 /// @compatibility(numpy)
 /// Equivalent to np.isnan
 /// @end_compatibility
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([5.0, np.nan, 6.8, np.nan, np.inf])
 /// tf.math.is_nan(x) ==> [False, True, False, True, False]
@@ -2176,14 +2176,14 @@ class IsNan {
 ///
 /// *NOTE*: `Less` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([5, 4, 6])
 /// y = tf.constant([5])
 /// tf.math.less(x, y) ==> [False, True, False]
-/// 
+///
 /// x = tf.constant([5, 4, 6])
 /// y = tf.constant([5, 6, 7])
 /// tf.math.less(x, y) ==> [False, True, True]
@@ -2210,14 +2210,14 @@ class Less {
 ///
 /// *NOTE*: `LessEqual` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([5, 4, 6])
 /// y = tf.constant([5])
 /// tf.math.less_equal(x, y) ==> [True, True, False]
-/// 
+///
 /// x = tf.constant([5, 4, 6])
 /// y = tf.constant([5, 6, 6])
 /// tf.math.less_equal(x, y) ==> [True, True, True]
@@ -2244,9 +2244,9 @@ class LessEqual {
 ///
 ///   For positive numbers, this function computes log((input - 1)!) for every element in the tensor.
 ///   `lgamma(5) = log((5-1)!) = log(4!) = log(24) = 3.1780539`
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([0, 0.5, 1, 4.5, -4, -5.6])
 /// tf.math.lgamma(x) ==> [inf, 0.5723649, 0., 2.4537368, inf, -4.6477685]
@@ -2271,9 +2271,9 @@ class Lgamma {
 /// Computes natural logarithm of x element-wise.
 ///
 /// I.e., \\(y = \log_e x\\).
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([0, 0.5, 1, 5])
 /// tf.math.log(x) ==> [-inf, -0.6931472,  0. ,  1.609438]
@@ -2298,9 +2298,9 @@ class Log {
 /// Computes natural logarithm of (1 + x) element-wise.
 ///
 /// I.e., \\(y = \log_e (1 + x)\\).
-/// 
+///
 /// Example:
-/// 
+///
 /// ```python
 /// x = tf.constant([0, 0.5, 1, 5])
 /// tf.math.log1p(x) ==> [0., 0.4054651, 0.6931472, 1.7917595]
@@ -2391,7 +2391,7 @@ class LogicalOr {
 /// "a" (after being transposed if transpose_a is true) must match the
 /// outer dimension of "b" (after being transposed if transposed_b is
 /// true).
-/// 
+///
 /// *Note*: The default kernel implementation for MatMul on GPUs uses
 /// cublas.
 ///
@@ -2655,7 +2655,7 @@ class Minimum {
 ///
 /// the result here is consistent with a truncating divide. E.g.
 /// `tf.truncatediv(x, y) * y + truncate_mod(x, y) = x`.
-/// 
+///
 /// *NOTE*: `Mod` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 ///
@@ -2769,9 +2769,9 @@ typedef Negate Neg;
 /// Returns the next representable value of `x1` in the direction of `x2`, element-wise.
 ///
 /// This operation returns the same result as the C++ std::nextafter function.
-/// 
+///
 /// It can also return a subnormal number.
-/// 
+///
 /// @compatibility(cpp)
 /// Equivalent to C++ std::nextafter function.
 /// @end_compatibility
@@ -2835,10 +2835,10 @@ class NotEqual {
 /// Compute the polygamma function \\(\psi^{(n)}(x)\\).
 ///
 /// The polygamma function is defined as:
-/// 
-/// 
+///
+///
 /// \\(\psi^{(a)}(x) = \frac{d^a}{dx^a} \psi(x)\\)
-/// 
+///
 /// where \\(\psi(x)\\) is the digamma function.
 /// The polygamma function is defined only for non-negative integer orders \\a\\.
 ///
@@ -2863,7 +2863,7 @@ class Polygamma {
 ///
 /// Given a tensor `x` and a tensor `y`, this operation computes \\(x^y\\) for
 /// corresponding elements in `x` and `y`. For example:
-/// 
+///
 /// ```
 /// # tensor 'x' is [[2, 2]], [3, 3]]
 /// # tensor 'y' is [[8, 16], [2, 3]]
@@ -2944,12 +2944,12 @@ typedef Prod ReduceProd;
 ///
 /// actual distribution of the values to maximize the usage of the lower bit depth
 /// and adjusting the output min and max ranges accordingly.
-/// 
+///
 /// [input_min, input_max] are scalar floats that specify the range for the float
 /// interpretation of the 'input' data. For example, if input_min is -1.0f and
 /// input_max is 1.0f, and we are dealing with quint16 quantized data, then a 0
 /// value in the 16-bit data should be interpreted as -1.0f, and a 65535 means 1.0f.
-/// 
+///
 /// This operator tries to squeeze as much precision as possible into an output with
 /// a lower bit depth by calculating the actual min and max values found in the
 /// data. For example, maybe that quint16 input has no values lower than 16,384 and
@@ -2957,7 +2957,7 @@ typedef Prod ReduceProd;
 /// the float interpretations are between -0.5f and 0.5f, so if we want to compress
 /// the data into a quint8 output, we can use that range rather than the theoretical
 /// -1.0f to 1.0f that is suggested by the input min and max.
-/// 
+///
 /// In practice, this is most useful for taking output from operations like
 /// QuantizedMatMul that can produce higher bit-depth outputs than their inputs and
 /// may have large potential output ranges, but in practice have a distribution of
@@ -3001,7 +3001,7 @@ class QuantizeDownAndShrinkRange {
 /// * `Output` z
 /// * `Output` min_z: The float value that the lowest quantized output value represents.
 /// * `Output` max_z: The float value that the highest quantized output value represents.
-/// 
+///
 /// *NOTE*: `QuantizedAdd` supports limited forms of broadcasting. More about
 /// broadcasting [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 class QuantizedAdd {
@@ -3147,7 +3147,7 @@ class QuantizedMatMul {
 /// * `Output` z
 /// * `Output` min_z: The float value that the lowest quantized output value represents.
 /// * `Output` max_z: The float value that the highest quantized output value represents.
-/// 
+///
 /// *NOTE*: `QuantizedMul` supports limited forms of broadcasting. More about
 /// broadcasting [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 class QuantizedMul {
@@ -3189,7 +3189,7 @@ class QuantizedMul {
 /// counted in `arr`. If `weights` are non-empty, then index `i` stores the sum of
 /// the value in `weights` at each index where the corresponding value in `arr` is
 /// `i`.
-/// 
+///
 /// Values in `arr` outside of the range [0, size) are ignored.
 ///
 /// Arguments:
@@ -3244,9 +3244,9 @@ class RaggedBincount {
 ///
 /// This operation creates a sequence of numbers that begins at `start` and
 /// extends by increments of `delta` up to but not including `limit`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'start' is 3
 /// # 'limit' is 18
@@ -3280,9 +3280,9 @@ class Range {
 /// type `float` that is the real part of each element in `input`. All elements in
 /// `input` must be complex numbers of the form \\(a + bj\\), where *a* is the real
 ///  part returned by this operation and *b* is the imaginary part.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'input' is [-2.25 + 4.75j, 3.25 + 5.75j]
 /// tf.real(input) ==> [-2.25, 3.25]
@@ -3324,7 +3324,7 @@ class Real {
 /// Returns x / y element-wise for real types.
 ///
 /// If `x` and `y` are reals, this will return the floating-point division.
-/// 
+///
 /// *NOTE*: `Div` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 ///
@@ -3395,7 +3395,7 @@ class RequantizationRange {
 ///
 /// Converts the quantized `input` tensor into a lower-precision `output`, using the
 /// output range specified with `requested_output_min` and `requested_output_max`.
-/// 
+///
 /// `[input_min, input_max]` are scalar floats that specify the range for the float
 /// interpretation of the `input` data. For example, if `input_min` is -1.0f and
 /// `input_max` is 1.0f, and we are dealing with `quint16` quantized data, then a 0
@@ -3431,7 +3431,7 @@ class Requantize {
 /// If the result is midway between two representable values,
 /// the even representable is chosen.
 /// For example:
-/// 
+///
 /// ```
 /// rint(-1.5) ==> -2.0
 /// rint(0.5000001) ==> 1.0
@@ -3500,26 +3500,26 @@ class Rsqrt {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// Computes a tensor such that
 /// \\(output_i = \max_j(data_j)\\) where `max` is over `j` such
 /// that `segment_ids[j] == i`.
-/// 
+///
 /// If the max is empty for a given segment ID `i`, `output[i] = 0`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/SegmentMax.png" alt>
 /// </div>
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// c = tf.constant([[1,2,3,4], [4, 3, 2, 1], [5,6,7,8]])
 /// tf.segment_max(c, tf.constant([0, 0, 1]))
 /// # ==> [[4, 3, 3, 4],
 /// #      [5, 6, 7, 8]]
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -3546,27 +3546,27 @@ class SegmentMax {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// Computes a tensor such that
 /// \\(output_i = \frac{\sum_j data_j}{N}\\) where `mean` is
 /// over `j` such that `segment_ids[j] == i` and `N` is the total number of
 /// values summed.
-/// 
+///
 /// If the mean is empty for a given segment ID `i`, `output[i] = 0`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/SegmentMean.png" alt>
 /// </div>
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// c = tf.constant([[1.0,2,3,4], [4, 3, 2, 1], [5,6,7,8]])
 /// tf.segment_mean(c, tf.constant([0, 0, 1]))
 /// # ==> [[2.5, 2.5, 2.5, 2.5],
 /// #      [5, 6, 7, 8]]
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -3593,19 +3593,19 @@ class SegmentMean {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// Computes a tensor such that
 /// \\(output_i = \min_j(data_j)\\) where `min` is over `j` such
 /// that `segment_ids[j] == i`.
-/// 
+///
 /// If the min is empty for a given segment ID `i`, `output[i] = 0`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/SegmentMin.png" alt>
 /// </div>
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// c = tf.constant([[1,2,3,4], [4, 3, 2, 1], [5,6,7,8]])
 /// tf.segment_min(c, tf.constant([0, 0, 1]))
@@ -3638,26 +3638,26 @@ class SegmentMin {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// Computes a tensor such that
 /// \\(output_i = \prod_j data_j\\) where the product is over `j` such
 /// that `segment_ids[j] == i`.
-/// 
+///
 /// If the product is empty for a given segment ID `i`, `output[i] = 1`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/SegmentProd.png" alt>
 /// </div>
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// c = tf.constant([[1,2,3,4], [4, 3, 2, 1], [5,6,7,8]])
 /// tf.segment_prod(c, tf.constant([0, 0, 1]))
 /// # ==> [[4, 6, 6, 4],
 /// #      [5, 6, 7, 8]]
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -3684,26 +3684,26 @@ class SegmentProd {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// Computes a tensor such that
 /// \\(output_i = \sum_j data_j\\) where sum is over `j` such
 /// that `segment_ids[j] == i`.
-/// 
+///
 /// If the sum is empty for a given segment ID `i`, `output[i] = 0`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/SegmentSum.png" alt>
 /// </div>
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// c = tf.constant([[1,2,3,4], [4, 3, 2, 1], [5,6,7,8]])
 /// tf.segment_sum(c, tf.constant([0, 0, 1]))
 /// # ==> [[5, 5, 5, 5],
 /// #      [5, 6, 7, 8]]
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -3729,23 +3729,23 @@ class SegmentSum {
 ///
 /// The `x`, and `y` tensors must all have the same shape, and the
 /// output will also have that shape.
-/// 
+///
 /// The `condition` tensor must be a scalar if `x` and `y` are scalars.
 /// If `x` and `y` are vectors or higher rank, then `condition` must be either a
 /// scalar, a vector with size matching the first dimension of `x`, or must have
 /// the same shape as `x`.
-/// 
+///
 /// The `condition` tensor acts as a mask that chooses, based on the value at each
 /// element, whether the corresponding element / row in the output should be
 /// taken from `x` (if true) or `y` (if false).
-/// 
+///
 /// If `condition` is a vector and `x` and `y` are higher rank matrices, then
 /// it chooses which row (outer dimension) to copy from `x` and `y`.
 /// If `condition` has the same shape as `x` and `y`, then it chooses which
 /// element to copy from `x` and `y`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 /// # 'condition' tensor is [[True,  False]
 /// #                        [False, True]]
@@ -3754,8 +3754,8 @@ class SegmentSum {
 /// # 'e' is [[5, 6],
 /// #         [7, 8]]
 /// select(condition, t, e)  # => [[1, 6], [7, 4]]
-/// 
-/// 
+///
+///
 /// # 'condition' tensor is [True, False]
 /// # 't' is [[1, 2],
 /// #         [3, 4]]
@@ -3763,7 +3763,7 @@ class SegmentSum {
 /// #         [7, 8]]
 /// select(condition, t, e) ==> [[1, 2],
 ///                              [7, 8]]
-/// 
+///
 /// ```
 ///
 /// Arguments:
@@ -3829,9 +3829,9 @@ class Sigmoid {
 /// Returns an element-wise indication of the sign of a number.
 ///
 /// `y = sign(x) = -1` if `x < 0`; 0 if `x == 0`; 1 if `x > 0`.
-/// 
+///
 /// For complex numbers, `y = sign(x) = x / |x|` if `x != 0`, otherwise `y = 0`.
-/// 
+///
 /// Example usage:
 /// >>> tf.math.sign([0., 2., -3.])
 /// <tf.Tensor: shape=(3,), dtype=float32, numpy=array([ 0.,  1., -1.], dtype=float32)>
@@ -3857,7 +3857,7 @@ class Sign {
 ///   Given an input tensor, this function computes sine of every
 ///   element in the tensor. Input range is `(-inf, inf)` and
 ///   output range is `[-1,1]`.
-/// 
+///
 ///   ```python
 ///   x = tf.constant([-float("inf"), -9, -0.5, 1, 1.2, 200, 10, float("inf")])
 ///   tf.math.sin(x) ==> [nan -0.4121185 -0.47942555 0.84147096 0.9320391 -0.87329733 -0.54402107 nan]
@@ -3884,7 +3884,7 @@ class Sin {
 ///   Given an input tensor, this function computes hyperbolic sine of every
 ///   element in the tensor. Input range is `[-inf,inf]` and output range
 ///   is `[-inf,inf]`.
-/// 
+///
 ///   ```python
 ///   x = tf.constant([-float("inf"), -9, -0.5, 1, 1.2, 2, 10, float("inf")])
 ///   tf.math.sinh(x) ==> [-inf -4.0515420e+03 -5.2109528e-01 1.1752012e+00 1.5094614e+00 3.6268604e+00 1.1013232e+04 inf]
@@ -3913,7 +3913,7 @@ class Sinh {
 /// counted in `arr`. If `weights` are non-empty, then index `i` stores the sum of
 /// the value in `weights` at each index where the corresponding value in `arr` is
 /// `i`.
-/// 
+///
 /// Values in `arr` outside of the range [0, size) are ignored.
 ///
 /// Arguments:
@@ -3974,7 +3974,7 @@ class SparseBincount {
 /// "b" is sparse, in the sense that they have a large proportion of zero values.
 /// The breakeven for using this versus a dense matrix multiply on one platform was
 /// 30% zero values in the sparse matrix.
-/// 
+///
 /// The gradient computation of this operation will only take advantage of sparsity
 /// in the input gradient when that gradient comes from a Relu.
 ///
@@ -4048,7 +4048,7 @@ class SparseMatMul {
 /// Computes the mean along sparse segments of a tensor.
 ///
 /// See `tf.sparse.segment_sum` for usage examples.
-/// 
+///
 /// Like `SegmentMean`, but `segment_ids` can have rank less than `data`'s first
 /// dimension, selecting a subset of dimension 0, specified by `indices`.
 ///
@@ -4103,7 +4103,7 @@ class SparseSegmentMeanGrad {
 ///
 /// Like `SparseSegmentMean`, but allows missing ids in `segment_ids`. If an id is
 /// missing, the `output` tensor at that position will be zeroed.
-/// 
+///
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
@@ -4134,9 +4134,9 @@ class SparseSegmentMeanWithNumSegments {
 /// Computes the sum along sparse segments of a tensor divided by the sqrt of N.
 ///
 /// N is the size of the segment being reduced.
-/// 
+///
 /// See `tf.sparse.segment_sum` for usage examples.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -4189,10 +4189,10 @@ class SparseSegmentSqrtNGrad {
 /// Computes the sum along sparse segments of a tensor divided by the sqrt of N.
 ///
 /// N is the size of the segment being reduced.
-/// 
+///
 /// Like `SparseSegmentSqrtN`, but allows missing ids in `segment_ids`. If an id is
 /// missing, the `output` tensor at that position will be zeroed.
-/// 
+///
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
@@ -4225,29 +4225,29 @@ class SparseSegmentSqrtNWithNumSegments {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// Like `SegmentSum`, but `segment_ids` can have rank less than `data`'s first
 /// dimension, selecting a subset of dimension 0, specified by `indices`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 /// c = tf.constant([[1,2,3,4], [-1,-2,-3,-4], [5,6,7,8]])
-/// 
+///
 /// # Select two rows, one segment.
 /// tf.sparse_segment_sum(c, tf.constant([0, 1]), tf.constant([0, 0]))
 /// # => [[0 0 0 0]]
-/// 
+///
 /// # Select two rows, two segment.
 /// tf.sparse_segment_sum(c, tf.constant([0, 1]), tf.constant([0, 1]))
 /// # => [[ 1  2  3  4]
 /// #     [-1 -2 -3 -4]]
-/// 
+///
 /// # Select all rows, two segments.
 /// tf.sparse_segment_sum(c, tf.constant([0, 1, 2]), tf.constant([0, 0, 1]))
 /// # => [[0 0 0 0]
 /// #     [5 6 7 8]]
-/// 
+///
 /// # Which is equivalent to:
 /// tf.segment_sum(c, tf.constant([0, 0, 1]))
 /// ```
@@ -4276,22 +4276,22 @@ class SparseSegmentSum {
 ///
 /// Like `SparseSegmentSum`, but allows missing ids in `segment_ids`. If an id is
 /// missing, the `output` tensor at that position will be zeroed.
-/// 
+///
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/sparse#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 /// c = tf.constant([[1,2,3,4], [-1,-2,-3,-4], [5,6,7,8]])
-/// 
+///
 /// tf.sparse_segment_sum_with_num_segments(
 ///     c, tf.constant([0, 1]), tf.constant([0, 0]), num_segments=3)
 /// # => [[0 0 0 0]
 /// #     [0 0 0 0]
 /// #     [0 0 0 0]]
-/// 
+///
 /// tf.sparse_segment_sum_with_num_segments(c,
 ///                                         tf.constant([0, 1]),
 ///                                         tf.constant([0, 2],
@@ -4472,7 +4472,7 @@ typedef Sum ReduceSum;
 ///   element in the tensor. Input range is `(-inf, inf)` and
 ///   output range is `(-inf, inf)`. If input lies outside the boundary, `nan`
 ///   is returned.
-/// 
+///
 ///   ```python
 ///   x = tf.constant([-float("inf"), -9, -0.5, 1, 1.2, 200, 10000, float("inf")])
 ///   tf.math.tan(x) ==> [nan 0.45231566 -0.5463025 1.5574077 2.572152 -1.7925274 0.32097113 nan]
@@ -4499,13 +4499,13 @@ class Tan {
 ///   Given an input tensor, this function computes hyperbolic tangent of every
 ///   element in the tensor. Input range is `[-inf, inf]` and
 ///   output range is `[-1,1]`.
-/// 
+///
 ///   >>> x = tf.constant([-float("inf"), -5, -0.5, 1, 1.2, 2, 3, float("inf")])
 ///   >>> tf.math.tanh(x)
 ///   <tf.Tensor: shape=(8,), dtype=float32, numpy=
 ///   array([-1.        , -0.99990916, -0.46211717,  0.7615942 ,  0.8336547 ,
 ///           0.9640276 ,  0.9950547 ,  1.        ], dtype=float32)>
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -4529,7 +4529,7 @@ class Tanh {
 /// toward zero. I.e. -7 / 5 = -1. This matches C semantics but it is different
 /// than Python semantics. See `FloorDiv` for a division function that matches
 /// Python Semantics.
-/// 
+///
 /// *NOTE*: `TruncateDiv` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 ///
@@ -4554,7 +4554,7 @@ class TruncateDiv {
 ///
 /// the result here is consistent with a truncating divide. E.g. `truncate(x / y) *
 /// y + truncate_mod(x, y) = x`.
-/// 
+///
 /// *NOTE*: `TruncateMod` supports broadcasting. More about broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
 ///
@@ -4580,34 +4580,34 @@ class TruncateMod {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// This operator is similar to the unsorted segment sum operator found
 /// [(here)](../../../api_docs/python/math_ops.md#UnsortedSegmentSum).
 /// Instead of computing the sum over segments, it computes the maximum such that:
-/// 
+///
 /// \\(output_i = \max_{j...} data[j...]\\) where max is over tuples `j...` such
 /// that `segment_ids[j...] == i`.
-/// 
+///
 /// If the maximum is empty for a given segment ID `i`, it outputs the smallest
 /// possible value for the specific numeric type,
 /// `output[i] = numeric_limits<T>::lowest()`.
-/// 
+///
 /// If the given segment ID `i` is negative, then the corresponding value is
 /// dropped, and will not be included in the result.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/UnsortedSegmentMax.png" alt>
 /// </div>
-/// 
+///
 /// For example:
-/// 
+///
 /// ``` python
 /// c = tf.constant([[1,2,3,4], [5,6,7,8], [4,3,2,1]])
 /// tf.unsorted_segment_max(c, tf.constant([0, 1, 0]), num_segments=2)
 /// # ==> [[ 4,  3, 3, 4],
 /// #       [5,  6, 7, 8]]
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -4635,27 +4635,27 @@ class UnsortedSegmentMax {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// This operator is similar to the unsorted segment sum operator found
 /// [(here)](../../../api_docs/python/math_ops.md#UnsortedSegmentSum).
 /// Instead of computing the sum over segments, it computes the minimum such that:
-/// 
+///
 /// \\(output_i = \min_{j...} data_[j...]\\) where min is over tuples `j...` such
 /// that `segment_ids[j...] == i`.
-/// 
+///
 /// If the minimum is empty for a given segment ID `i`, it outputs the largest
 /// possible value for the specific numeric type,
 /// `output[i] = numeric_limits<T>::max()`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ``` python
 /// c = tf.constant([[1,2,3,4], [5,6,7,8], [4,3,2,1]])
 /// tf.unsorted_segment_min(c, tf.constant([0, 1, 0]), num_segments=2)
 /// # ==> [[ 1,  2, 2, 1],
 /// #       [5,  6, 7, 8]]
 /// ```
-/// 
+///
 /// If the given segment ID `i` is negative, then the corresponding value is
 /// dropped, and will not be included in the result.
 ///
@@ -4685,26 +4685,26 @@ class UnsortedSegmentMin {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// This operator is similar to the unsorted segment sum operator found
 /// [(here)](../../../api_docs/python/math_ops.md#UnsortedSegmentSum).
 /// Instead of computing the sum over segments, it computes the product of all
 /// entries belonging to a segment such that:
-/// 
+///
 /// \\(output_i = \prod_{j...} data[j...]\\) where the product is over tuples
 /// `j...` such that `segment_ids[j...] == i`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ``` python
 /// c = tf.constant([[1,2,3,4], [5,6,7,8], [4,3,2,1]])
 /// tf.unsorted_segment_prod(c, tf.constant([0, 1, 0]), num_segments=2)
 /// # ==> [[ 4,  6, 6, 4],
 /// #       [5,  6, 7, 8]]
 /// ```
-/// 
+///
 /// If there is no entry for a given segment ID `i`, it outputs 1.
-/// 
+///
 /// If the given segment ID `i` is negative, then the corresponding value is
 /// dropped, and will not be included in the result.
 ///
@@ -4734,30 +4734,30 @@ class UnsortedSegmentProd {
 /// Read
 /// [the section on segmentation](https://tensorflow.org/api_docs/python/tf/math#Segmentation)
 /// for an explanation of segments.
-/// 
+///
 /// Computes a tensor such that
 /// \\(output[i] = \sum_{j...} data[j...]\\) where the sum is over tuples `j...` such
 /// that `segment_ids[j...] == i`.  Unlike `SegmentSum`, `segment_ids`
 /// need not be sorted and need not cover all values in the full
 /// range of valid values.
-/// 
+///
 /// If the sum is empty for a given segment ID `i`, `output[i] = 0`.
 /// If the given segment ID `i` is negative, the value is dropped and will not be
 /// added to the sum of the segment.
-/// 
+///
 /// `num_segments` should equal the number of distinct segment IDs.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/UnsortedSegmentSum.png" alt>
 /// </div>
-/// 
+///
 /// ``` python
 /// c = tf.constant([[1,2,3,4], [5,6,7,8], [4,3,2,1]])
 /// tf.unsorted_segment_sum(c, tf.constant([0, 1, 0]), num_segments=2)
 /// # ==> [[ 5,  5, 5, 5],
 /// #       [5,  6, 7, 8]]
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -4840,8 +4840,8 @@ class Xlogy {
 /// Compute the Hurwitz zeta function \\(\zeta(x, q)\\).
 ///
 /// The Hurwitz zeta function is defined as:
-/// 
-/// 
+///
+///
 /// \\(\zeta(x, q) = \sum_{n=0}^{\infty} (q + n)^{-x}\\)
 ///
 /// Arguments:

@@ -15,8 +15,8 @@ struct LowerBiasAddGradOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range out_backprop(op0->getOperands());
     ::mlir::StringAttr data_format;
+    ::mlir::Operation::operand_range out_backprop(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -77,11 +77,11 @@ struct LowerFakeQuantWithMinMaxArgs : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range input(op0->getOperands());
+    ::mlir::BoolAttr narrow_range;
+    ::mlir::FloatAttr max;
     ::mlir::FloatAttr min;
     ::mlir::IntegerAttr bits;
-    ::mlir::FloatAttr max;
-    ::mlir::BoolAttr narrow_range;
+    ::mlir::Operation::operand_range input(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -167,8 +167,8 @@ struct LowerFillOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range dims(op0->getOperands());
     ::mlir::Operation::operand_range value(op0->getOperands());
+    ::mlir::Operation::operand_range dims(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -440,9 +440,9 @@ struct LowerScatterNdOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range indices(op0->getOperands());
-    ::mlir::Operation::operand_range updates(op0->getOperands());
     ::mlir::Operation::operand_range shape(op0->getOperands());
+    ::mlir::Operation::operand_range updates(op0->getOperands());
+    ::mlir::Operation::operand_range indices(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -629,8 +629,8 @@ struct LowerSparseSoftmaxCrossEntropyWithLogitsOp : public ::mlir::RewritePatter
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
     ::mlir::Operation::operand_range sparse_labels(op0->getOperands());
-    ::mlir::TF::SparseSoftmaxCrossEntropyWithLogitsOp src_op;
     ::mlir::Operation::operand_range features(op0->getOperands());
+    ::mlir::TF::SparseSoftmaxCrossEntropyWithLogitsOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -804,8 +804,8 @@ struct LowerTanhGradOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range y(op0->getOperands());
     ::mlir::Operation::operand_range dy(op0->getOperands());
+    ::mlir::Operation::operand_range y(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -880,8 +880,8 @@ struct LowerZerosLikeOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::TF::ZerosLikeOp src_op;
     ::mlir::Operation::operand_range input(op0->getOperands());
+    ::mlir::TF::ZerosLikeOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -977,8 +977,8 @@ struct GeneratedConvert1 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1035,8 +1035,8 @@ struct GeneratedConvert2 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1105,8 +1105,8 @@ struct GeneratedConvert3 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range l(op0->getOperands());
     ::mlir::Operation::operand_range r(op0->getOperands());
+    ::mlir::Operation::operand_range l(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1175,8 +1175,8 @@ struct GeneratedConvert4 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range l(op0->getOperands());
     ::mlir::Operation::operand_range r(op0->getOperands());
+    ::mlir::Operation::operand_range l(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1245,8 +1245,8 @@ struct GeneratedConvert5 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range input(op0->getOperands());
     ::mlir::Operation::operand_range paddings(op0->getOperands());
+    ::mlir::Operation::operand_range input(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1301,8 +1301,8 @@ struct GeneratedConvert6 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::TF::RoundOp res;
     ::mlir::Operation::operand_range input(op0->getOperands());
+    ::mlir::TF::RoundOp res;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1349,8 +1349,8 @@ struct GeneratedConvert7 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::TF::RoundOp res;
     ::mlir::Operation::operand_range input(op0->getOperands());
+    ::mlir::TF::RoundOp res;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1445,8 +1445,8 @@ struct GeneratedConvert8 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match

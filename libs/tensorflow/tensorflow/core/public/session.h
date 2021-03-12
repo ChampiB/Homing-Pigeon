@@ -19,7 +19,6 @@ limitations under the License.
 #include <string>
 #include <vector>
 
-#include "tensorflow/core/platform/macros.h"
 #include "tensorflow/core/framework/device_attributes.pb.h"
 #include "tensorflow/core/framework/graph.pb.h"
 #include "tensorflow/core/framework/tensor.h"
@@ -312,8 +311,7 @@ class Session {
 /// `*out_session`, the caller will take ownership of the returned
 /// `*out_session`, and this function will return `OK()`. Otherwise, this
 /// function will return an error status and set *out_session to nullptr.
-Status NewSession(const SessionOptions& options,
-                            Session** out_session);
+Status NewSession(const SessionOptions& options, Session** out_session);
 
 /// \brief Resets resource containers associated with a target.
 ///

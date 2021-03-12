@@ -15,19 +15,19 @@ struct FuseMulAndConv2D : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
+    ::mlir::Attribute mul_value;
+    ::mlir::ArrayAttr dilations;
+    ::mlir::ArrayAttr explicit_padding;
+    ::mlir::StringAttr padding;
     ::mlir::ArrayAttr strides;
     ::mlir::Attribute filter_value;
-    ::mlir::TF::MulOp mul;
     ::mlir::BoolAttr use_cudnn;
     ConstantOp filter;
-    ::mlir::TF::Conv2DOp conv;
-    ::mlir::Operation::operand_range input(op0->getOperands());
-    ::mlir::StringAttr padding;
-    ::mlir::ArrayAttr explicit_padding;
-    ::mlir::StringAttr data_format;
-    ::mlir::ArrayAttr dilations;
     ConstantOp multiplier;
-    ::mlir::Attribute mul_value;
+    ::mlir::Operation::operand_range input(op0->getOperands());
+    ::mlir::StringAttr data_format;
+    ::mlir::TF::Conv2DOp conv;
+    ::mlir::TF::MulOp mul;
     ::mlir::Operation *tblgen_ops[4];
 
     // Match
@@ -212,9 +212,9 @@ struct PassthroughMulAndAddV2 : public ::mlir::RewritePattern {
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
     ::mlir::Attribute bias;
-    ::mlir::TF::AddV2Op output;
-    ::mlir::Operation::operand_range input(op0->getOperands());
     ::mlir::Attribute value;
+    ::mlir::Operation::operand_range input(op0->getOperands());
+    ::mlir::TF::AddV2Op output;
     ::mlir::Operation *tblgen_ops[4];
 
     // Match
@@ -349,11 +349,11 @@ struct PassthroughMulAndBiasAdd : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Attribute bias;
-    ::mlir::TF::BiasAddOp output;
-    ::mlir::Operation::operand_range input(op0->getOperands());
-    ::mlir::Attribute value;
     ::mlir::StringAttr format;
+    ::mlir::Attribute bias;
+    ::mlir::Attribute value;
+    ::mlir::Operation::operand_range input(op0->getOperands());
+    ::mlir::TF::BiasAddOp output;
     ::mlir::Operation *tblgen_ops[4];
 
     // Match

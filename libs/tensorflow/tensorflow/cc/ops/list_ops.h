@@ -22,7 +22,7 @@ namespace ops {
 ///
 /// All list elements must be tensors of dtype element_dtype and shape compatible
 /// with element_shape.
-/// 
+///
 /// handle: an empty tensor list.
 /// element_dtype: the type of elements in the list.
 /// element_shape: a shape compatible with that of elements in the list.
@@ -48,11 +48,11 @@ class EmptyTensorList {
 /// Concats all tensors in the list along the 0th dimension.
 ///
 /// Requires that all tensors have the same shape except the first dimension.
-/// 
+///
 /// input_handle: The input list.
 /// tensor: The concated result.
 /// lengths: Output tensor containing sizes of the 0th dimension of tensors in the list, used for computing the gradient.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -111,7 +111,7 @@ class TensorListConcatLists {
 /// Concats all tensors in the list along the 0th dimension.
 ///
 /// Requires that all tensors have the same shape except the first dimension.
-/// 
+///
 /// input_handle: The input list.
 /// element_shape: The shape of the uninitialized elements in the list. If the first
 ///   dimension is not -1, it is assumed that all list elements have the same
@@ -121,7 +121,7 @@ class TensorListConcatLists {
 ///   is not already set.
 /// tensor: The concated result.
 /// lengths: Output tensor containing sizes of the 0th dimension of tensors in the list, used for computing the gradient.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -165,7 +165,7 @@ class TensorListElementShape {
 /// Creates a TensorList which, when stacked, has the value of `tensor`.
 ///
 /// Each tensor in the result list corresponds to one row of the input tensor.
-/// 
+///
 /// tensor: The input tensor.
 /// output_handle: The list.
 ///
@@ -190,7 +190,7 @@ class TensorListFromTensor {
 ///
 /// Each row in the produced Tensor corresponds to the element in the TensorList
 /// specified by the given index (see `tf.gather`).
-/// 
+///
 /// input_handle: The input tensor list.
 /// indices: The indices used to index into the list.
 /// values: The tensor.
@@ -258,7 +258,7 @@ class TensorListLength {
 /// Returns the last element of the input list as well as a list with all but that element.
 ///
 /// Fails if the list is empty.
-/// 
+///
 /// input_handle: the input list
 /// tensor: the withdrawn last element of the list
 /// element_dtype: the type of elements in the list
@@ -352,10 +352,10 @@ class TensorListReserve {
 
 /// Resizes the list.
 ///
-/// 
+///
 /// input_handle: the input list
 /// size: size of the output list
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -378,7 +378,7 @@ class TensorListResize {
 ///
 /// Each member of the TensorList corresponds to one row of the input tensor,
 /// specified by the given index (see `tf.gather`).
-/// 
+///
 /// tensor: The input tensor.
 /// indices: The indices used to index into the list.
 /// element_shape: The shape of the elements in the list (can be less specified than
@@ -407,7 +407,7 @@ class TensorListScatter {
 ///
 /// Each member of the TensorList corresponds to one row of the input tensor,
 /// specified by the given index (see `tf.gather`).
-/// 
+///
 /// input_handle: The list to scatter into.
 /// tensor: The input tensor.
 /// indices: The indices used to index into the list.
@@ -436,7 +436,7 @@ class TensorListScatterIntoExistingList {
 ///
 /// Each member of the TensorList corresponds to one row of the input tensor,
 /// specified by the given index (see `tf.gather`).
-/// 
+///
 /// tensor: The input tensor.
 /// indices: The indices used to index into the list.
 /// element_shape: The shape of the elements in the list (can be less specified than
@@ -488,7 +488,7 @@ class TensorListSetItem {
 ///
 /// list[i] corresponds to lengths[i] tensors from the input tensor.
 /// The tensor must have rank at least 1 and contain exactly sum(lengths) elements.
-/// 
+///
 /// tensor: The input tensor.
 /// element_shape: A shape compatible with that of elements in the tensor.
 /// lengths: Vector of sizes of the 0th dimension of tensors in the list.
@@ -514,11 +514,11 @@ class TensorListSplit {
 /// Stacks all tensors in the list.
 ///
 /// Requires that all tensors have the same shape.
-/// 
+///
 /// input_handle: the input list
 /// tensor: the gathered result
 /// num_elements: optional. If not -1, the number of elements in the list.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object

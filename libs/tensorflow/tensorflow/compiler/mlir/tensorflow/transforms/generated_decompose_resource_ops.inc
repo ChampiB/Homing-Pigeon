@@ -15,9 +15,9 @@ struct DecomposeAssignAddVariableOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
+    ::mlir::Operation::operand_range value(op0->getOperands());
     ::mlir::Operation::operand_range resource(op0->getOperands());
     ::mlir::TF::AssignAddVariableOp src_op;
-    ::mlir::Operation::operand_range value(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -61,9 +61,9 @@ struct DecomposeAssignSubVariableOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
+    ::mlir::Operation::operand_range value(op0->getOperands());
     ::mlir::Operation::operand_range resource(op0->getOperands());
     ::mlir::TF::AssignSubVariableOp src_op;
-    ::mlir::Operation::operand_range value(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -107,12 +107,12 @@ struct DecomposeResourceApplyAdagrad : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
-    ::mlir::Operation::operand_range grad(op0->getOperands());
-    ::mlir::BoolAttr update_slots;
     ::mlir::BoolAttr use_locking;
+    ::mlir::BoolAttr update_slots;
+    ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -173,13 +173,13 @@ struct DecomposeResourceApplyAdagradV2 : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range epsilon(op0->getOperands());
-    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyAdagradV2Op src_op;
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
-    ::mlir::Operation::operand_range grad(op0->getOperands());
     ::mlir::BoolAttr update_slots;
+    ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::Operation::operand_range epsilon(op0->getOperands());
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::TF::ResourceApplyAdagradV2Op src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -297,18 +297,18 @@ struct DecomposeResourceApplyAdamNesterov : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::BoolAttr use_nesterov;
-    ::mlir::Operation::operand_range m_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyAdamOp src_op;
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range beta1(op0->getOperands());
-    ::mlir::Operation::operand_range v_resource(op0->getOperands());
-    ::mlir::Operation::operand_range beta1_power(op0->getOperands());
-    ::mlir::Operation::operand_range beta2_power(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
-    ::mlir::Operation::operand_range beta2(op0->getOperands());
-    ::mlir::Operation::operand_range epsilon(op0->getOperands());
     ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::Operation::operand_range epsilon(op0->getOperands());
+    ::mlir::Operation::operand_range beta2(op0->getOperands());
+    ::mlir::Operation::operand_range beta1(op0->getOperands());
+    ::mlir::BoolAttr use_nesterov;
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range beta2_power(op0->getOperands());
+    ::mlir::Operation::operand_range v_resource(op0->getOperands());
+    ::mlir::Operation::operand_range m_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::Operation::operand_range beta1_power(op0->getOperands());
+    ::mlir::TF::ResourceApplyAdamOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -586,18 +586,18 @@ struct DecomposeResourceApplyAdamNonNesterov : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::BoolAttr use_nesterov;
-    ::mlir::Operation::operand_range m_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyAdamOp src_op;
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range beta1(op0->getOperands());
-    ::mlir::Operation::operand_range v_resource(op0->getOperands());
-    ::mlir::Operation::operand_range beta1_power(op0->getOperands());
-    ::mlir::Operation::operand_range beta2_power(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
-    ::mlir::Operation::operand_range beta2(op0->getOperands());
-    ::mlir::Operation::operand_range epsilon(op0->getOperands());
     ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::Operation::operand_range epsilon(op0->getOperands());
+    ::mlir::Operation::operand_range beta2(op0->getOperands());
+    ::mlir::Operation::operand_range beta1(op0->getOperands());
+    ::mlir::BoolAttr use_nesterov;
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range beta2_power(op0->getOperands());
+    ::mlir::Operation::operand_range v_resource(op0->getOperands());
+    ::mlir::Operation::operand_range m_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::Operation::operand_range beta1_power(op0->getOperands());
+    ::mlir::TF::ResourceApplyAdamOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -839,17 +839,17 @@ struct DecomposeResourceApplyCenteredRMSProp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range mom_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyCenteredRMSPropOp src_op;
+    ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::Operation::operand_range epsilon(op0->getOperands());
     ::mlir::Operation::operand_range momentum(op0->getOperands());
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::Operation::operand_range rho(op0->getOperands());
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range mom_resource(op0->getOperands());
     ::mlir::Operation::operand_range mg_resource(op0->getOperands());
     ::mlir::Operation::operand_range ms_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
-    ::mlir::Operation::operand_range rho(op0->getOperands());
-    ::mlir::Operation::operand_range epsilon(op0->getOperands());
-    ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
     ::mlir::BoolAttr use_locking;
+    ::mlir::TF::ResourceApplyCenteredRMSPropOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1086,10 +1086,10 @@ struct DecomposeResourceApplyGradientDescentOp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
+    ::mlir::Operation::operand_range delta(op0->getOperands());
+    ::mlir::Operation::operand_range alpha(op0->getOperands());
     ::mlir::Operation::operand_range resource(op0->getOperands());
     ::mlir::TF::ResourceApplyGradientDescentOp src_op;
-    ::mlir::Operation::operand_range alpha(op0->getOperands());
-    ::mlir::Operation::operand_range delta(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1152,13 +1152,13 @@ struct DecomposeResourceApplyKerasMomentumOpNesterov : public ::mlir::RewritePat
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::BoolAttr use_nesterov;
-    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyKerasMomentumOp src_op;
     ::mlir::Operation::operand_range momentum(op0->getOperands());
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
     ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::BoolAttr use_nesterov;
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::TF::ResourceApplyKerasMomentumOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1269,13 +1269,13 @@ struct DecomposeResourceApplyKerasMomentumOpNonNesterov : public ::mlir::Rewrite
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::BoolAttr use_nesterov;
-    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyKerasMomentumOp src_op;
     ::mlir::Operation::operand_range momentum(op0->getOperands());
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
     ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::BoolAttr use_nesterov;
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::TF::ResourceApplyKerasMomentumOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1368,13 +1368,13 @@ struct DecomposeResourceApplyMomentumOpNesterov : public ::mlir::RewritePattern 
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::BoolAttr use_nesterov;
-    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyMomentumOp src_op;
     ::mlir::Operation::operand_range momentum(op0->getOperands());
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
     ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::BoolAttr use_nesterov;
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::TF::ResourceApplyMomentumOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1494,13 +1494,13 @@ struct DecomposeResourceApplyMomentumOpNonNesterov : public ::mlir::RewritePatte
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::BoolAttr use_nesterov;
-    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyMomentumOp src_op;
     ::mlir::Operation::operand_range momentum(op0->getOperands());
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
     ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::BoolAttr use_nesterov;
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range accum_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
+    ::mlir::TF::ResourceApplyMomentumOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1593,16 +1593,16 @@ struct DecomposeResourceApplyRMSProp : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range epsilon(op0->getOperands());
-    ::mlir::Operation::operand_range mom_resource(op0->getOperands());
-    ::mlir::TF::ResourceApplyRMSPropOp src_op;
-    ::mlir::Operation::operand_range momentum(op0->getOperands());
-    ::mlir::Operation::operand_range var_resource(op0->getOperands());
-    ::mlir::Operation::operand_range ms_resource(op0->getOperands());
-    ::mlir::Operation::operand_range lr(op0->getOperands());
-    ::mlir::Operation::operand_range rho(op0->getOperands());
     ::mlir::Operation::operand_range grad(op0->getOperands());
+    ::mlir::Operation::operand_range epsilon(op0->getOperands());
+    ::mlir::Operation::operand_range momentum(op0->getOperands());
+    ::mlir::Operation::operand_range rho(op0->getOperands());
+    ::mlir::Operation::operand_range lr(op0->getOperands());
+    ::mlir::Operation::operand_range mom_resource(op0->getOperands());
+    ::mlir::Operation::operand_range ms_resource(op0->getOperands());
+    ::mlir::Operation::operand_range var_resource(op0->getOperands());
     ::mlir::BoolAttr use_locking;
+    ::mlir::TF::ResourceApplyRMSPropOp src_op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1773,11 +1773,11 @@ struct DecomposeResourceGather : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range indices(op0->getOperands());
-    ::mlir::TF::ResourceGatherOp old_result;
-    ::mlir::Operation::operand_range resource(op0->getOperands());
     ::mlir::IntegerAttr batch_dims;
+    ::mlir::Operation::operand_range indices(op0->getOperands());
     ::mlir::BoolAttr validate_indices;
+    ::mlir::Operation::operand_range resource(op0->getOperands());
+    ::mlir::TF::ResourceGatherOp old_result;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -1842,9 +1842,9 @@ struct DecomposeResourceScatterUpdate : public ::mlir::RewritePattern {
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
     ::mlir::Operation::operand_range updates(op0->getOperands());
+    ::mlir::Operation::operand_range indices(op0->getOperands());
     ::mlir::Operation::operand_range resource(op0->getOperands());
     ::mlir::TF::ResourceScatterUpdateOp src_op;
-    ::mlir::Operation::operand_range indices(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match

@@ -15,8 +15,8 @@ struct UnaryEinsumToEinsum : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range operand(op0->getOperands());
     ::mlir::StringAttr equation;
+    ::mlir::Operation::operand_range operand(op0->getOperands());
     ::mlir::Operation *tblgen_ops[1];
 
     // Match

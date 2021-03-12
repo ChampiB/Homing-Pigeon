@@ -29,7 +29,7 @@ namespace internal {
 /// ```python
 /// tf.math.cumulative_logsumexp([a, b, c])  # => [a, log(exp(a) + exp(b)), log(exp(a) + exp(b) + exp(c))]
 /// ```
-/// 
+///
 /// By setting the `exclusive` kwarg to `True`, an exclusive cumulative log-sum-exp is
 /// performed instead:
 /// ```python
@@ -38,7 +38,7 @@ namespace internal {
 /// Note that the neutral element of the log-sum-exp operation is `-inf`,
 /// however, for performance reasons, the minimal value representable by the
 /// floating point type is used instead.
-/// 
+///
 /// By setting the `reverse` kwarg to `True`, the cumulative log-sum-exp is performed in the
 /// opposite direction.
 ///
@@ -145,9 +145,9 @@ class InvGrad {
 /// A sequence of `num` evenly-spaced values are generated beginning at `start`.
 /// If `num > 1`, the values in the sequence increase by `stop - start / num - 1`,
 /// so that the last one is exactly `stop`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// tf.linspace(10.0, 12.0, 3, name="linspace") => [ 10.0  11.0  12.0]
 /// ```

@@ -311,7 +311,6 @@ std::pair<unsigned, unsigned> DynamicMemRefCastOp::getODSResultIndexAndLength(un
 }
 
 void DynamicMemRefCastOp::build(::mlir::OpBuilder &odsBuilder, ::mlir::OperationState &odsState, MemRefType resultType, Value operand, ValueRange sizes, ValueRange strides) {
-
       odsState.addOperands(operand);
       odsState.addOperands(sizes);
       odsState.addOperands(strides);
@@ -755,7 +754,6 @@ std::pair<unsigned, unsigned> StaticMemRefCastOp::getODSResultIndexAndLength(uns
 }
 
 void StaticMemRefCastOp::build(::mlir::OpBuilder &odsBuilder, ::mlir::OperationState &odsState, MemRefType resultType, Value operand) {
-
       odsState.addOperands(operand);
       odsState.types.push_back(resultType);
     

@@ -634,7 +634,6 @@ void LaunchOp::deviceAttr(::mlir::StringAttr attr) {
 
 void LaunchOp::build(OpBuilder &builder, OperationState &result,
                 StringAttr device, ArrayRef<Type> result_types) {
-
         result.addAttribute("device", device);
         result.addTypes(result_types);
         result.addRegion();
@@ -1198,7 +1197,6 @@ std::pair<unsigned, unsigned> ReturnOp::getODSResultIndexAndLength(unsigned inde
 }
 
 void ReturnOp::build(OpBuilder &builder, OperationState &result) {
-
       build(builder, result, {});
     
 }

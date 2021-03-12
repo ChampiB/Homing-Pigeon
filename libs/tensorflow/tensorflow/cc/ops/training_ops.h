@@ -348,16 +348,16 @@ class ApplyAddSign {
 /// (i.e., the variance) for normalization, as opposed to regular RMSProp, which
 /// uses the (uncentered) second moment. This often helps with training, but is
 /// slightly more expensive in terms of computation and memory.
-/// 
+///
 /// Note that in dense implementation of this algorithm, mg, ms, and mom will
 /// update even if the grad is zero, but in this sparse implementation, mg, ms,
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// mean_grad = decay * mean_grad + (1-decay) * gradient
-/// 
+///
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon - mean_grad ** 2)
-/// 
+///
 /// mg <- rho * mg_{t-1} + (1-rho) * grad
 /// ms <- rho * ms_{t-1} + (1-rho) * grad * grad
 /// mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms - mg * mg + epsilon)
@@ -626,7 +626,7 @@ class ApplyGradientDescent {
 /// Update '*var' according to the momentum scheme.
 ///
 /// Set use_nesterov = True if you want to use Nesterov momentum.
-/// 
+///
 /// accum = accum * momentum + grad
 /// var -= lr * accum
 ///
@@ -879,10 +879,10 @@ class ApplyProximalGradientDescent {
 /// Note that in dense implementation of this algorithm, ms and mom will
 /// update even if the grad is zero, but in this sparse implementation, ms
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon)
-/// 
+///
 /// ms <- rho * ms_{t-1} + (1-rho) * grad * grad
 /// mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms + epsilon)
 /// var <- var - mom
@@ -1337,16 +1337,16 @@ class ResourceApplyAddSign {
 /// (i.e., the variance) for normalization, as opposed to regular RMSProp, which
 /// uses the (uncentered) second moment. This often helps with training, but is
 /// slightly more expensive in terms of computation and memory.
-/// 
+///
 /// Note that in dense implementation of this algorithm, mg, ms, and mom will
 /// update even if the grad is zero, but in this sparse implementation, mg, ms,
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// mean_grad = decay * mean_grad + (1-decay) * gradient
-/// 
+///
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon - mean_grad ** 2)
-/// 
+///
 /// mg <- rho * mg_{t-1} + (1-rho) * grad
 /// ms <- rho * ms_{t-1} + (1-rho) * grad * grad
 /// mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms - mg * mg + epsilon)
@@ -1610,7 +1610,7 @@ class ResourceApplyGradientDescent {
 /// Update '*var' according to the momentum scheme.
 ///
 /// Set use_nesterov = True if you want to use Nesterov momentum.
-/// 
+///
 /// accum = accum * momentum - lr * grad
 /// var += accum
 ///
@@ -1685,7 +1685,7 @@ class ResourceApplyKerasMomentum {
 /// Update '*var' according to the momentum scheme.
 ///
 /// Set use_nesterov = True if you want to use Nesterov momentum.
-/// 
+///
 /// accum = accum * momentum + grad
 /// var -= lr * accum
 ///
@@ -1935,10 +1935,10 @@ class ResourceApplyProximalGradientDescent {
 /// Note that in dense implementation of this algorithm, ms and mom will
 /// update even if the grad is zero, but in this sparse implementation, ms
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon)
-/// 
+///
 /// ms <- rho * ms_{t-1} + (1-rho) * grad * grad
 /// mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms + epsilon)
 /// var <- var - mom
@@ -2188,15 +2188,15 @@ class ResourceSparseApplyAdagradDA {
 /// (i.e., the variance) for normalization, as opposed to regular RMSProp, which
 /// uses the (uncentered) second moment. This often helps with training, but is
 /// slightly more expensive in terms of computation and memory.
-/// 
+///
 /// Note that in dense implementation of this algorithm, mg, ms, and mom will
 /// update even if the grad is zero, but in this sparse implementation, mg, ms,
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// mean_grad = decay * mean_grad + (1-decay) * gradient
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon - mean_grad ** 2)
-/// 
+///
 /// ms <- rho * ms_{t-1} + (1-rho) * grad * grad
 /// mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms + epsilon)
 /// var <- var - mom
@@ -2426,9 +2426,9 @@ class ResourceSparseApplyFtrlV2 {
 /// Update relevant entries in '*var' and '*accum' according to the momentum scheme.
 ///
 /// Set use_nesterov = True if you want to use Nesterov momentum.
-/// 
+///
 /// That is for rows we have grad for, we update var and accum as follows:
-/// 
+///
 /// accum = accum * momentum - lr * grad
 /// var += accum
 ///
@@ -2507,9 +2507,9 @@ class ResourceSparseApplyKerasMomentum {
 /// Update relevant entries in '*var' and '*accum' according to the momentum scheme.
 ///
 /// Set use_nesterov = True if you want to use Nesterov momentum.
-/// 
+///
 /// That is for rows we have grad for, we update var and accum as follows:
-/// 
+///
 /// accum = accum * momentum + grad
 /// var -= lr * accum
 ///
@@ -2714,10 +2714,10 @@ class ResourceSparseApplyProximalGradientDescent {
 /// Note that in dense implementation of this algorithm, ms and mom will
 /// update even if the grad is zero, but in this sparse implementation, ms
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon)
-/// 
+///
 /// ms <- rho * ms_{t-1} + (1-rho) * grad * grad
 /// mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms + epsilon)
 /// var <- var - mom
@@ -2973,15 +2973,15 @@ class SparseApplyAdagradDA {
 /// (i.e., the variance) for normalization, as opposed to regular RMSProp, which
 /// uses the (uncentered) second moment. This often helps with training, but is
 /// slightly more expensive in terms of computation and memory.
-/// 
+///
 /// Note that in dense implementation of this algorithm, mg, ms, and mom will
 /// update even if the grad is zero, but in this sparse implementation, mg, ms,
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// mean_grad = decay * mean_grad + (1-decay) * gradient
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon - mean_grad ** 2)
-/// 
+///
 /// $$ms <- rho * ms_{t-1} + (1-rho) * grad * grad$$
 /// $$mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms + epsilon)$$
 /// $$var <- var - mom$$
@@ -3214,9 +3214,9 @@ class SparseApplyFtrlV2 {
 /// Update relevant entries in '*var' and '*accum' according to the momentum scheme.
 ///
 /// Set use_nesterov = True if you want to use Nesterov momentum.
-/// 
+///
 /// That is for rows we have grad for, we update var and accum as follows:
-/// 
+///
 /// $$accum = accum * momentum + grad$$
 /// $$var -= lr * accum$$
 ///
@@ -3421,10 +3421,10 @@ class SparseApplyProximalGradientDescent {
 /// Note that in dense implementation of this algorithm, ms and mom will
 /// update even if the grad is zero, but in this sparse implementation, ms
 /// and mom will not update in iterations during which the grad is zero.
-/// 
+///
 /// mean_square = decay * mean_square + (1-decay) * gradient ** 2
 /// Delta = learning_rate * gradient / sqrt(mean_square + epsilon)
-/// 
+///
 /// $$ms <- rho * ms_{t-1} + (1-rho) * grad * grad$$
 /// $$mom <- momentum * mom_{t-1} + lr * grad / sqrt(ms + epsilon)$$
 /// $$var <- var - mom$$

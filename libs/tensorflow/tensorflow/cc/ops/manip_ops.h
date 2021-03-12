@@ -25,17 +25,17 @@ namespace ops {
 /// elements in the opposite direction. Elements that roll passed the last position
 /// will wrap around to the first and vice versa. Multiple shifts along multiple
 /// axes may be specified.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is [0, 1, 2, 3, 4]
 /// roll(t, shift=2, axis=0) ==> [3, 4, 0, 1, 2]
-/// 
+///
 /// # shifting along multiple dimensions
 /// # 't' is [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]
 /// roll(t, shift=[1, -2], axis=[0, 1]) ==> [[7, 8, 9, 5, 6], [2, 3, 4, 0, 1]]
-/// 
+///
 /// # shifting along the same axis multiple times
 /// # 't' is [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]
 /// roll(t, shift=[2, -3], axis=[1, 1]) ==> [[1, 2, 3, 4, 0], [6, 7, 8, 9, 5]]

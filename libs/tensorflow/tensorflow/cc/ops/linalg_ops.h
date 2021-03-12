@@ -22,14 +22,14 @@ namespace ops {
 ///
 /// The input is a tensor of shape `[..., M, M]` whose inner-most 2 dimensions
 /// form square matrices.
-/// 
+///
 /// The input has to be symmetric and positive definite. Only the lower-triangular
 /// part of the input will be used for this operation. The upper-triangular part
 /// will not be read.
-/// 
+///
 /// The output is a tensor of the same shape as the input
 /// containing the Cholesky decompositions for all input submatrices `[..., :, :]`.
-/// 
+///
 /// **Note**: The gradient computation on GPU is faster for large matrices but
 /// not for large batch dimensions when the submatrices are small. In this
 /// case it might be faster to use the CPU.
@@ -84,7 +84,7 @@ class CholeskyGrad {
 /// Computes the eigenvalues and (optionally) right eigenvectors of each inner matrix in
 /// `input` such that `input[..., :, :] = v[..., :, :] * diag(e[..., :])`. The eigenvalues
 /// are sorted in non-decreasing order.
-/// 
+///
 /// ```python
 /// # a is a tensor.
 /// # e is a tensor of eigenvalues.
@@ -140,43 +140,43 @@ class Eig {
 /// side of the equation. The right-hand side of the equation consists of the
 /// output subscript. The input subscripts and the output subscript should consist
 /// of zero or more named axis labels and at most one ellipsis (`...`).
-/// 
+///
 /// The named axis labels may be any single character other than those having
 /// special meaning, namely `,.->`. The behavior of this Op is undefined if it
 /// receives an ill-formatted equation; since the validation is done at
 /// graph-building time, we omit format validation checks at runtime.
-/// 
+///
 /// Note: This Op is *not* intended to be called by the user; instead users should
 /// call `tf.einsum` directly. It is a hidden Op used by `tf.einsum`.
-/// 
+///
 /// Operations are applied to the input(s) according to the following rules:
-/// 
+///
 ///  (a) Generalized Diagonals: For input dimensions corresponding to axis labels
 ///      appearing more than once in the same input subscript, we take the
 ///      generalized (`k`-dimensional) diagonal.
 ///      For example, in the equation `iii->i` with input shape `[3, 3, 3]`, the
 ///      generalized diagonal would consist of `3` elements at indices `(0, 0, 0)`,
 ///      `(1, 1, 1)` and `(2, 2, 2)` to create a Tensor of shape `[3]`.
-/// 
+///
 ///  (b) Reduction: Axes corresponding to labels appearing only in one input
 ///      subscript but not in the output subscript are summed over prior to Tensor
 ///      contraction.
 ///      For example, in the equation `ab,bc->b`, the axis labels `a` and `c` are
 ///      the reduction axis labels.
-/// 
+///
 ///  (c) Batch Dimensions: Axes corresponding to labels appearing in each of the
 ///      input subscripts and also in the output subscript make up the batch
 ///      dimensions in Tensor contraction. Unnamed axis labels corresponding to
 ///      ellipsis (`...`) also correspond to batch dimensions.
 ///      For example, for the equation denoting batch matrix multiplication,
 ///      `bij,bjk->bik`, the axis label `b` corresponds to a batch dimension.
-/// 
+///
 ///  (d) Contraction: In case of binary einsum, axes corresponding to labels
 ///      appearing in two different inputs (and not in the output) are contracted
 ///      against each other.
 ///      Considering the batch matrix multiplication equation again
 ///      (`bij,bjk->bik`), the contracted axis label is `j`.
-/// 
+///
 ///  (e) Expand Diagonal: If the output subscripts contain repeated (explicit) axis
 ///      labels, the opposite operation of (a) is applied. For example, in the
 ///      equation `i->iii`, and input shape `[3]`, the output of shape `[3, 3, 3]`
@@ -184,33 +184,33 @@ class Eig {
 ///      with values from the input.
 ///      Note: This operation is not supported by `np.einsum` or `tf.einsum`; it is
 ///      provided to enable computing the symbolic gradient of `tf.einsum`.
-/// 
+///
 /// The output subscripts must contain only labels appearing in at least one of the
 /// input subscripts. Furthermore, all dimensions mapping to the same axis label
 /// must be equal.
-/// 
+///
 /// Any of the input and output subscripts may contain at most a single ellipsis
 /// (`...`). These ellipsis are mapped against dimensions not corresponding to any
 /// named axis label. If two inputs contain ellipsis, then they are broadcasted
 /// according to standard NumPy broadcasting
 /// [rules](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html).
-/// 
+///
 /// The broadcasted dimensions are placed in the corresponding location of the
 /// ellipsis in the output subscript. If the broadcasted dimensions are non-empty
 /// and the output subscripts do not contain ellipsis, then an InvalidArgument error
 /// is raised.
-/// 
+///
 /// @compatibility(numpy)
 /// Similar to [`numpy.einsum`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.einsum.html).
-/// 
+///
 /// Comparison with `numpy.einsum`:
-/// 
+///
 ///  * This Op only supports unary and binary forms of `numpy.einsum`.
 ///  * This Op does not support implicit form. (i.e. equations without `->`).
 ///  * This Op also supports repeated indices in the output subscript, which is not
 ///    supported by `numpy.einsum`.
 /// @end_compatibility
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -234,7 +234,7 @@ class Einsum {
 /// Computes the sign and the log of the absolute value of the determinant of
 ///
 /// one or more square matrices.
-/// 
+///
 /// The input is a tensor of shape `[N, M, M]` whose inner-most 2 dimensions
 /// form square matrices. The outputs are two tensors containing the signs and
 /// absolute values of the log determinants for all N input submatrices
@@ -265,18 +265,18 @@ class LogMatrixDeterminant {
 ///
 /// The input is a tensor of shape `[..., M, M]` whose inner-most 2 dimensions
 /// form square matrices.
-/// 
+///
 /// The input has to be invertible.
-/// 
+///
 /// The output consists of two tensors LU and P containing the LU decomposition
 /// of all input submatrices `[..., :, :]`. LU encodes the lower triangular and
 /// upper triangular factors.
-/// 
+///
 /// For each input submatrix of shape `[M, M]`, L is a lower triangular matrix of
 /// shape `[M, M]` with unit diagonal whose entries correspond to the strictly lower
 /// triangular part of LU. U is a upper triangular matrix of shape `[M, M]` whose
 /// entries correspond to the upper triangular part, including the diagonal, of LU.
-/// 
+///
 /// P represents a permutation matrix encoded as a list of indices each between `0`
 /// and `M-1`, inclusive. If P_mat denotes the permutation matrix corresponding to
 /// P, then the L, U and P satisfies P_mat * input = L * U.
@@ -349,13 +349,13 @@ class MatrixDeterminant {
 
 /// Computes the inverse of one or more square invertible matrices or their adjoints (conjugate transposes).
 ///
-/// 
+///
 /// The input is a tensor of shape `[..., M, M]` whose inner-most 2 dimensions
 /// form square matrices. The output is a tensor of the same shape as the input
 /// containing the inverse for all input submatrices `[..., :, :]`.
-/// 
+///
 /// The op uses LU decomposition with partial pivoting to compute the inverses.
-/// 
+///
 /// If a matrix is not invertible there is no guarantee what the op does. It
 /// may detect the condition and raise an exception or it may simply return a
 /// garbage result.
@@ -366,7 +366,7 @@ class MatrixDeterminant {
 ///
 /// Returns:
 /// * `Output`: Shape is `[..., M, M]`.
-/// 
+///
 /// @compatibility(numpy)
 /// Equivalent to np.linalg.inv
 /// @end_compatibility
@@ -459,15 +459,15 @@ class MatrixSolve {
 /// each of the equations
 /// `matrix[..., :, :]` * `output[..., :, :]` = `rhs[..., :, :]`
 /// in the least squares sense.
-/// 
+///
 /// We use the following notation for (complex) matrix and right-hand sides
 /// in the batch:
-/// 
+///
 /// `matrix`=\\(A \in \mathbb{C}^{m \times n}\\),
 /// `rhs`=\\(B  \in \mathbb{C}^{m \times k}\\),
 /// `output`=\\(X  \in \mathbb{C}^{n \times k}\\),
 /// `l2_regularizer`=\\(\lambda \in \mathbb{R}\\).
-/// 
+///
 /// If `fast` is `True`, then the solution is computed by solving the normal
 /// equations using Cholesky decomposition. Specifically, if \\(m \ge n\\) then
 /// \\(X = (A^H A + \lambda I)^{-1} A^H B\\), which solves the least-squares
@@ -480,7 +480,7 @@ class MatrixSolve {
 /// when \\(A\\) is numerically full rank and has a condition number
 /// \\(\mathrm{cond}(A) \lt \frac{1}{\sqrt{\epsilon_{mach} } }\\) or \\(\lambda\\) is
 /// sufficiently large.
-/// 
+///
 /// If `fast` is `False` an algorithm based on the numerically robust complete
 /// orthogonal decomposition is used. This computes the minimum-norm
 /// least-squares solution, even when \\(A\\) is rank deficient. This path is
@@ -492,7 +492,7 @@ class MatrixSolve {
 /// * matrix: Shape is `[..., M, N]`.
 /// * rhs: Shape is `[..., M, K]`.
 /// * l2_regularizer: Scalar tensor.
-/// 
+///
 /// @compatibility(numpy)
 /// Equivalent to np.linalg.lstsq
 /// @end_compatibility
@@ -532,17 +532,17 @@ class MatrixSolveLs {
 /// Computes the matrix square root of one or more square matrices:
 ///
 /// matmul(sqrtm(A), sqrtm(A)) = A
-/// 
+///
 /// The input matrix should be invertible. If the input matrix is real, it should
 /// have no eigenvalues which are real and negative (pairs of complex conjugate
 /// eigenvalues are allowed).
-/// 
+///
 /// The matrix square root is computed by first reducing the matrix to
 /// quasi-triangular form with the real Schur decomposition. The square root
 /// of the quasi-triangular matrix is then computed directly. Details of
 /// the algorithm can be found in: Nicholas J. Higham, "Computing real
 /// square roots of a real matrix", Linear Algebra Appl., 1987.
-/// 
+///
 /// The input is a tensor of shape `[..., M, M]` whose inner-most 2 dimensions
 /// form square matrices. The output is a tensor of the same shape as the input
 /// containing the matrix square root for all input submatrices `[..., :, :]`.
@@ -553,7 +553,7 @@ class MatrixSolveLs {
 ///
 /// Returns:
 /// * `Output`: Shape is `[..., M, M]`.
-/// 
+///
 /// @compatibility(scipy)
 /// Equivalent to scipy.linalg.sqrtm
 /// @end_compatibility
@@ -570,36 +570,36 @@ class MatrixSquareRoot {
 
 /// Solves systems of linear equations with upper or lower triangular matrices by backsubstitution.
 ///
-/// 
+///
 /// `matrix` is a tensor of shape `[..., M, M]` whose inner-most 2 dimensions form
 /// square matrices. If `lower` is `True` then the strictly upper triangular part
 /// of each inner-most matrix is assumed to be zero and not accessed.
 /// If `lower` is False then the strictly lower triangular part of each inner-most
 /// matrix is assumed to be zero and not accessed.
 /// `rhs` is a tensor of shape `[..., M, N]`.
-/// 
+///
 /// The output is a tensor of shape `[..., M, N]`. If `adjoint` is
 /// `True` then the innermost matrices in `output` satisfy matrix equations
 /// `matrix[..., :, :] * output[..., :, :] = rhs[..., :, :]`.
 /// If `adjoint` is `False` then the strictly then the  innermost matrices in
 /// `output` satisfy matrix equations
 /// `adjoint(matrix[..., i, k]) * output[..., k, j] = rhs[..., i, j]`.
-/// 
+///
 /// Note, the batch shapes for the inputs only need to broadcast.
-/// 
+///
 /// Example:
 /// ```python
-/// 
+///
 /// a = tf.constant([[3,  0,  0,  0],
 ///                  [2,  1,  0,  0],
 ///                  [1,  0,  1,  0],
 ///                  [1,  1,  1,  1]], dtype=tf.float32)
-/// 
+///
 /// b = tf.constant([[4],
 ///                  [2],
 ///                  [4],
 ///                  [2]], dtype=tf.float32)
-/// 
+///
 /// x = tf.linalg.triangular_solve(a, b, lower=True)
 /// x
 /// # <tf.Tensor: shape=(4, 1), dtype=float32, numpy=
@@ -607,7 +607,7 @@ class MatrixSquareRoot {
 /// #        [-0.66666675],
 /// #        [ 2.6666665 ],
 /// #        [-1.3333331 ]], dtype=float32)>
-/// 
+///
 /// # in python3 one can use `a@x`
 /// tf.matmul(a, x)
 /// # <tf.Tensor: shape=(4, 1), dtype=float32, numpy=
@@ -627,7 +627,7 @@ class MatrixSquareRoot {
 /// lower or upper triangular.
 /// * adjoint: Boolean indicating whether to solve with `matrix` or its (block-wise)
 ///          adjoint.
-/// 
+///
 /// @compatibility(numpy)
 /// Equivalent to scipy.linalg.solve_triangular
 /// @end_compatibility
@@ -650,7 +650,7 @@ class MatrixTriangularSolve {
 
     /// Boolean indicating whether to solve with `matrix` or its (block-wise)
     ///          adjoint.
-    /// 
+    ///
     /// @compatibility(numpy)
     /// Equivalent to scipy.linalg.solve_triangular
     /// @end_compatibility
@@ -689,11 +689,11 @@ class MatrixTriangularSolve {
 ///
 /// Computes the QR decomposition of each inner matrix in `tensor` such that
 /// `tensor[..., :, :] = q[..., :, :] * r[..., :,:])`
-/// 
+///
 /// Currently, the gradient for the QR decomposition is well-defined only when
 /// the first `P` columns of the inner matrix are linearly independent, where
 /// `P` is the minimum of `M` and `N`, the 2 inner-most dimmensions of `tensor`.
-/// 
+///
 /// ```python
 /// # a is a tensor.
 /// # q is a tensor of orthonormal matrices.
@@ -751,7 +751,7 @@ class Qr {
 /// Computes the eigenvalues and (optionally) eigenvectors of each inner matrix in
 /// `input` such that `input[..., :, :] = v[..., :, :] * diag(e[..., :])`. The eigenvalues
 /// are sorted in non-decreasing order.
-/// 
+///
 /// ```python
 /// # a is a tensor.
 /// # e is a tensor of eigenvalues.
@@ -804,7 +804,7 @@ class SelfAdjointEig {
 ///
 /// Computes the SVD of each inner matrix in `input` such that
 /// `input[..., :, :] = u[..., :, :] * diag(s[..., :, :]) * transpose(v[..., :, :])`
-/// 
+///
 /// ```python
 /// # a is a tensor containing a batch of matrices.
 /// # s is a tensor of singular values for each matrix.

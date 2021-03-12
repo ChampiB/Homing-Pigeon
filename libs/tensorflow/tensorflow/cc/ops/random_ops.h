@@ -241,7 +241,7 @@ class RandomGamma {
 /// the algorithm by Hormann is used to acquire samples via
 /// transformation-rejection.
 /// See http://www.sciencedirect.com/science/article/pii/0167668793909974.
-/// 
+///
 /// Otherwise, Knuth's algorithm is used to acquire samples via multiplying uniform
 /// random variables.
 /// See Donald E. Knuth (1969). Seminumerical Algorithms. The Art of Computer
@@ -326,7 +326,7 @@ class RandomPoissonV2 {
 ///   The tensor is shuffled along dimension 0, such that each `value[j]` is mapped
 ///   to one and only one `output[i]`. For example, a mapping that might occur for a
 ///   3x2 tensor is:
-/// 
+///
 /// ```
 /// [[1, 2],       [[5, 6],
 ///  [3, 4],  ==>   [1, 2],
@@ -523,7 +523,7 @@ class RandomUniform {
 /// The generated values are uniform integers in the range `[minval, maxval)`.
 /// The lower bound `minval` is included in the range, while the upper bound
 /// `maxval` is excluded.
-/// 
+///
 /// The random integers are slightly biased unless `maxval - minval` is an exact
 /// power of two.  The bias is small for values of `maxval - minval` significantly
 /// smaller than the range of the output (either `2^32` or `2^64`).

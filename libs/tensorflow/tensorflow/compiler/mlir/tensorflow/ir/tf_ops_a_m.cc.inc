@@ -1014,7 +1014,6 @@ bool AddOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void AddOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -1188,7 +1187,6 @@ bool AddV2Op::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void AddV2Op::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -5550,7 +5548,6 @@ bool Atan2Op::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void Atan2Op::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -10357,7 +10354,6 @@ bool BitwiseAndOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void BitwiseAndOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -10529,7 +10525,6 @@ bool BitwiseOrOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void BitwiseOrOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -10701,7 +10696,6 @@ bool BitwiseXorOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void BitwiseXorOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -25170,7 +25164,6 @@ bool DivNoNanOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void DivNoNanOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -25342,7 +25335,6 @@ bool DivOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void DivOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -31317,7 +31309,6 @@ bool FloorDivOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void FloorDivOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -31489,7 +31480,6 @@ bool FloorModOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void FloorModOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -35273,7 +35263,6 @@ bool GreaterEqualOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void GreaterEqualOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   Type resultType;
   if (x.getType().isa<UnrankedTensorType>() ||
       y.getType().isa<UnrankedTensorType>()) {
@@ -35456,7 +35445,6 @@ bool GreaterOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void GreaterOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   Type resultType;
   if (x.getType().isa<UnrankedTensorType>() ||
       y.getType().isa<UnrankedTensorType>()) {
@@ -37611,7 +37599,6 @@ void IfRegionOp::is_statelessAttr(::mlir::BoolAttr attr) {
 }
 
 void IfRegionOp::build(OpBuilder &builder, OperationState &result, TypeRange resultTypes, ValueRange operands, llvm::ArrayRef<::mlir::NamedAttribute> attributes, unsigned numRegions) {
-
       assert(numRegions == 2u && "mismatched number of regions");
       build(builder, result, resultTypes, operands, attributes);
     
@@ -37793,7 +37780,6 @@ bool IgammaGradAOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void IgammaGradAOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -37965,7 +37951,6 @@ bool IgammaOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void IgammaOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -38137,7 +38122,6 @@ bool IgammacOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void IgammacOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -43359,7 +43343,6 @@ bool LeftShiftOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void LeftShiftOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -43749,7 +43732,6 @@ bool LessEqualOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void LessEqualOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   Type resultType;
   if (x.getType().isa<UnrankedTensorType>() ||
       y.getType().isa<UnrankedTensorType>()) {
@@ -43932,7 +43914,6 @@ bool LessOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void LessOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   Type resultType;
   if (x.getType().isa<UnrankedTensorType>() ||
       y.getType().isa<UnrankedTensorType>()) {
@@ -45096,7 +45077,6 @@ std::pair<unsigned, unsigned> LogicalAndOp::getODSResultIndexAndLength(unsigned 
 }
 
 void LogicalAndOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -45387,7 +45367,6 @@ std::pair<unsigned, unsigned> LogicalOrOp::getODSResultIndexAndLength(unsigned i
 }
 
 void LogicalOrOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -51629,7 +51608,6 @@ bool MaximumOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void MaximumOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -52575,7 +52553,6 @@ bool MinimumOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void MinimumOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -53284,7 +53261,6 @@ bool ModOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void ModOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -53456,7 +53432,6 @@ bool MulNoNanOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void MulNoNanOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)
@@ -53628,7 +53603,6 @@ bool MulOp::isDerivedAttribute(::llvm::StringRef name) {
 }
 
 void MulOp::build(OpBuilder &builder, OperationState &result, Value  x, Value  y) {
-
   auto resultType =
       OpTrait::util::getBroadcastedType(x.getType(), y.getType());
   if (!resultType)

@@ -27,14 +27,14 @@ namespace internal {
 /// `offsets` from the input tensor. If the windows only partially
 /// overlaps the inputs, the non overlapping areas will be filled with
 /// random noise.
-/// 
+///
 /// The result is a 4-D tensor of shape `[batch_size, glimpse_height,
 /// glimpse_width, channels]`. The channels and batch dimensions are the
 /// same as that of the input tensor. The height and width of the output
 /// windows are specified in the `size` parameter.
-/// 
+///
 /// The argument `normalized` and `centered` controls how the windows are built:
-/// 
+///
 /// * If the coordinates are normalized but not centered, 0.0 and 1.0
 ///   correspond to the minimum and maximum of each height and width
 ///   dimension.
@@ -292,20 +292,14 @@ class ImageProjectiveTransformV2 {
 /// is one row, the same transformation will be applied to all images.
 /// * output_shape: 1-D Tensor [new_height, new_width].
 /// * fill_value: float, the value to be filled when fill_mode is constant".
-/// END 
-///   }
-///   out_arg {
-///     name: "transformed_images"
-///     description: <<END
-/// 4-D with shape
-/// `[batch, new_height, new_width, channels]`.
 /// * interpolation: Interpolation method, "NEAREST" or "BILINEAR".
 ///
 /// Optional attributes (see `Attrs`):
 /// * fill_mode: Fill mode, "REFLECT", "WRAP", or "CONSTANT".
 ///
 /// Returns:
-/// * `Output`: The transformed_images tensor.
+/// * `Output`: 4-D with shape
+/// `[batch, new_height, new_width, channels]`.
 class ImageProjectiveTransformV3 {
  public:
   /// Optional attribute setters for ImageProjectiveTransformV3

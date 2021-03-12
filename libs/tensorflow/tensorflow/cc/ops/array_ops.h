@@ -21,7 +21,7 @@ namespace ops {
 /// BatchToSpace for 4-D tensors of type T.
 ///
 /// This is a legacy version of the more general BatchToSpaceND.
-/// 
+///
 /// Rearranges (permutes) data from batch into blocks of spatial data, followed by
 /// cropping. This is the reverse transformation of SpaceToBatch. More specifically,
 /// this op outputs a copy of the input tensor where values from the `batch`
@@ -37,71 +37,71 @@ namespace ops {
 /// * crops: 2-D tensor of non-negative integers with shape `[2, 2]`. It specifies
 /// how many elements to crop from the intermediate result across the spatial
 /// dimensions as follows:
-/// 
+///
 ///     crops = [[crop_top, crop_bottom], [crop_left, crop_right]]
 ///
 /// Returns:
 /// * `Output`: 4-D with shape `[batch, height, width, depth]`, where:
-/// 
+///
 ///       height = height_pad - crop_top - crop_bottom
 ///       width = width_pad - crop_left - crop_right
-/// 
+///
 /// The attr `block_size` must be greater than one. It indicates the block size.
-/// 
+///
 /// Some examples:
-/// 
+///
 /// (1) For the following input of shape `[4, 1, 1, 1]` and block_size of 2:
-/// 
+///
 /// ```
 /// [[[[1]]], [[[2]]], [[[3]]], [[[4]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[1, 2, 2, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1], [2]], [[3], [4]]]]
 /// ```
-/// 
+///
 /// (2) For the following input of shape `[4, 1, 1, 3]` and block_size of 2:
-/// 
+///
 /// ```
 /// [[[[1, 2, 3]]], [[[4, 5, 6]]], [[[7, 8, 9]]], [[[10, 11, 12]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[1, 2, 2, 3]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3], [4, 5, 6]],
 ///       [[7, 8, 9], [10, 11, 12]]]]
 /// ```
-/// 
+///
 /// (3) For the following input of shape `[4, 2, 2, 1]` and block_size of 2:
-/// 
+///
 /// ```
 /// x = [[[[1], [3]], [[9], [11]]],
 ///      [[[2], [4]], [[10], [12]]],
 ///      [[[5], [7]], [[13], [15]]],
 ///      [[[6], [8]], [[14], [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[1, 4, 4, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [3],  [4]],
 ///      [[5],   [6],  [7],  [8]],
 ///      [[9],  [10], [11],  [12]],
 ///      [[13], [14], [15],  [16]]]]
 /// ```
-/// 
+///
 /// (4) For the following input of shape `[8, 1, 2, 1]` and block_size of 2:
-/// 
+///
 /// ```
 /// x = [[[[1], [3]]], [[[9], [11]]], [[[2], [4]]], [[[10], [12]]],
 ///      [[[5], [7]]], [[[13], [15]]], [[[6], [8]]], [[[14], [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[2, 2, 4, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1], [3]], [[5], [7]]],
 ///      [[[2], [4]], [[10], [12]]],
@@ -139,104 +139,104 @@ class BatchToSpace {
 ///   dimension `i + 1`, which corresponds to spatial dimension `i`.  It is
 ///   required that
 ///   `crop_start[i] + crop_end[i] <= block_shape[i] * input_shape[i + 1]`.
-/// 
+///
 /// This operation is equivalent to the following steps:
-/// 
+///
 /// 1. Reshape `input` to `reshaped` of shape:
 ///      [block_shape[0], ..., block_shape[M-1],
 ///       batch / prod(block_shape),
 ///       input_shape[1], ..., input_shape[N-1]]
-/// 
+///
 /// 2. Permute dimensions of `reshaped` to produce `permuted` of shape
 ///      [batch / prod(block_shape),
-/// 
+///
 ///       input_shape[1], block_shape[0],
 ///       ...,
 ///       input_shape[M], block_shape[M-1],
-/// 
+///
 ///       input_shape[M+1], ..., input_shape[N-1]]
-/// 
+///
 /// 3. Reshape `permuted` to produce `reshaped_permuted` of shape
 ///      [batch / prod(block_shape),
-/// 
+///
 ///       input_shape[1] * block_shape[0],
 ///       ...,
 ///       input_shape[M] * block_shape[M-1],
-/// 
+///
 ///       input_shape[M+1],
 ///       ...,
 ///       input_shape[N-1]]
-/// 
+///
 /// 4. Crop the start and end of dimensions `[1, ..., M]` of
 ///    `reshaped_permuted` according to `crops` to produce the output of shape:
 ///      [batch / prod(block_shape),
-/// 
+///
 ///       input_shape[1] * block_shape[0] - crops[0,0] - crops[0,1],
 ///       ...,
 ///       input_shape[M] * block_shape[M-1] - crops[M-1,0] - crops[M-1,1],
-/// 
+///
 ///       input_shape[M+1], ..., input_shape[N-1]]
-/// 
+///
 /// Some examples:
-/// 
+///
 /// (1) For the following input of shape `[4, 1, 1, 1]`, `block_shape = [2, 2]`, and
 ///     `crops = [[0, 0], [0, 0]]`:
-/// 
+///
 /// ```
 /// [[[[1]]], [[[2]]], [[[3]]], [[[4]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[1, 2, 2, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1], [2]], [[3], [4]]]]
 /// ```
-/// 
+///
 /// (2) For the following input of shape `[4, 1, 1, 3]`, `block_shape = [2, 2]`, and
 ///     `crops = [[0, 0], [0, 0]]`:
-/// 
+///
 /// ```
 /// [[[[1, 2, 3]]], [[[4, 5, 6]]], [[[7, 8, 9]]], [[[10, 11, 12]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[1, 2, 2, 3]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3], [4, 5, 6]],
 ///       [[7, 8, 9], [10, 11, 12]]]]
 /// ```
-/// 
+///
 /// (3) For the following input of shape `[4, 2, 2, 1]`, `block_shape = [2, 2]`, and
 ///     `crops = [[0, 0], [0, 0]]`:
-/// 
+///
 /// ```
 /// x = [[[[1], [3]], [[9], [11]]],
 ///      [[[2], [4]], [[10], [12]]],
 ///      [[[5], [7]], [[13], [15]]],
 ///      [[[6], [8]], [[14], [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[1, 4, 4, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [3],  [4]],
 ///      [[5],   [6],  [7],  [8]],
 ///      [[9],  [10], [11],  [12]],
 ///      [[13], [14], [15],  [16]]]]
 /// ```
-/// 
+///
 /// (4) For the following input of shape `[8, 1, 3, 1]`, `block_shape = [2, 2]`, and
 ///     `crops = [[0, 0], [2, 0]]`:
-/// 
+///
 /// ```
 /// x = [[[[0], [1], [3]]], [[[0], [9], [11]]],
 ///      [[[0], [2], [4]]], [[[0], [10], [12]]],
 ///      [[[0], [5], [7]]], [[[0], [13], [15]]],
 ///      [[[0], [6], [8]]], [[[0], [14], [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[2, 2, 4, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [3],  [4]],
 ///       [[5],   [6],  [7],  [8]]],
@@ -262,21 +262,21 @@ class BatchToSpaceND {
 ///
 /// Given a tensor `input`, this operation returns a tensor that has the same buffer
 /// data as `input` with datatype `type`.
-/// 
+///
 /// If the input datatype `T` is larger than the output datatype `type` then the
 /// shape changes from [...] to [..., sizeof(`T`)/sizeof(`type`)].
-/// 
+///
 /// If `T` is smaller than `type`, the operator requires that the rightmost
 /// dimension be equal to sizeof(`type`)/sizeof(`T`). The shape then goes from
 /// [..., sizeof(`type`)/sizeof(`T`)] to [...].
-/// 
+///
 /// tf.bitcast() and tf.cast() work differently when real dtype is casted as a complex dtype
 /// (e.g. tf.complex64 or tf.complex128) as tf.cast() make imaginary part 0 while tf.bitcast()
 /// gives module error.
 /// For example,
-/// 
+///
 /// Example 1:
-/// 
+///
 /// >>> a = [1., 2., 3.]
 /// >>> equality_bitcast = tf.bitcast(a, tf.complex128)
 /// Traceback (most recent call last):
@@ -285,14 +285,14 @@ class BatchToSpaceND {
 /// >>> equality_cast = tf.cast(a, tf.complex128)
 /// >>> print(equality_cast)
 /// tf.Tensor([1.+0.j 2.+0.j 3.+0.j], shape=(3,), dtype=complex128)
-/// 
+///
 /// Example 2:
-/// 
+///
 /// >>> tf.bitcast(tf.constant(0xffffffff, dtype=tf.uint32), tf.uint8)
 /// <tf.Tensor: shape=(4,), dtype=uint8, numpy=array([255, 255, 255, 255], dtype=uint8)>
-/// 
+///
 /// Example 3:
-/// 
+///
 /// >>> x = [1., 2., 3.]
 /// >>> y = [0., 2., 3.]
 /// >>> equality= tf.equal(x,y)
@@ -307,7 +307,7 @@ class BatchToSpaceND {
 ///     [[  0   0   0   0]
 ///      [  0   0 128  63]
 ///      [  0   0 128  63]], shape=(3, 4), dtype=uint8)
-/// 
+///
 /// *NOTE*: Bitcast is implemented as a low-level cast, so machines with different
 /// endian orderings will give different results.
 ///
@@ -357,9 +357,9 @@ class BroadcastDynamicShape {
 /// dimension pair they are either equal or one of them is one. When trying
 /// to broadcast a Tensor to a shape, it starts with the trailing dimensions,
 /// and works its way forward.
-/// 
+///
 /// For example,
-/// 
+///
 /// >>> x = tf.constant([1, 2, 3])
 /// >>> y = tf.broadcast_to(x, [3, 3])
 /// >>> print(y)
@@ -367,14 +367,14 @@ class BroadcastDynamicShape {
 ///     [[1 2 3]
 ///      [1 2 3]
 ///      [1 2 3]], shape=(3, 3), dtype=int32)
-/// 
+///
 /// In the above example, the input Tensor with the shape of `[1, 3]`
 /// is broadcasted to output Tensor with shape of `[3, 3]`.
-/// 
+///
 /// When doing broadcasted operations such as multiplying a tensor
 /// by a scalar, broadcasting (usually) confers some time or space
 /// benefit, as the broadcasted tensor is never materialized.
-/// 
+///
 /// However, `broadcast_to` does not carry with it any such benefits.
 /// The newly-created tensor takes the full memory of the broadcasted
 /// shape. (In a graph context, `broadcast_to` might be fused to
@@ -543,7 +543,7 @@ class DeepCopy {
 /// this op outputs a copy of the input tensor where values from the `depth`
 /// dimension are moved in spatial blocks to the `height` and `width` dimensions.
 /// The attr `block_size` indicates the input block size and how the data is moved.
-/// 
+///
 ///   * Chunks of data of size `block_size * block_size` from depth are rearranged
 ///     into non-overlapping blocks of size `block_size x block_size`
 ///   * The width the output tensor is `input_depth * block_size`, whereas the
@@ -552,14 +552,14 @@ class DeepCopy {
 ///     by the high order component of the input channel index.
 ///   * The depth of the input tensor must be divisible by
 ///     `block_size * block_size`.
-/// 
+///
 /// The `data_format` attr specifies the layout of the input and output tensors
 /// with the following options:
 ///   "NHWC": `[ batch, height, width, channels ]`
 ///   "NCHW": `[ batch, channels, height, width ]`
 ///   "NCHW_VECT_C":
 ///       `qint8 [ batch, channels / 4, height, width, 4 ]`
-/// 
+///
 /// It is useful to consider the operation as transforming a 6-D Tensor.
 /// e.g. for data_format = NHWC,
 ///      Each element in the input tensor can be specified via 6 coordinates,
@@ -569,63 +569,63 @@ class DeepCopy {
 ///                         within the output block, oC means output channels).
 ///      The output would be the input transposed to the following layout:
 ///      n,iY,bY,iX,bX,oC
-/// 
+///
 /// This operation is useful for resizing the activations between convolutions
 /// (but keeping all data), e.g. instead of pooling. It is also useful for training
 /// purely convolutional models.
-/// 
+///
 /// For example, given an input of shape `[1, 1, 1, 4]`, data_format = "NHWC" and
 /// block_size = 2:
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3, 4]]]]
-/// 
+///
 /// ```
-/// 
+///
 /// This operation will output a tensor of shape `[1, 2, 2, 1]`:
-/// 
+///
 /// ```
 ///    [[[[1], [2]],
 ///      [[3], [4]]]]
 /// ```
-/// 
+///
 /// Here, the input has a batch of 1 and each batch element has shape `[1, 1, 4]`,
 /// the corresponding output will have 2x2 elements and will have a depth of
 /// 1 channel (1 = `4 / (block_size * block_size)`).
 /// The output element shape is `[2, 2, 1]`.
-/// 
+///
 /// For an input tensor with larger depth, here of shape `[1, 1, 1, 12]`, e.g.
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]]]
 /// ```
-/// 
+///
 /// This operation, for block size of 2, will return the following tensor of shape
 /// `[1, 2, 2, 3]`
-/// 
+///
 /// ```
 ///    [[[[1, 2, 3], [4, 5, 6]],
 ///      [[7, 8, 9], [10, 11, 12]]]]
-/// 
+///
 /// ```
-/// 
+///
 /// Similarly, for the following input of shape `[1 2 2 4]`, and a block size of 2:
-/// 
+///
 /// ```
 /// x =  [[[[1, 2, 3, 4],
 ///        [5, 6, 7, 8]],
 ///       [[9, 10, 11, 12],
 ///        [13, 14, 15, 16]]]]
 /// ```
-/// 
+///
 /// the operator will return the following tensor of shape `[1 4 4 1]`:
-/// 
+///
 /// ```
 /// x = [[[ [1],   [2],  [5],  [6]],
 ///       [ [3],   [4],  [7],  [8]],
 ///       [ [9],  [10], [13],  [14]],
 ///       [ [11], [12], [15],  [16]]]]
-/// 
+///
 /// ```
 ///
 /// Arguments:
@@ -668,17 +668,17 @@ class DepthToSpace {
 /// [min_range, max_range] are scalar floats that specify the range for
 /// the output. The 'mode' attribute controls exactly which calculations are
 /// used to convert the float values to their quantized equivalents.
-/// 
+///
 /// In 'MIN_COMBINED' mode, each value of the tensor will undergo the following:
-/// 
+///
 /// ```
 /// if T == qint8: in[i] += (range(T) + 1)/ 2.0
 /// out[i] = min_range + (in[i]* (max_range - min_range) / range(T))
 /// ```
 /// here `range(T) = numeric_limits<T>::max() - numeric_limits<T>::min()`
-/// 
+///
 /// *MIN_COMBINED Mode Example*
-/// 
+///
 /// If the input comes from a QuantizedRelu6, the output type is
 /// quint8 (range of 0-255) but the possible range of QuantizedRelu6 is
 /// 0-6.  The min_range and max_range values are therefore 0.0 and 6.0.
@@ -686,9 +686,9 @@ class DepthToSpace {
 /// by 6 / 255.
 /// Note that if quantizedtype is qint8, the operation will additionally add
 /// each value by 128 prior to casting.
-/// 
+///
 /// If the mode is 'MIN_FIRST', then this approach is used:
-/// 
+///
 /// ```c++
 /// num_discrete_values = 1 << (# of bits in T)
 /// range_adjust = num_discrete_values / (num_discrete_values - 1)
@@ -697,21 +697,21 @@ class DepthToSpace {
 /// const double offset_input = static_cast<double>(input) - lowest_quantized;
 /// result = range_min + ((input - numeric_limits<T>::min()) * range_scale)
 /// ```
-/// 
+///
 /// If the mode is `SCALED`, dequantization is performed by multiplying each
 /// input value by a scaling_factor. (Thus an input of 0 always maps to 0.0).
-/// 
+///
 /// The scaling_factor is determined from `min_range`, `max_range`, and
 /// `narrow_range` in a way that is compatible with `QuantizeAndDequantize{V2|V3}`
 /// and `QuantizeV2`, using the following algorithm:
-/// 
+///
 /// ```c++
-/// 
+///
 ///   const int min_expected_T = std::numeric_limits<T>::min() +
 ///     (narrow_range ? 1 : 0);
 ///   const int max_expected_T = std::numeric_limits<T>::max();
 ///   const float max_expected_T = std::numeric_limits<float>::max();
-/// 
+///
 ///   const float scale_factor =
 ///     (std::numeric_limits<T>::min() == 0) ? (max_range / max_expected_T)
 ///                                          : std::max(min_range / min_expected_T,
@@ -799,14 +799,14 @@ class Dequantize {
 ///
 /// Given a `diagonal`, this operation returns a tensor with the `diagonal` and
 /// everything else padded with zeros. The diagonal is computed as follows:
-/// 
+///
 /// Assume `diagonal` has dimensions [D1,..., Dk], then the output is a tensor of
 /// rank 2k with dimensions [D1,..., Dk, D1,..., Dk] where:
-/// 
+///
 /// `output[i1,..., ik, i1,..., ik] = diagonal[i1, ..., ik]` and 0 everywhere else.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'diagonal' is [1, 2, 3, 4]
 /// tf.diag(diagonal) ==> [[1, 0, 0, 0]
@@ -836,20 +836,20 @@ class Diag {
 ///
 /// This operation returns a tensor with the `diagonal` part
 /// of the `input`. The `diagonal` part is computed as follows:
-/// 
+///
 /// Assume `input` has dimensions `[D1,..., Dk, D1,..., Dk]`, then the output is a
 /// tensor of rank `k` with dimensions `[D1,..., Dk]` where:
-/// 
+///
 /// `diagonal[i1,..., ik] = input[i1, ..., ik, i1,..., ik]`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'input' is [[1, 0, 0, 0]
 ///               [0, 2, 0, 0]
 ///               [0, 0, 3, 0]
 ///               [0, 0, 0, 4]]
-/// 
+///
 /// tf.diag_part(input) ==> [1, 2, 3, 4]
 /// ```
 ///
@@ -876,7 +876,7 @@ class DiagPart {
 ///   (hypothesis_indices, hypothesis_values, hypothesis_shape)
 /// and
 ///   (truth_indices, truth_values, truth_shape).
-/// 
+///
 /// The inputs are:
 ///
 /// Arguments:
@@ -895,14 +895,14 @@ class DiagPart {
 ///
 /// Optional attributes (see `Attrs`):
 /// * normalize: boolean (if true, edit distances are normalized by length of truth).
-/// 
+///
 /// The output is:
 ///
 /// Returns:
 /// * `Output`: A dense float tensor with rank R - 1.
-/// 
+///
 /// For the example input:
-/// 
+///
 ///     // hypothesis represents a 2x1 matrix with variable-length values:
 ///     //   (0,0) = ["a"]
 ///     //   (1,0) = ["b"]
@@ -910,7 +910,7 @@ class DiagPart {
 ///                           [1, 0, 0]]
 ///     hypothesis_values = ["a", "b"]
 ///     hypothesis_shape = [2, 1, 1]
-/// 
+///
 ///     // truth represents a 2x2 matrix with variable-length values:
 ///     //   (0,0) = []
 ///     //   (0,1) = ["a"]
@@ -923,9 +923,9 @@ class DiagPart {
 ///     truth_values = ["a", "b", "c", "a"]
 ///     truth_shape = [2, 2, 2]
 ///     normalize = true
-/// 
+///
 /// The output will be:
-/// 
+///
 ///     // output is a 2x2 matrix with edit distances normalized by truth lengths.
 ///     output = [[inf, 1.0],  // (0,0): no truth, (0,1): no hypothesis
 ///               [0.5, 1.0]]  // (1,0): addition, (1,1): no hypothesis
@@ -934,7 +934,7 @@ class EditDistance {
   /// Optional attribute setters for EditDistance
   struct Attrs {
     /// boolean (if true, edit distances are normalized by length of truth).
-    /// 
+    ///
     /// The output is:
     ///
     /// Defaults to true
@@ -969,7 +969,7 @@ class EditDistance {
 };
 
 /// Creates a tensor with the given shape.
-/// 
+///
 /// This operation creates a tensor of `shape` and `dtype`.
 ///
 /// Arguments:
@@ -1042,30 +1042,30 @@ class EnsureShape {
 /// dimension index `axis` of `input`'s shape. The dimension index `axis` starts at
 /// zero; if you specify a negative number for `axis` it is counted backward from
 /// the end.
-/// 
+///
 /// This operation is useful if you want to add a batch dimension to a single
 /// element. For example, if you have a single image of shape `[height, width,
 /// channels]`, you can make it a batch of 1 image with `expand_dims(image, 0)`,
 /// which will make the shape `[1, height, width, channels]`.
-/// 
+///
 /// Other examples:
-/// 
+///
 /// ```
 /// # 't' is a tensor of shape [2]
 /// shape(expand_dims(t, 0)) ==> [1, 2]
 /// shape(expand_dims(t, 1)) ==> [2, 1]
 /// shape(expand_dims(t, -1)) ==> [2, 1]
-/// 
+///
 /// # 't2' is a tensor of shape [2, 3, 5]
 /// shape(expand_dims(t2, 0)) ==> [1, 2, 3, 5]
 /// shape(expand_dims(t2, 2)) ==> [2, 3, 1, 5]
 /// shape(expand_dims(t2, 3)) ==> [2, 3, 5, 1]
 /// ```
-/// 
+///
 /// This operation requires that:
-/// 
+///
 /// `-1-input.dims() <= dim <= input.dims()`
-/// 
+///
 /// This operation is related to `squeeze()`, which removes dimensions of
 /// size 1.
 ///
@@ -1134,9 +1134,9 @@ class ExtractImagePatches {
 /// * strides: 1-D of length 5. How far the centers of two consecutive patches are in
 /// `input`. Must be: `[1, stride_planes, stride_rows, stride_cols, 1]`.
 /// * padding: The type of padding algorithm to use.
-/// 
+///
 /// The size-related attributes are specified as follows:
-/// 
+///
 /// ```python
 /// ksizes = [1, ksize_planes, ksize_rows, ksize_cols, 1]
 /// strides = [1, stride_planes, strides_rows, strides_cols, 1]
@@ -1164,24 +1164,24 @@ class ExtractVolumePatches {
 /// Fake-quantize the 'inputs' tensor, type float to 'outputs' tensor of same type.
 ///
 /// Attributes
-/// 
+///
 /// *   `[min; max]` define the clamping range for the `inputs` data.
 /// *   `inputs` values are quantized into the quantization range (
 /// `[0; 2^num_bits - 1]` when `narrow_range` is false and `[1; 2^num_bits - 1]`
 /// when it is true) and then de-quantized and output as floats in `[min; max]`
 /// interval.
 /// *   `num_bits` is the bitwidth of the quantization; between 2 and 16, inclusive.
-/// 
+///
 /// Before quantization, `min` and `max` values are adjusted with the following
 /// logic.
 /// It is suggested to have `min <= 0 <= max`. If `0` is not in the range of values,
 /// the behavior can be unexpected:
-/// 
+///
 /// *   If `0 < min < max`: `min_adj = 0` and `max_adj = max - min`.
 /// *   If `min < max < 0`: `min_adj = min - max` and `max_adj = 0`.
 /// *   If `min <= 0 <= max`: `scale = (max - min) / (2^num_bits - 1) `,
 /// `min_adj = scale * round(min / scale)` and `max_adj = max + min_adj - min`.
-/// 
+///
 /// Quantization is called fake since the output is still in floating point.
 ///
 /// Arguments:
@@ -1330,26 +1330,26 @@ class FakeQuantWithMinMaxArgsGradient {
 ///
 /// Fake-quantize the `inputs` tensor of type float via global float scalars
 /// `min` and `max` to `outputs` tensor of same shape as `inputs`.
-/// 
+///
 /// Attributes
-/// 
+///
 /// *   `[min; max]` define the clamping range for the `inputs` data.
 /// *   `inputs` values are quantized into the quantization range (
 /// `[0; 2^num_bits - 1]` when `narrow_range` is false and `[1; 2^num_bits - 1]`
 /// when it is true) and then de-quantized and output as floats in `[min; max]`
 /// interval.
 /// *   `num_bits` is the bitwidth of the quantization; between 2 and 16, inclusive.
-/// 
+///
 /// Before quantization, `min` and `max` values are adjusted with the following
 /// logic.
 /// It is suggested to have `min <= 0 <= max`. If `0` is not in the range of values,
 /// the behavior can be unexpected:
-/// 
+///
 /// *   If `0 < min < max`: `min_adj = 0` and `max_adj = max - min`.
 /// *   If `min < max < 0`: `min_adj = min - max` and `max_adj = 0`.
 /// *   If `min <= 0 <= max`: `scale = (max - min) / (2^num_bits - 1) `,
 /// `min_adj = scale * round(min / scale)` and `max_adj = max + min_adj - min`.
-/// 
+///
 /// This operation has a gradient and thus allows for training `min` and `max`
 /// values.
 ///
@@ -1472,26 +1472,26 @@ class FakeQuantWithMinMaxVarsGradient {
 /// Fake-quantize the `inputs` tensor of type float per-channel and one of the
 /// shapes: `[d]`, `[b, d]` `[b, h, w, d]` via per-channel floats `min` and `max`
 /// of shape `[d]` to `outputs` tensor of same shape as `inputs`.
-/// 
+///
 /// Attributes
-/// 
+///
 /// *   `[min; max]` define the clamping range for the `inputs` data.
 /// *   `inputs` values are quantized into the quantization range (
 /// `[0; 2^num_bits - 1]` when `narrow_range` is false and `[1; 2^num_bits - 1]`
 /// when it is true) and then de-quantized and output as floats in `[min; max]`
 /// interval.
 /// *   `num_bits` is the bitwidth of the quantization; between 2 and 16, inclusive.
-/// 
+///
 /// Before quantization, `min` and `max` values are adjusted with the following
 /// logic.
 /// It is suggested to have `min <= 0 <= max`. If `0` is not in the range of values,
 /// the behavior can be unexpected:
-/// 
+///
 /// *   If `0 < min < max`: `min_adj = 0` and `max_adj = max - min`.
 /// *   If `min < max < 0`: `min_adj = min - max` and `max_adj = 0`.
 /// *   If `min <= 0 <= max`: `scale = (max - min) / (2^num_bits - 1) `,
 /// `min_adj = scale * round(min / scale)` and `max_adj = max + min_adj - min`.
-/// 
+///
 /// This operation has a gradient and thus allows for training `min` and `max`
 /// values.
 ///
@@ -1622,17 +1622,17 @@ class FakeQuantWithMinMaxVarsPerChannelGradient {
 /// Creates a tensor filled with a scalar value.
 ///
 /// This operation creates a tensor of shape `dims` and fills it with `value`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # Output tensor has shape [2, 3].
 /// fill([2, 3], 9) ==> [[9, 9, 9]
 ///                      [9, 9, 9]]
 /// ```
-/// 
+///
 /// `tf.fill` differs from `tf.constant` in a few ways:
-/// 
+///
 /// *   `tf.fill` only supports scalar contents, whereas `tf.constant` supports
 ///     Tensor values.
 /// *   `tf.fill` creates an Op in the computation graph that constructs the actual
@@ -1645,7 +1645,7 @@ class FakeQuantWithMinMaxVarsPerChannelGradient {
 /// * scope: A Scope object
 /// * dims: 1-D. Represents the shape of the output tensor.
 /// * value: 0-D (scalar). Value to fill the returned tensor.
-/// 
+///
 /// @compatibility(numpy)
 /// Equivalent to np.full
 /// @end_compatibility
@@ -1667,33 +1667,33 @@ class Fill {
 /// Generates fingerprint values.
 ///
 /// Generates fingerprint values of `data`.
-/// 
+///
 /// Fingerprint op considers the first dimension of `data` as the batch dimension,
 /// and `output[i]` contains the fingerprint value generated from contents in
 /// `data[i, ...]` for all `i`.
-/// 
+///
 /// Fingerprint op writes fingerprint values as byte arrays. For example, the
 /// default method `farmhash64` generates a 64-bit fingerprint value at a time.
 /// This 8-byte value is written out as an `uint8` array of size 8, in little-endian
 /// order.
-/// 
+///
 /// For example, suppose that `data` has data type `DT_INT32` and shape (2, 3, 4),
 /// and that the fingerprint method is `farmhash64`. In this case, the output shape
 /// is (2, 8), where 2 is the batch dimension size of `data`, and 8 is the size of
 /// each fingerprint value in bytes. `output[0, :]` is generated from 12 integers in
 /// `data[0, :, :]` and similarly `output[1, :]` is generated from other 12 integers
 /// in `data[1, :, :]`.
-/// 
+///
 /// Note that this op fingerprints the raw underlying buffer, and it does not
 /// fingerprint Tensor's metadata such as data type and/or shape. For example, the
 /// fingerprint values are invariant under reshapes and bitcasts as long as the
 /// batch dimension remain the same:
-/// 
+///
 /// ```
 /// Fingerprint(data) == Fingerprint(Reshape(data, ...))
 /// Fingerprint(data) == Fingerprint(Bitcast(data, ...))
 /// ```
-/// 
+///
 /// For string data, one should expect `Fingerprint(data) !=
 /// Fingerprint(ReduceJoin(data))` in general.
 ///
@@ -1723,26 +1723,26 @@ class Fingerprint {
 ///
 /// `indices` must be an integer tensor of any dimension (usually 0-D or 1-D).
 /// Produces an output tensor with shape `indices.shape + params.shape[1:]` where:
-/// 
+///
 /// ```python
 ///     # Scalar indices
 ///     output[:, ..., :] = params[indices, :, ... :]
-/// 
+///
 ///     # Vector indices
 ///     output[i, :, ..., :] = params[indices[i], :, ... :]
-/// 
+///
 ///     # Higher rank indices
 ///     output[i, ..., j, :, ... :] = params[indices[i, ..., j], :, ..., :]
 /// ```
-/// 
+///
 /// If `indices` is a permutation and `len(indices) == params.shape[0]` then
 /// this operation will permute `params` accordingly.
-/// 
+///
 /// `validate_indices`: DEPRECATED. If this operation is assigned to CPU, values in
 /// `indices` are always validated to be within range. If assigned to GPU,
 /// out-of-bound indices result in safe but unspecified behavior, which may include
 /// raising an error.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/Gather.png" alt>
 /// </div>
@@ -1786,106 +1786,106 @@ class Gather {
 /// `indices` is a K-dimensional integer tensor, best thought of as a
 /// (K-1)-dimensional tensor of indices into `params`, where each element defines a
 /// slice of `params`:
-/// 
+///
 ///     output[\\(i_0, ..., i_{K-2}\\)] = params[indices[\\(i_0, ..., i_{K-2}\\)]]
-/// 
+///
 /// Whereas in `tf.gather` `indices` defines slices into the `axis`
 /// dimension of `params`, in `tf.gather_nd`, `indices` defines slices into the
 /// first `N` dimensions of `params`, where `N = indices.shape[-1]`.
-/// 
+///
 /// The last dimension of `indices` can be at most the rank of
 /// `params`:
-/// 
+///
 ///     indices.shape[-1] <= params.rank
-/// 
+///
 /// The last dimension of `indices` corresponds to elements
 /// (if `indices.shape[-1] == params.rank`) or slices
 /// (if `indices.shape[-1] < params.rank`) along dimension `indices.shape[-1]`
 /// of `params`.  The output tensor has shape
-/// 
+///
 ///     indices.shape[:-1] + params.shape[indices.shape[-1]:]
-/// 
+///
 /// Note that on CPU, if an out of bound index is found, an error is returned.
 /// On GPU, if an out of bound index is found, a 0 is stored in the
 /// corresponding output value.
-/// 
+///
 /// Some examples below.
-/// 
+///
 /// Simple indexing into a matrix:
-/// 
+///
 /// ```python
 ///     indices = [[0, 0], [1, 1]]
 ///     params = [['a', 'b'], ['c', 'd']]
 ///     output = ['a', 'd']
 /// ```
-/// 
+///
 /// Slice indexing into a matrix:
-/// 
+///
 /// ```python
 ///     indices = [[1], [0]]
 ///     params = [['a', 'b'], ['c', 'd']]
 ///     output = [['c', 'd'], ['a', 'b']]
 /// ```
-/// 
+///
 /// Indexing into a 3-tensor:
-/// 
+///
 /// ```python
 ///     indices = [[1]]
 ///     params = [[['a0', 'b0'], ['c0', 'd0']],
 ///               [['a1', 'b1'], ['c1', 'd1']]]
 ///     output = [[['a1', 'b1'], ['c1', 'd1']]]
-/// 
-/// 
+///
+///
 ///     indices = [[0, 1], [1, 0]]
 ///     params = [[['a0', 'b0'], ['c0', 'd0']],
 ///               [['a1', 'b1'], ['c1', 'd1']]]
 ///     output = [['c0', 'd0'], ['a1', 'b1']]
-/// 
-/// 
+///
+///
 ///     indices = [[0, 0, 1], [1, 0, 1]]
 ///     params = [[['a0', 'b0'], ['c0', 'd0']],
 ///               [['a1', 'b1'], ['c1', 'd1']]]
 ///     output = ['b0', 'b1']
 /// ```
-/// 
+///
 /// Batched indexing into a matrix:
-/// 
+///
 /// ```python
 ///     indices = [[[0, 0]], [[0, 1]]]
 ///     params = [['a', 'b'], ['c', 'd']]
 ///     output = [['a'], ['b']]
 /// ```
-/// 
+///
 /// Batched slice indexing into a matrix:
-/// 
+///
 /// ```python
 ///     indices = [[[1]], [[0]]]
 ///     params = [['a', 'b'], ['c', 'd']]
 ///     output = [[['c', 'd']], [['a', 'b']]]
 /// ```
-/// 
+///
 /// Batched indexing into a 3-tensor:
-/// 
+///
 /// ```python
 ///     indices = [[[1]], [[0]]]
 ///     params = [[['a0', 'b0'], ['c0', 'd0']],
 ///               [['a1', 'b1'], ['c1', 'd1']]]
 ///     output = [[[['a1', 'b1'], ['c1', 'd1']]],
 ///               [[['a0', 'b0'], ['c0', 'd0']]]]
-/// 
+///
 ///     indices = [[[0, 1], [1, 0]], [[0, 0], [1, 1]]]
 ///     params = [[['a0', 'b0'], ['c0', 'd0']],
 ///               [['a1', 'b1'], ['c1', 'd1']]]
 ///     output = [[['c0', 'd0'], ['a1', 'b1']],
 ///               [['a0', 'b0'], ['c1', 'd1']]]
-/// 
-/// 
+///
+///
 ///     indices = [[[0, 0, 1], [1, 0, 1]], [[0, 1, 1], [1, 1, 0]]]
 ///     params = [[['a0', 'b0'], ['c0', 'd0']],
 ///               [['a1', 'b1'], ['c1', 'd1']]]
 ///     output = [['b0', 'b1'], ['d0', 'c1']]
 /// ```
-/// 
+///
 /// See also `tf.gather` and `tf.batch_gather`.
 ///
 /// Arguments:
@@ -1913,29 +1913,29 @@ class GatherNd {
 /// `indices` must be an integer tensor of any dimension (usually 0-D or 1-D).
 /// Produces an output tensor with shape `params.shape[:axis] +
 /// indices.shape[batch_dims:] + params.shape[axis + 1:]` where:
-/// 
+///
 /// ```python
 ///     # Scalar indices (output is rank(params) - 1).
 ///     output[a_0, ..., a_n, b_0, ..., b_n] =
 ///       params[a_0, ..., a_n, indices, b_0, ..., b_n]
-/// 
+///
 ///     # Vector indices (output is rank(params)).
 ///     output[a_0, ..., a_n, i, b_0, ..., b_n] =
 ///       params[a_0, ..., a_n, indices[i], b_0, ..., b_n]
-/// 
+///
 ///     # Higher rank indices (output is rank(params) + rank(indices) - 1).
 ///     output[a_0, ..., a_n, i, ..., j, b_0, ... b_n] =
 ///       params[a_0, ..., a_n, indices[i, ..., j], b_0, ..., b_n]
 /// ```
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/Gather.png" alt>
 /// </div>
-/// 
+///
 /// Note that on CPU, if an out of bound index is found, an error is returned.
 /// On GPU, if an out of bound index is found, a 0 is stored in the
 /// corresponding output value.
-/// 
+///
 /// See also `tf.batch_gather` and `tf.gather_nd`.
 ///
 /// Arguments:
@@ -1982,10 +1982,10 @@ class GatherV2 {
 /// Gives a guarantee to the TF runtime that the input tensor is a constant.
 ///
 /// The runtime is then free to make optimizations based on this.
-/// 
+///
 /// Only accepts value typed tensors as inputs and rejects resource variable handles
 /// as input.
-/// 
+///
 /// Returns the input tensor without modification.
 ///
 /// Arguments:
@@ -2025,16 +2025,16 @@ class Identity {
 /// Returns a list of tensors with the same shapes and contents as the input
 ///
 /// tensors.
-/// 
+///
 /// This op can be used to override the gradient for complicated functions. For
 /// example, suppose y = f(x) and we wish to apply a custom function g for backprop
 /// such that dx = g(dy). In Python,
-/// 
+///
 /// ```python
 /// with tf.get_default_graph().gradient_override_map(
 ///     {'IdentityN': 'OverrideGradientWithG'}):
 ///   y, _ = identity_n([f(x), x])
-/// 
+///
 /// @tf.RegisterGradient('OverrideGradientWithG')
 /// def ApplyG(op, dy, _):
 ///   return [None, g(dy)]  # Do not backprop to f(x).
@@ -2081,7 +2081,7 @@ class ImmutableConst {
 };
 
 ///     Adds v into specified rows of x.
-/// 
+///
 ///     Computes y = x; y[i, :] += v; return y.
 ///
 /// Arguments:
@@ -2105,7 +2105,7 @@ class InplaceAdd {
 };
 
 ///     Subtracts `v` into specified rows of `x`.
-/// 
+///
 ///     Computes y = x; y[i, :] -= v; return y.
 ///
 /// Arguments:
@@ -2131,7 +2131,7 @@ class InplaceSub {
 /// Updates specified rows 'i' with values 'v'.
 ///
 /// Computes `x[i, :] = v; return x`.
-/// 
+///
 /// Originally this function is mutative however for compilation we make this
 /// operation create / operate on a copy of `x`.
 ///
@@ -2161,13 +2161,13 @@ class InplaceUpdate {
 /// integer tensor `x`, which represents the indices of a zero-based array, and
 /// swaps each value with its index position. In other words, for an output tensor
 /// `y` and an input tensor `x`, this operation computes the following:
-/// 
+///
 /// `y[x[i]] = i for i in [0, 1, ..., len(x) - 1]`
-/// 
+///
 /// The values must include 0. There can be no duplicate values or negative values.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor `x` is [3, 4, 0, 2, 1]
 /// invert_permutation(x) ==> [2, 4, 3, 0, 1]
@@ -2197,18 +2197,18 @@ class InvertPermutation {
 /// is sorted in the same order that the numbers appear in `x` (duplicates are
 /// preserved). This operation also returns a list `idx` that represents the
 /// position of each `out` element in `x`. In other words:
-/// 
+///
 /// `out[i] = x[idx[i]] for i in [0, 1, ..., len(out) - 1]`
-/// 
+///
 /// For example, given this input:
-/// 
+///
 /// ```
 /// x = [1, 2, 3, 4, 5, 6]
 /// y = [1, 3, 5]
 /// ```
-/// 
+///
 /// This operation would return:
-/// 
+///
 /// ```
 /// out ==> [2, 4, 6]
 /// idx ==> [1, 3, 5]
@@ -2254,35 +2254,35 @@ class SetDiff1D {
 /// The `band` part is computed as follows:
 /// Assume `input` has `k` dimensions `[I, J, K, ..., M, N]`, then the output is a
 /// tensor with the same shape where
-/// 
+///
 /// `band[i, j, k, ..., m, n] = in_band(m, n) * input[i, j, k, ..., m, n]`.
-/// 
+///
 /// The indicator function
-/// 
+///
 /// `in_band(m, n) = (num_lower < 0 || (m-n) <= num_lower)) &&
 ///                  (num_upper < 0 || (n-m) <= num_upper)`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # if 'input' is [[ 0,  1,  2, 3]
 ///                  [-1,  0,  1, 2]
 ///                  [-2, -1,  0, 1]
 ///                  [-3, -2, -1, 0]],
-/// 
+///
 /// tf.matrix_band_part(input, 1, -1) ==> [[ 0,  1,  2, 3]
 ///                                        [-1,  0,  1, 2]
 ///                                        [ 0, -1,  0, 1]
 ///                                        [ 0,  0, -1, 0]],
-/// 
+///
 /// tf.matrix_band_part(input, 2, 1) ==> [[ 0,  1,  0, 0]
 ///                                       [-1,  0,  1, 0]
 ///                                       [-2, -1,  0, 1]
 ///                                       [ 0, -2, -1, 0]]
 /// ```
-/// 
+///
 /// Useful special cases:
-/// 
+///
 /// ```
 ///  tf.matrix_band_part(input, 0, -1) ==> Upper triangular part.
 ///  tf.matrix_band_part(input, -1, 0) ==> Lower triangular part.
@@ -2315,19 +2315,19 @@ class MatrixBandPart {
 ///
 /// Given a `diagonal`, this operation returns a tensor with the `diagonal` and
 /// everything else padded with zeros. The diagonal is computed as follows:
-/// 
+///
 /// Assume `diagonal` has `k` dimensions `[I, J, K, ..., N]`, then the output is a
 /// tensor of rank `k+1` with dimensions [I, J, K, ..., N, N]` where:
-/// 
+///
 /// `output[i, j, k, ..., m, n] = 1{m=n} * diagonal[i, j, k, ..., n]`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'diagonal' is [[1, 2, 3, 4], [5, 6, 7, 8]]
-/// 
+///
 /// and diagonal.shape = (2, 4)
-/// 
+///
 /// tf.matrix_diag(diagonal) ==> [[[1, 0, 0, 0]
 ///                                      [0, 2, 0, 0]
 ///                                      [0, 0, 3, 0]
@@ -2336,7 +2336,7 @@ class MatrixBandPart {
 ///                                      [0, 6, 0, 0]
 ///                                      [0, 0, 7, 0]
 ///                                      [0, 0, 0, 8]]]
-/// 
+///
 /// which has shape (2, 4, 4)
 /// ```
 ///
@@ -2361,16 +2361,16 @@ class MatrixDiag {
 ///
 /// This operation returns a tensor with the `diagonal` part
 /// of the batched `input`. The `diagonal` part is computed as follows:
-/// 
+///
 /// Assume `input` has `k` dimensions `[I, J, K, ..., M, N]`, then the output is a
 /// tensor of rank `k - 1` with dimensions `[I, J, K, ..., min(M, N)]` where:
-/// 
+///
 /// `diagonal[i, j, k, ..., n] = input[i, j, k, ..., n, n]`.
-/// 
+///
 /// The input must be at least a matrix.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'input' is [[[1, 0, 0, 0]
 ///                [0, 2, 0, 0]
@@ -2380,11 +2380,11 @@ class MatrixDiag {
 ///                [0, 6, 0, 0]
 ///                [0, 0, 7, 0]
 ///                [0, 0, 0, 8]]]
-/// 
+///
 /// and input.shape = (2, 4, 4)
-/// 
+///
 /// tf.matrix_diag_part(input) ==> [[1, 2, 3, 4], [5, 6, 7, 8]]
-/// 
+///
 /// which has shape (2, 4)
 /// ```
 ///
@@ -2410,37 +2410,37 @@ class MatrixDiagPart {
 ///
 /// Returns a tensor with the `k[0]`-th to `k[1]`-th diagonals of the batched
 /// `input`.
-/// 
+///
 /// Assume `input` has `r` dimensions `[I, J, ..., L, M, N]`.
 /// Let `max_diag_len` be the maximum length among all diagonals to be extracted,
 /// `max_diag_len = min(M + min(k[1], 0), N + min(-k[0], 0))`
 /// Let `num_diags` be the number of diagonals to extract,
 /// `num_diags = k[1] - k[0] + 1`.
-/// 
+///
 /// If `num_diags == 1`, the output tensor is of rank `r - 1` with shape
 /// `[I, J, ..., L, max_diag_len]` and values:
-/// 
+///
 /// ```
 /// diagonal[i, j, ..., l, n]
 ///   = input[i, j, ..., l, n+y, n+x] ; if 0 <= n+y < M and 0 <= n+x < N,
 ///     padding_value                 ; otherwise.
 /// ```
 /// where `y = max(-k[1], 0)`, `x = max(k[1], 0)`.
-/// 
+///
 /// Otherwise, the output tensor has rank `r` with dimensions
 /// `[I, J, ..., L, num_diags, max_diag_len]` with values:
-/// 
+///
 /// ```
 /// diagonal[i, j, ..., l, m, n]
 ///   = input[i, j, ..., l, n+y, n+x] ; if 0 <= n+y < M and 0 <= n+x < N,
 ///     padding_value                 ; otherwise.
 /// ```
 /// where `d = k[1] - m`, `y = max(-d, 0)`, and `x = max(d, 0)`.
-/// 
+///
 /// The input must be at least a matrix.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// input = np.array([[[1, 2, 3, 4],  # Input shape: (2, 3, 4)
 ///                    [5, 6, 7, 8],
@@ -2448,16 +2448,16 @@ class MatrixDiagPart {
 ///                   [[5, 4, 3, 2],
 ///                    [1, 2, 3, 4],
 ///                    [5, 6, 7, 8]]])
-/// 
+///
 /// # A main diagonal from each batch.
 /// tf.matrix_diag_part(input) ==> [[1, 6, 7],  # Output shape: (2, 3)
 ///                                 [5, 2, 7]]
-/// 
+///
 /// # A superdiagonal from each batch.
 /// tf.matrix_diag_part(input, k = 1)
 ///   ==> [[2, 7, 6],  # Output shape: (2, 3)
 ///        [4, 3, 8]]
-/// 
+///
 /// # A tridiagonal band from each batch.
 /// tf.matrix_diag_part(input, k = (-1, 1))
 ///   ==> [[[2, 7, 6],  # Output shape: (2, 3, 3)
@@ -2466,7 +2466,7 @@ class MatrixDiagPart {
 ///        [[4, 3, 8],
 ///         [5, 2, 7],
 ///         [1, 6, 0]]]
-/// 
+///
 /// # Padding value = 9
 /// tf.matrix_diag_part(input, k = (1, 3), padding_value = 9)
 ///   ==> [[[4, 9, 9],  # Output shape: (2, 3, 3)
@@ -2505,33 +2505,33 @@ class MatrixDiagPartV2 {
 ///
 /// Returns a tensor with the `k[0]`-th to `k[1]`-th diagonals of the batched
 /// `input`.
-/// 
+///
 /// Assume `input` has `r` dimensions `[I, J, ..., L, M, N]`.
 /// Let `max_diag_len` be the maximum length among all diagonals to be extracted,
 /// `max_diag_len = min(M + min(k[1], 0), N + min(-k[0], 0))`
 /// Let `num_diags` be the number of diagonals to extract,
 /// `num_diags = k[1] - k[0] + 1`.
-/// 
+///
 /// If `num_diags == 1`, the output tensor is of rank `r - 1` with shape
 /// `[I, J, ..., L, max_diag_len]` and values:
-/// 
+///
 /// ```
 /// diagonal[i, j, ..., l, n]
 ///   = input[i, j, ..., l, n+y, n+x] ; if 0 <= n+y < M and 0 <= n+x < N,
 ///     padding_value                 ; otherwise.
 /// ```
 /// where `y = max(-k[1], 0)`, `x = max(k[1], 0)`.
-/// 
+///
 /// Otherwise, the output tensor has rank `r` with dimensions
 /// `[I, J, ..., L, num_diags, max_diag_len]` with values:
-/// 
+///
 /// ```
 /// diagonal[i, j, ..., l, m, n]
 ///   = input[i, j, ..., l, n+y, n+x] ; if 0 <= n+y < M and 0 <= n+x < N,
 ///     padding_value                 ; otherwise.
 /// ```
 /// where `d = k[1] - m`, `y = max(-d, 0) - offset`, and `x = max(d, 0) - offset`.
-/// 
+///
 /// `offset` is zero except when the alignment of the diagonal is to the right.
 /// ```
 /// offset = max_diag_len - diag_len(d) ; if (`align` in {RIGHT_LEFT, RIGHT_RIGHT}
@@ -2541,11 +2541,11 @@ class MatrixDiagPartV2 {
 ///          0                          ; otherwise
 /// ```
 /// where `diag_len(d) = min(cols - max(d, 0), rows + min(d, 0))`.
-/// 
+///
 /// The input must be at least a matrix.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// input = np.array([[[1, 2, 3, 4],  # Input shape: (2, 3, 4)
 ///                    [5, 6, 7, 8],
@@ -2553,16 +2553,16 @@ class MatrixDiagPartV2 {
 ///                   [[5, 4, 3, 2],
 ///                    [1, 2, 3, 4],
 ///                    [5, 6, 7, 8]]])
-/// 
+///
 /// # A main diagonal from each batch.
 /// tf.matrix_diag_part(input) ==> [[1, 6, 7],  # Output shape: (2, 3)
 ///                                 [5, 2, 7]]
-/// 
+///
 /// # A superdiagonal from each batch.
 /// tf.matrix_diag_part(input, k = 1)
 ///   ==> [[2, 7, 6],  # Output shape: (2, 3)
 ///        [4, 3, 8]]
-/// 
+///
 /// # A band from each batch.
 /// tf.matrix_diag_part(input, k = (-1, 2))
 ///   ==> [[[0, 3, 8],  # Output shape: (2, 4, 3)
@@ -2573,7 +2573,7 @@ class MatrixDiagPartV2 {
 ///         [4, 3, 8],
 ///         [5, 2, 7],
 ///         [1, 6, 0]]]
-/// 
+///
 /// # LEFT_RIGHT alignment.
 /// tf.matrix_diag_part(input, k = (-1, 2), align="LEFT_RIGHT")
 ///   ==> [[[3, 8, 0],  # Output shape: (2, 4, 3)
@@ -2584,14 +2584,14 @@ class MatrixDiagPartV2 {
 ///         [4, 3, 8],
 ///         [5, 2, 7],
 ///         [0, 1, 6]]]
-/// 
+///
 /// # max_diag_len can be shorter than the main diagonal.
 /// tf.matrix_diag_part(input, k = (-2, -1))
 ///   ==> [[[5, 8],
 ///         [9, 0]],
 ///        [[1, 6],
 ///         [5, 0]]]
-/// 
+///
 /// # padding_value = 9
 /// tf.matrix_diag_part(input, k = (1, 3), padding_value = 9)
 ///   ==> [[[9, 9, 4],  # Output shape: (2, 3, 3)
@@ -2600,7 +2600,7 @@ class MatrixDiagPartV2 {
 ///        [[9, 9, 2],
 ///         [9, 3, 4],
 ///         [4, 3, 8]]]
-/// 
+///
 /// ```
 ///
 /// Arguments:
@@ -2671,34 +2671,34 @@ class MatrixDiagPartV3 {
 /// its size from `k` and the innermost dimension of `diagonal`. If only one of them
 /// is specified, the op assumes the unspecified value is the smallest possible
 /// based on other criteria.
-/// 
+///
 /// Let `diagonal` have `r` dimensions `[I, J, ..., L, M, N]`. The output tensor has
 /// rank `r+1` with shape `[I, J, ..., L, M, num_rows, num_cols]` when only one
 /// diagonal is given (`k` is an integer or `k[0] == k[1]`). Otherwise, it has rank
 /// `r` with shape `[I, J, ..., L, num_rows, num_cols]`.
-/// 
+///
 /// The second innermost dimension of `diagonal` has double meaning.
 /// When `k` is scalar or `k[0] == k[1]`, `M` is part of the batch size
 /// [I, J, ..., M], and the output tensor is:
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, n-max(d_upper, 0)] ; if n - m == d_upper
 ///     padding_value                             ; otherwise
 /// ```
-/// 
+///
 /// Otherwise, `M` is treated as the number of diagonals for the matrix in the
 /// same batch (`M = k[1]-k[0]+1`), and the output tensor is:
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, diag_index, index_in_diag] ; if k[0] <= d <= k[1]
 ///     padding_value                                     ; otherwise
 /// ```
 /// where `d = n - m`, `diag_index = k[1] - d`, and `index_in_diag = n - max(d, 0)`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # The main diagonal.
 /// diagonal = np.array([[1, 2, 3, 4],            # Input shape: (2, 4)
@@ -2711,7 +2711,7 @@ class MatrixDiagPartV3 {
 ///                                [0, 6, 0, 0],
 ///                                [0, 0, 7, 0],
 ///                                [0, 0, 0, 8]]]
-/// 
+///
 /// # A superdiagonal (per batch).
 /// diagonal = np.array([[1, 2, 3],  # Input shape: (2, 3)
 ///                      [4, 5, 6]])
@@ -2724,7 +2724,7 @@ class MatrixDiagPartV3 {
 ///         [0, 0, 5, 0],
 ///         [0, 0, 0, 6],
 ///         [0, 0, 0, 0]]]
-/// 
+///
 /// # A band of diagonals.
 /// diagonals = np.array([[[1, 2, 3],  # Input shape: (2, 2, 3)
 ///                        [4, 5, 0]],
@@ -2737,14 +2737,14 @@ class MatrixDiagPartV3 {
 ///        [[6, 0, 0],
 ///         [9, 7, 0],
 ///         [0, 1, 9]]]
-/// 
+///
 /// # Rectangular matrix.
 /// diagonal = np.array([1, 2])  # Input shape: (2)
 /// tf.matrix_diag(diagonal, k = -1, num_rows = 3, num_cols = 4)
 ///   ==> [[0, 0, 0, 0],  # Output shape: (3, 4)
 ///        [1, 0, 0, 0],
 ///        [0, 2, 0, 0]]
-/// 
+///
 /// # Rectangular matrix with inferred num_cols and padding_value = 9.
 /// tf.matrix_diag(diagonal, k = -1, num_rows = 3, padding_value = 9)
 ///   ==> [[9, 9],  # Output shape: (3, 2)
@@ -2792,25 +2792,25 @@ class MatrixDiagV2 {
 /// its size from `k` and the innermost dimension of `diagonal`. If only one of them
 /// is specified, the op assumes the unspecified value is the smallest possible
 /// based on other criteria.
-/// 
+///
 /// Let `diagonal` have `r` dimensions `[I, J, ..., L, M, N]`. The output tensor has
 /// rank `r+1` with shape `[I, J, ..., L, M, num_rows, num_cols]` when only one
 /// diagonal is given (`k` is an integer or `k[0] == k[1]`). Otherwise, it has rank
 /// `r` with shape `[I, J, ..., L, num_rows, num_cols]`.
-/// 
+///
 /// The second innermost dimension of `diagonal` has double meaning.
 /// When `k` is scalar or `k[0] == k[1]`, `M` is part of the batch size
 /// [I, J, ..., M], and the output tensor is:
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, n-max(d_upper, 0)] ; if n - m == d_upper
 ///     padding_value                             ; otherwise
 /// ```
-/// 
+///
 /// Otherwise, `M` is treated as the number of diagonals for the matrix in the
 /// same batch (`M = k[1]-k[0]+1`), and the output tensor is:
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, diag_index, index_in_diag] ; if k[0] <= d <= k[1]
@@ -2818,7 +2818,7 @@ class MatrixDiagV2 {
 /// ```
 /// where `d = n - m`, `diag_index = [k] - d`, and
 /// `index_in_diag = n - max(d, 0) + offset`.
-/// 
+///
 /// `offset` is zero except when the alignment of the diagonal is to the right.
 /// ```
 /// offset = max_diag_len - diag_len(d) ; if (`align` in {RIGHT_LEFT, RIGHT_RIGHT}
@@ -2828,9 +2828,9 @@ class MatrixDiagV2 {
 ///          0                          ; otherwise
 /// ```
 /// where `diag_len(d) = min(cols - max(d, 0), rows + min(d, 0))`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # The main diagonal.
 /// diagonal = np.array([[1, 2, 3, 4],            # Input shape: (2, 4)
@@ -2843,7 +2843,7 @@ class MatrixDiagV2 {
 ///                                [0, 6, 0, 0],
 ///                                [0, 0, 7, 0],
 ///                                [0, 0, 0, 8]]]
-/// 
+///
 /// # A superdiagonal (per batch).
 /// diagonal = np.array([[1, 2, 3],  # Input shape: (2, 3)
 ///                      [4, 5, 6]])
@@ -2856,7 +2856,7 @@ class MatrixDiagV2 {
 ///         [0, 0, 5, 0],
 ///         [0, 0, 0, 6],
 ///         [0, 0, 0, 0]]]
-/// 
+///
 /// # A tridiagonal band (per batch).
 /// diagonals = np.array([[[0, 8, 9],  # Input shape: (2, 2, 3)
 ///                        [1, 2, 3],
@@ -2871,7 +2871,7 @@ class MatrixDiagV2 {
 ///        [[6, 2, 0],
 ///         [9, 7, 3],
 ///         [0, 1, 9]]]
-/// 
+///
 /// # LEFT_RIGHT alignment.
 /// diagonals = np.array([[[8, 9, 0],  # Input shape: (2, 2, 3)
 ///                        [1, 2, 3],
@@ -2886,20 +2886,20 @@ class MatrixDiagV2 {
 ///        [[6, 2, 0],
 ///         [9, 7, 3],
 ///         [0, 1, 9]]]
-/// 
+///
 /// # Rectangular matrix.
 /// diagonal = np.array([1, 2])  # Input shape: (2)
 /// tf.matrix_diag(diagonal, k = -1, num_rows = 3, num_cols = 4)
 ///   ==> [[0, 0, 0, 0],  # Output shape: (3, 4)
 ///        [1, 0, 0, 0],
 ///        [0, 2, 0, 0]]
-/// 
+///
 /// # Rectangular matrix with inferred num_cols and padding_value = 9.
 /// tf.matrix_diag(diagonal, k = -1, num_rows = 3, padding_value = 9)
 ///   ==> [[9, 9],  # Output shape: (3, 2)
 ///        [1, 9],
 ///        [9, 2]]
-/// 
+///
 /// ```
 ///
 /// Arguments:
@@ -2974,13 +2974,13 @@ class MatrixDiagV3 {
 /// Given `input` and `diagonal`, this operation returns a tensor with the
 /// same shape and values as `input`, except for the main diagonal of the
 /// innermost matrices.  These will be overwritten by the values in `diagonal`.
-/// 
+///
 /// The output is computed as follows:
-/// 
+///
 /// Assume `input` has `k+1` dimensions `[I, J, K, ..., M, N]` and `diagonal` has
 /// `k` dimensions `[I, J, K, ..., min(M, N)]`.  Then the output is a
 /// tensor of rank `k+1` with dimensions `[I, J, K, ..., M, N]` where:
-/// 
+///
 ///   * `output[i, j, k, ..., m, n] = diagonal[i, j, k, ..., n]` for `m == n`.
 ///   * `output[i, j, k, ..., m, n] = input[i, j, k, ..., m, n]` for `m != n`.
 ///
@@ -3008,34 +3008,34 @@ class MatrixSetDiag {
 /// Given `input` and `diagonal`, this operation returns a tensor with the
 /// same shape and values as `input`, except for the specified diagonals of the
 /// innermost matrices. These will be overwritten by the values in `diagonal`.
-/// 
+///
 /// `input` has `r+1` dimensions `[I, J, ..., L, M, N]`. When `k` is scalar or
 /// `k[0] == k[1]`, `diagonal` has `r` dimensions `[I, J, ..., L, max_diag_len]`.
 /// Otherwise, it has `r+1` dimensions `[I, J, ..., L, num_diags, max_diag_len]`.
 /// `num_diags` is the number of diagonals, `num_diags = k[1] - k[0] + 1`.
 /// `max_diag_len` is the longest diagonal in the range `[k[0], k[1]]`,
 /// `max_diag_len = min(M + min(k[1], 0), N + min(-k[0], 0))`
-/// 
+///
 /// The output is a tensor of rank `k+1` with dimensions `[I, J, ..., L, M, N]`.
 /// If `k` is scalar or `k[0] == k[1]`:
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, n-max(k[1], 0)] ; if n - m == k[1]
 ///     input[i, j, ..., l, m, n]              ; otherwise
 /// ```
-/// 
+///
 /// Otherwise,
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, diag_index, index_in_diag] ; if k[0] <= d <= k[1]
 ///     input[i, j, ..., l, m, n]                         ; otherwise
 /// ```
 /// where `d = n - m`, `diag_index = k[1] - d`, and `index_in_diag = n - max(d, 0)`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # The main diagonal.
 /// input = np.array([[[7, 7, 7, 7],              # Input shape: (2, 3, 4)
@@ -3052,7 +3052,7 @@ class MatrixSetDiag {
 ///                                   [[4, 7, 7, 7],
 ///                                    [7, 5, 7, 7],
 ///                                    [7, 7, 6, 7]]]
-/// 
+///
 /// # A superdiagonal (per batch).
 /// tf.matrix_set_diag(diagonal, k = 1)
 ///   ==> [[[7, 1, 7, 7],  # Output shape: (2, 3, 4)
@@ -3061,7 +3061,7 @@ class MatrixSetDiag {
 ///        [[7, 4, 7, 7],
 ///         [7, 7, 5, 7],
 ///         [7, 7, 7, 6]]]
-/// 
+///
 /// # A band of diagonals.
 /// diagonals = np.array([[[1, 2, 3],  # Diagonal shape: (2, 2, 3)
 ///                        [4, 5, 0]],
@@ -3074,7 +3074,7 @@ class MatrixSetDiag {
 ///        [[6, 7, 7, 7],
 ///         [3, 1, 7, 7],
 ///         [7, 4, 2, 7]]]
-/// 
+///
 /// ```
 ///
 /// Arguments:
@@ -3106,25 +3106,25 @@ class MatrixSetDiagV2 {
 /// Given `input` and `diagonal`, this operation returns a tensor with the
 /// same shape and values as `input`, except for the specified diagonals of the
 /// innermost matrices. These will be overwritten by the values in `diagonal`.
-/// 
+///
 /// `input` has `r+1` dimensions `[I, J, ..., L, M, N]`. When `k` is scalar or
 /// `k[0] == k[1]`, `diagonal` has `r` dimensions `[I, J, ..., L, max_diag_len]`.
 /// Otherwise, it has `r+1` dimensions `[I, J, ..., L, num_diags, max_diag_len]`.
 /// `num_diags` is the number of diagonals, `num_diags = k[1] - k[0] + 1`.
 /// `max_diag_len` is the longest diagonal in the range `[k[0], k[1]]`,
 /// `max_diag_len = min(M + min(k[1], 0), N + min(-k[0], 0))`
-/// 
+///
 /// The output is a tensor of rank `k+1` with dimensions `[I, J, ..., L, M, N]`.
 /// If `k` is scalar or `k[0] == k[1]`:
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, n-max(k[1], 0)] ; if n - m == k[1]
 ///     input[i, j, ..., l, m, n]              ; otherwise
 /// ```
-/// 
+///
 /// Otherwise,
-/// 
+///
 /// ```
 /// output[i, j, ..., l, m, n]
 ///   = diagonal[i, j, ..., l, diag_index, index_in_diag] ; if k[0] <= d <= k[1]
@@ -3132,7 +3132,7 @@ class MatrixSetDiagV2 {
 /// ```
 /// where `d = n - m`, `diag_index = k[1] - d`, and
 /// `index_in_diag = n - max(d, 0) + offset`.
-/// 
+///
 /// `offset` is zero except when the alignment of the diagonal is to the right.
 /// ```
 /// offset = max_diag_len - diag_len(d) ; if (`align` in {RIGHT_LEFT, RIGHT_RIGHT}
@@ -3142,9 +3142,9 @@ class MatrixSetDiagV2 {
 ///          0                          ; otherwise
 /// ```
 /// where `diag_len(d) = min(cols - max(d, 0), rows + min(d, 0))`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # The main diagonal.
 /// input = np.array([[[7, 7, 7, 7],              # Input shape: (2, 3, 4)
@@ -3162,7 +3162,7 @@ class MatrixSetDiagV2 {
 ///        [[4, 7, 7, 7],
 ///         [7, 5, 7, 7],
 ///         [7, 7, 6, 7]]]
-/// 
+///
 /// # A superdiagonal (per batch).
 /// tf.matrix_set_diag(input, diagonal, k = 1)
 ///   ==> [[[7, 1, 7, 7],  # Output shape: (2, 3, 4)
@@ -3171,7 +3171,7 @@ class MatrixSetDiagV2 {
 ///        [[7, 4, 7, 7],
 ///         [7, 7, 5, 7],
 ///         [7, 7, 7, 6]]]
-/// 
+///
 /// # A band of diagonals.
 /// diagonals = np.array([[[0, 9, 1],  # Diagonal shape: (2, 4, 3)
 ///                        [6, 5, 8],
@@ -3188,7 +3188,7 @@ class MatrixSetDiagV2 {
 ///        [[6, 5, 1, 7],
 ///         [3, 1, 6, 2],
 ///         [7, 4, 2, 4]]]
-/// 
+///
 /// # LEFT_RIGHT alignment.
 /// diagonals = np.array([[[9, 1, 0],  # Diagonal shape: (2, 4, 3)
 ///                        [6, 5, 8],
@@ -3205,7 +3205,7 @@ class MatrixSetDiagV2 {
 ///        [[6, 5, 1, 7],
 ///         [3, 1, 6, 2],
 ///         [7, 4, 2, 4]]]
-/// 
+///
 /// ```
 ///
 /// Arguments:
@@ -3277,13 +3277,13 @@ class MatrixSetDiagV3 {
 /// in that dimension. Both `paddings[D, 0]` and `paddings[D, 1]` must be no greater
 /// than `input.dim_size(D)` (or `input.dim_size(D) - 1`) if `copy_border` is true
 /// (if false, respectively).
-/// 
+///
 /// The padded size of each dimension D of the output is:
-/// 
+///
 /// `paddings(D, 0) + input.dim_size(D) + paddings(D, 1)`
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is [[1, 2, 3], [4, 5, 6]].
 /// # 'paddings' is [[1, 1]], [2, 2]].
@@ -3324,19 +3324,19 @@ class MirrorPad {
 ///
 /// The locations represented by indices in `indices` take value `on_value`,
 /// while all other locations take value `off_value`.
-/// 
+///
 /// If the input `indices` is rank `N`, the output will have rank `N+1`,
 /// The new axis is created at dimension `axis` (default: the new axis is
 /// appended at the end).
-/// 
+///
 /// If `indices` is a scalar the output shape will be a vector of length `depth`.
-/// 
+///
 /// If `indices` is a vector of length `features`, the output shape will be:
 /// ```
 ///   features x depth if axis == -1
 ///   depth x features if axis == 0
 /// ```
-/// 
+///
 /// If `indices` is a matrix (batch) with shape `[batch, features]`,
 /// the output shape will be:
 /// ```
@@ -3344,11 +3344,11 @@ class MirrorPad {
 ///   batch x depth x features if axis == 1
 ///   depth x batch x features if axis == 0
 /// ```
-/// 
-/// 
+///
+///
 /// Examples
 /// =========
-/// 
+///
 /// Suppose that
 /// ```
 ///   indices = [0, 2, -1, 1]
@@ -3357,7 +3357,7 @@ class MirrorPad {
 ///   off_value = 0.0
 ///   axis = -1
 /// ```
-/// 
+///
 /// Then output is `[4 x 3]`:
 /// ```
 /// output =
@@ -3366,7 +3366,7 @@ class MirrorPad {
 ///   [0.0 0.0 0.0]  // one_hot(-1)
 ///   [0.0 5.0 0.0]  // one_hot(1)
 /// ```
-/// 
+///
 /// Suppose that
 /// ```
 ///   indices = [0, 2, -1, 1]
@@ -3375,7 +3375,7 @@ class MirrorPad {
 ///   off_value = 3.0
 ///   axis = 0
 /// ```
-/// 
+///
 /// Then output is `[3 x 4]`:
 /// ```
 /// output =
@@ -3388,7 +3388,7 @@ class MirrorPad {
 /// //          ^        one_hot(-1)
 /// //              ^    one_hot(1)
 /// ```
-/// 
+///
 /// Suppose that
 /// ```
 ///   indices = [[0, 2], [1, -1]]
@@ -3397,7 +3397,7 @@ class MirrorPad {
 ///   off_value = 0.0
 ///   axis = -1
 /// ```
-/// 
+///
 /// Then output is `[2 x 2 x 3]`:
 /// ```
 /// output =
@@ -3479,13 +3479,13 @@ class OnesLike {
 /// Packs the `N` tensors in `values` into a tensor with rank one higher than each
 /// tensor in `values`, by packing them along the `axis` dimension.
 /// Given a list of tensors of shape `(A, B, C)`;
-/// 
+///
 /// if `axis == 0` then the `output` tensor will have the shape `(N, A, B, C)`.
 /// if `axis == 1` then the `output` tensor will have the shape `(A, N, B, C)`.
 /// Etc.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'x' is [1, 4]
 /// # 'y' is [2, 5]
@@ -3493,7 +3493,7 @@ class OnesLike {
 /// pack([x, y, z]) => [[1, 4], [2, 5], [3, 6]]  # Pack along first dim.
 /// pack([x, y, z], axis=1) => [[1, 2, 3], [4, 5, 6]]
 /// ```
-/// 
+///
 /// This is the opposite of `unpack`.
 ///
 /// Arguments:
@@ -3545,13 +3545,13 @@ class Stack {
 /// how many zeros to add before the contents of `input` in that dimension, and
 /// `paddings[D, 1]` indicates how many zeros to add after the contents of `input`
 /// in that dimension.
-/// 
+///
 /// The padded size of each dimension D of the output is:
-/// 
+///
 /// `paddings(D, 0) + input.dim_size(D) + paddings(D, 1)`
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is [[1, 1], [2, 2]]
 /// # 'paddings' is [[1, 1], [2, 2]]
@@ -3561,7 +3561,7 @@ class Stack {
 ///                       [0, 0, 2, 2, 0, 0]
 ///                       [0, 0, 0, 0, 0, 0]]
 /// ```
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -3589,13 +3589,13 @@ class Pad {
 /// and `paddings[D, 1]` indicates how many padding values to add after the contents
 /// of `input` in that dimension. `constant_values` is a scalar tensor of the same
 /// type as `input` that indicates the value to use for padding `input`.
-/// 
+///
 /// The padded size of each dimension D of the output is:
-/// 
+///
 /// `paddings(D, 0) + input.dim_size(D) + paddings(D, 1)`
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is [[1, 1], [2, 2]]
 /// # 'paddings' is [[1, 1], [2, 2]]
@@ -3627,16 +3627,16 @@ class PadV2 {
 /// Concatenates a list of `N` tensors along the first dimension.
 ///
 /// The input tensors are all required to have size 1 in the first dimension.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'x' is [[1, 4]]
 /// # 'y' is [[2, 5]]
 /// # 'z' is [[3, 6]]
 /// parallel_concat([x, y, z]) => [[1, 4], [2, 5], [3, 6]]  # Pack along first dim.
 /// ```
-/// 
+///
 /// The difference between concat and parallel_concat is that concat requires all
 /// of the inputs be computed before the operation will begin but doesn't require
 /// that the input shapes be known during graph construction.  Parallel concat
@@ -3735,7 +3735,7 @@ class PlaceholderWithDefault {
 /// An identity op that triggers an error if a gradient is requested.
 ///
 /// When executed in a graph, this op outputs its input tensor as-is.
-/// 
+///
 /// When building ops to compute gradients, the TensorFlow gradient system
 /// will return an error when trying to lookup the gradient of this op,
 /// because no gradient must ever be registered for this function.  This
@@ -3786,41 +3786,41 @@ class PreventGradient {
 /// Quantizes then dequantizes a tensor.
 ///
 /// This op simulates the precision loss from the quantized forward pass by:
-/// 
+///
 /// 1. Quantizing the tensor to fixed point numbers, which should match the target
 ///    quantization method when it is used in inference.
 /// 2. Dequantizing it back to floating point numbers for the following ops, most
 ///    likely matmul.
-/// 
+///
 /// There are different ways to quantize. This version uses only scaling, so 0.0
 /// maps to 0.
-/// 
+///
 /// From the specified 'num_bits' in the quantized output type, it determines
 /// minimum and maximum representable quantized values.
-/// 
+///
 /// e.g.
-/// 
+///
 /// *   [-128, 127] for signed, num_bits = 8, or
 /// *   [0, 255] for unsigned, num_bits = 8.
-/// 
+///
 /// If range_given == False, the initial input_min, input_max will be determined
 /// automatically as the minimum and maximum values in the input tensor, otherwise
 /// the specified values of input_min, input_max are used.
-/// 
+///
 /// Note: If the input_min, input_max are specified, they do not need to equal the
 /// actual minimum and maximum values in the tensor. e.g. in some cases it may be
 /// beneficial to specify these values such that the low probability extremes of the
 /// input distribution are clipped.
-/// 
+///
 /// This op determines the maximum scale_factor that would map the initial
 /// [input_min, input_max] range to a range that lies within the representable
 /// quantized range.
-/// 
+///
 /// It determines the scale from one of input_min and input_max, then updates the
 /// other one to maximize the representable range.
-/// 
+///
 /// e.g.
-/// 
+///
 /// *   if the output is signed, num_bits = 8, [input_min, input_max] = [-10.0,
 ///     5.0]: it would use a scale_factor of -128 / -10.0 = 12.8 In this case, it
 ///     would update input_max to be 127 / 12.8 = 9.921875
@@ -3829,14 +3829,14 @@ class PreventGradient {
 ///     would update input_min to be 128.0 / 12.7 = -10.07874
 /// *   if the output is unsigned, input_min is forced to be 0, and only the
 ///     specified input_max is used.
-/// 
+///
 /// After determining the scale_factor and updating the input range, it applies the
 /// following to each value in the 'input' tensor.
-/// 
+///
 /// output = round(clamp(value, input_min, input_max) * scale_factor) / scale_factor.
-/// 
+///
 /// The above round function rounds the value based on the given round_mode.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -3856,11 +3856,11 @@ class PreventGradient {
 /// * round_mode: The 'round_mode' attribute controls which rounding tie-breaking algorithm is
 /// used when rounding float values to their quantized equivalents. The following
 /// rounding modes are currently supported:
-/// 
+///
 /// *   HALF_TO_EVEN: this is the default round_mode.
 /// *   HALF_UP: round towards positive. In this mode 7.5 rounds up to 8 and -7.5
 ///     rounds up to -7.
-/// 
+///
 /// * narrow_range: If True, then the absolute value of the quantized minimum value is the same as
 /// the quantized maximum value, instead of 1 greater.
 /// i.e. for 8 bit quantization, the minimum value is -127 instead of -128.
@@ -3904,11 +3904,11 @@ class QuantizeAndDequantizeV2 {
     /// The 'round_mode' attribute controls which rounding tie-breaking algorithm is
     /// used when rounding float values to their quantized equivalents. The following
     /// rounding modes are currently supported:
-    /// 
+    ///
     /// *   HALF_TO_EVEN: this is the default round_mode.
     /// *   HALF_UP: round towards positive. In this mode 7.5 rounds up to 8 and -7.5
     ///     rounds up to -7.
-    /// 
+    ///
     ///
     /// Defaults to "HALF_TO_EVEN"
     TF_MUST_USE_RESULT Attrs RoundMode(StringPiece x) {
@@ -4204,29 +4204,29 @@ class QuantizeAndDequantizeV4Grad {
 /// used to convert the float values to their quantized equivalents.  The
 /// 'round_mode' attribute controls which rounding tie-breaking algorithm is used
 /// when rounding float values to their quantized equivalents.
-/// 
+///
 /// In 'MIN_COMBINED' mode, each value of the tensor will undergo the following:
-/// 
+///
 /// ```
 /// out[i] = (in[i] - min_range) * range(T) / (max_range - min_range)
 /// if T == qint8: out[i] -= (range(T) + 1) / 2.0
 /// ```
-/// 
+///
 /// here `range(T) = numeric_limits<T>::max() - numeric_limits<T>::min()`
-/// 
+///
 /// *MIN_COMBINED Mode Example*
-/// 
+///
 /// Assume the input is type float and has a possible range of [0.0, 6.0] and the
 /// output type is quint8 ([0, 255]). The min_range and max_range values should be
 /// specified as 0.0 and 6.0. Quantizing from float to quint8 will multiply each
 /// value of the input by 255/6 and cast to quint8.
-/// 
+///
 /// If the output type was qint8 ([-128, 127]), the operation will additionally
 /// subtract each value by 128 prior to casting, so that the range of values aligns
 /// with the range of qint8.
-/// 
+///
 /// If the mode is 'MIN_FIRST', then this approach is used:
-/// 
+///
 /// ```
 /// num_discrete_values = 1 << (# of bits in T)
 /// range_adjust = num_discrete_values / (num_discrete_values - 1)
@@ -4237,92 +4237,92 @@ class QuantizeAndDequantizeV4Grad {
 /// quantized = max(quantized, numeric_limits<T>::min())
 /// quantized = min(quantized, numeric_limits<T>::max())
 /// ```
-/// 
+///
 /// The biggest difference between this and MIN_COMBINED is that the minimum range
 /// is rounded first, before it's subtracted from the rounded value. With
 /// MIN_COMBINED, a small bias is introduced where repeated iterations of quantizing
 /// and dequantizing will introduce a larger and larger error.
-/// 
+///
 /// *SCALED mode Example*
-/// 
+///
 /// `SCALED` mode matches the quantization approach used in
 /// `QuantizeAndDequantize{V2|V3}`.
-/// 
+///
 /// If the mode is `SCALED`, the quantization is performed by multiplying each
 /// input value by a scaling_factor.
 /// The scaling_factor is determined from `min_range` and `max_range` to be as large
 /// as possible such that the range from `min_range` to `max_range` is representable
 /// within values of type T.
-/// 
+///
 /// ```c++
-/// 
+///
 ///   const int min_T = std::numeric_limits<T>::min();
 ///   const int max_T = std::numeric_limits<T>::max();
 ///   const float max_float = std::numeric_limits<float>::max();
-/// 
+///
 ///   const float scale_factor_from_min_side =
 ///       (min_T * min_range > 0) ? min_T / min_range : max_float;
 ///   const float scale_factor_from_max_side =
 ///       (max_T * max_range > 0) ? max_T / max_range : max_float;
-/// 
+///
 ///   const float scale_factor = std::min(scale_factor_from_min_side,
 ///                                       scale_factor_from_max_side);
 /// ```
-/// 
+///
 /// We next use the scale_factor to adjust min_range and max_range as follows:
-/// 
+///
 /// ```c++
 ///       min_range = min_T / scale_factor;
 ///       max_range = max_T / scale_factor;
 /// ```
-/// 
-/// 
+///
+///
 /// e.g. if T = qint8, and initially min_range = -10, and max_range = 9, we would
 /// compare -128/-10.0 = 12.8 to 127/9.0 = 14.11, and set scaling_factor = 12.8
 /// In this case, min_range would remain -10, but max_range would be adjusted to
 /// 127 / 12.8 = 9.921875
-/// 
+///
 /// So we will quantize input values in the range (-10, 9.921875) to (-128, 127).
-/// 
+///
 /// The input tensor can now be quantized by clipping values to the range
 /// `min_range` to `max_range`, then multiplying by scale_factor as follows:
-/// 
+///
 /// ```c++
 /// result = round(min(max_range, max(min_range, input)) * scale_factor)
 /// ```
-/// 
+///
 /// The adjusted `min_range` and `max_range` are returned as outputs 2 and 3 of
 /// this operation. These outputs should be used as the range for any further
 /// calculations.
-/// 
-/// 
+///
+///
 /// *narrow_range (bool) attribute*
-/// 
+///
 /// If true, we do not use the minimum quantized value.
 /// i.e. for int8 the quantized output, it would be restricted to the range
 /// -127..127 instead of the full -128..127 range.
 /// This is provided for compatibility with certain inference backends.
 /// (Only applies to SCALED mode)
-/// 
-/// 
+///
+///
 /// *axis (int) attribute*
-/// 
+///
 /// An optional `axis` attribute can specify a dimension index of the input tensor,
 /// such that quantization ranges will be calculated and applied separately for each
 /// slice of the tensor along that dimension. This is useful for per-channel
 /// quantization.
-/// 
+///
 /// If axis is specified, min_range and max_range
-/// 
+///
 /// if `axis`=None, per-tensor quantization is performed as normal.
-/// 
-/// 
+///
+///
 /// *ensure_minimum_range (float) attribute*
-/// 
+///
 /// Ensures the minimum quantization range is at least this value.
 /// The legacy default value for this is 0.01, but it is strongly suggested to
 /// set it to 0 for new uses.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -4584,15 +4584,15 @@ class QuantizedReshape {
 /// Returns the rank of a tensor.
 ///
 /// This operation returns an integer representing the rank of `input`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is [[[1, 1, 1], [2, 2, 2]], [[3, 3, 3], [4, 4, 4]]]
 /// # shape of tensor 't' is [2, 2, 3]
 /// rank(t) ==> 3
 /// ```
-/// 
+///
 /// **Note**: The rank of a tensor is not the same as the rank of a matrix. The rank
 /// of a tensor is the number of indices required to uniquely select each element
 /// of the tensor. Rank is also known as "order", "degree", or "ndims."
@@ -4617,33 +4617,33 @@ class Rank {
 ///
 /// Given `tensor`, this operation returns a tensor that has the same values
 /// as `tensor` with shape `shape`.
-/// 
+///
 /// If one component of 1-D tensor `shape` is the special value -1, the size of that
 /// dimension is computed so that the total size remains constant.  In particular, a
 /// `shape` of `[-1]` flattens into 1-D.  At most one component of `shape` may be
 /// unknown.
-/// 
+///
 /// The `shape` must be 1-D and the operation returns a tensor with shape
 /// `shape` filled with the values of `tensor`. In this case, the number of elements
 /// implied by `shape` must be the same as the number of elements in `tensor`.
-/// 
+///
 /// It is an error if `shape` is not 1-D.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 't' is [1, 2, 3, 4, 5, 6, 7, 8, 9]
 /// # tensor 't' has shape [9]
 /// reshape(t, [3, 3]) ==> [[1, 2, 3],
 ///                         [4, 5, 6],
 ///                         [7, 8, 9]]
-/// 
+///
 /// # tensor 't' is [[[1, 1], [2, 2]],
 /// #                [[3, 3], [4, 4]]]
 /// # tensor 't' has shape [2, 2, 2]
 /// reshape(t, [2, 4]) ==> [[1, 1, 2, 2],
 ///                         [3, 3, 4, 4]]
-/// 
+///
 /// # tensor 't' is [[[1, 1, 1],
 /// #                 [2, 2, 2]],
 /// #                [[3, 3, 3],
@@ -4653,9 +4653,9 @@ class Rank {
 /// # tensor 't' has shape [3, 2, 3]
 /// # pass '[-1]' to flatten 't'
 /// reshape(t, [-1]) ==> [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6]
-/// 
+///
 /// # -1 can also be used to infer the shape
-/// 
+///
 /// # -1 is inferred to be 9:
 /// reshape(t, [2, -1]) ==> [[1, 1, 1, 2, 2, 2, 3, 3, 3],
 ///                          [4, 4, 4, 5, 5, 5, 6, 6, 6]]
@@ -4669,7 +4669,7 @@ class Rank {
 ///                              [[4, 4, 4],
 ///                               [5, 5, 5],
 ///                               [6, 6, 6]]]
-/// 
+///
 /// # tensor 't' is [7]
 /// # shape `[]` reshapes to a scalar
 /// reshape(t, []) ==> 7
@@ -4698,7 +4698,7 @@ class Reshape {
 /// The values of `value` are assigned to the positions in the variable
 /// `ref` that are selected by the slice parameters. The slice parameters
 /// `begin, `end`, `strides`, etc. work exactly as in `StridedSlice`.
-/// 
+///
 /// NOTE this op currently does not support broadcasting and so `value`'s
 /// shape must be exactly the shape produced by the slice of `ref`.
 ///
@@ -4787,51 +4787,51 @@ class ResourceStridedSliceAssign {
 /// This op first slices `input` along the dimension `batch_dim`, and for each
 /// slice `i`, reverses the first `seq_lengths[i]` elements along
 /// the dimension `seq_dim`.
-/// 
+///
 /// The elements of `seq_lengths` must obey `seq_lengths[i] <= input.dims[seq_dim]`,
 /// and `seq_lengths` must be a vector of length `input.dims[batch_dim]`.
-/// 
+///
 /// The output slice `i` along dimension `batch_dim` is then given by input
 /// slice `i`, with the first `seq_lengths[i]` slices along dimension
 /// `seq_dim` reversed.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # Given this:
 /// batch_dim = 0
 /// seq_dim = 1
 /// input.dims = (4, 8, ...)
 /// seq_lengths = [7, 2, 3, 5]
-/// 
+///
 /// # then slices of input are reversed on seq_dim, but only up to seq_lengths:
 /// output[0, 0:7, :, ...] = input[0, 7:0:-1, :, ...]
 /// output[1, 0:2, :, ...] = input[1, 2:0:-1, :, ...]
 /// output[2, 0:3, :, ...] = input[2, 3:0:-1, :, ...]
 /// output[3, 0:5, :, ...] = input[3, 5:0:-1, :, ...]
-/// 
+///
 /// # while entries past seq_lens are copied through:
 /// output[0, 7:, :, ...] = input[0, 7:, :, ...]
 /// output[1, 2:, :, ...] = input[1, 2:, :, ...]
 /// output[2, 3:, :, ...] = input[2, 3:, :, ...]
 /// output[3, 2:, :, ...] = input[3, 2:, :, ...]
 /// ```
-/// 
+///
 /// In contrast, if:
-/// 
+///
 /// ```
 /// # Given this:
 /// batch_dim = 2
 /// seq_dim = 0
 /// input.dims = (8, ?, 4, ...)
 /// seq_lengths = [7, 2, 3, 5]
-/// 
+///
 /// # then slices of input are reversed on seq_dim, but only up to seq_lengths:
 /// output[0:7, :, 0, :, ...] = input[7:0:-1, :, 0, :, ...]
 /// output[0:2, :, 1, :, ...] = input[2:0:-1, :, 1, :, ...]
 /// output[0:3, :, 2, :, ...] = input[3:0:-1, :, 2, :, ...]
 /// output[0:5, :, 3, :, ...] = input[5:0:-1, :, 3, :, ...]
-/// 
+///
 /// # while entries past seq_lens are copied through:
 /// output[7:, :, 0, :, ...] = input[7:, :, 0, :, ...]
 /// output[2:, :, 1, :, ...] = input[2:, :, 1, :, ...]
@@ -4887,17 +4887,17 @@ class ReverseSequence {
 ///
 /// NOTE `tf.reverse` has now changed behavior in preparation for 1.0.
 /// `tf.reverse_v2` is currently an alias that will be deprecated before TF 1.0.
-/// 
+///
 /// Given a `tensor`, and a `int32` tensor `axis` representing the set of
 /// dimensions of `tensor` to reverse. This operation reverses each dimension
 /// `i` for which there exists `j` s.t. `axis[j] == i`.
-/// 
+///
 /// `tensor` can have up to 8 dimensions. The number of dimensions specified
 /// in `axis` may be 0 or more entries. If an index is specified more than
 /// once, a InvalidArgument error is raised.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 't' is [[[[ 0,  1,  2,  3],
 /// #                  [ 4,  5,  6,  7],
@@ -4906,7 +4906,7 @@ class ReverseSequence {
 /// #                  [16, 17, 18, 19],
 /// #                  [20, 21, 22, 23]]]]
 /// # tensor 't' shape is [1, 2, 3, 4]
-/// 
+///
 /// # 'dims' is [3] or 'dims' is [-1]
 /// reverse(t, dims) ==> [[[[ 3,  2,  1,  0],
 ///                         [ 7,  6,  5,  4],
@@ -4914,7 +4914,7 @@ class ReverseSequence {
 ///                        [[15, 14, 13, 12],
 ///                         [19, 18, 17, 16],
 ///                         [23, 22, 21, 20]]]]
-/// 
+///
 /// # 'dims' is '[1]' (or 'dims' is '[-3]')
 /// reverse(t, dims) ==> [[[[12, 13, 14, 15],
 ///                         [16, 17, 18, 19],
@@ -4922,7 +4922,7 @@ class ReverseSequence {
 ///                        [[ 0,  1,  2,  3],
 ///                         [ 4,  5,  6,  7],
 ///                         [ 8,  9, 10, 11]]]]
-/// 
+///
 /// # 'dims' is '[2]' (or 'dims' is '[-2]')
 /// reverse(t, dims) ==> [[[[8, 9, 10, 11],
 ///                         [4, 5, 6, 7],
@@ -4958,40 +4958,40 @@ class Reverse {
 /// slices within a tensor (initially zero for numeric, empty for string) of
 /// the given `shape` according to indices.  This operator is the inverse of the
 /// `tf.gather_nd` operator which extracts values or slices from a given tensor.
-/// 
+///
 /// This operation is similar to tensor_scatter_add, except that the tensor is
 /// zero-initialized. Calling `tf.scatter_nd(indices, values, shape)` is identical
 /// to `tensor_scatter_add(tf.zeros(shape, values.dtype), indices, values)`
-/// 
+///
 /// If `indices` contains duplicates, then their updates are accumulated (summed).
-/// 
+///
 /// **WARNING**: The order in which updates are applied is nondeterministic, so the
 /// output will be nondeterministic if `indices` contains duplicates -- because
 /// of some numerical approximation issues, numbers summed in different order
 /// may yield different results.
-/// 
+///
 /// `indices` is an integer tensor containing indices into a new tensor of shape
 /// `shape`.  The last dimension of `indices` can be at most the rank of `shape`:
-/// 
+///
 ///     indices.shape[-1] <= shape.rank
-/// 
+///
 /// The last dimension of `indices` corresponds to indices into elements
 /// (if `indices.shape[-1] = shape.rank`) or slices
 /// (if `indices.shape[-1] < shape.rank`) along dimension `indices.shape[-1]` of
 /// `shape`.  `updates` is a tensor with shape
-/// 
+///
 ///     indices.shape[:-1] + shape[indices.shape[-1]:]
-/// 
+///
 /// The simplest form of scatter is to insert individual elements in a tensor by
 /// index. For example, say we want to insert 4 scattered elements in a rank-1
 /// tensor with 8 elements.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/ScatterNd1.png" alt>
 /// </div>
-/// 
+///
 /// In Python, this scatter operation would look like this:
-/// 
+///
 /// ```python
 ///     indices = tf.constant([[4], [3], [1], [7]])
 ///     updates = tf.constant([9, 10, 11, 12])
@@ -4999,21 +4999,21 @@ class Reverse {
 ///     scatter = tf.scatter_nd(indices, updates, shape)
 ///     print(scatter)
 /// ```
-/// 
+///
 /// The resulting tensor would look like this:
-/// 
+///
 ///     [0, 11, 0, 10, 9, 0, 0, 12]
-/// 
+///
 /// We can also, insert entire slices of a higher rank tensor all at once. For
 /// example, if we wanted to insert two slices in the first dimension of a
 /// rank-3 tensor with two matrices of new values.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/ScatterNd2.png" alt>
 /// </div>
-/// 
+///
 /// In Python, this scatter operation would look like this:
-/// 
+///
 /// ```python
 ///     indices = tf.constant([[0], [2]])
 ///     updates = tf.constant([[[5, 5, 5, 5], [6, 6, 6, 6],
@@ -5024,14 +5024,14 @@ class Reverse {
 ///     scatter = tf.scatter_nd(indices, updates, shape)
 ///     print(scatter)
 /// ```
-/// 
+///
 /// The resulting tensor would look like this:
-/// 
+///
 ///     [[[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
 ///      [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]],
 ///      [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
 ///      [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]]
-/// 
+///
 /// Note that on CPU, if an out of bound index is found, an error is returned.
 /// On GPU, if an out of bound index is found, the index is ignored.
 ///
@@ -5062,34 +5062,34 @@ class ScatterNd {
 /// `input` is only modified in-place if no other operations will use it.
 /// Otherwise, a copy of `input` is made.  This operation has a gradient with
 /// respect to both `input` and `updates`.
-/// 
+///
 /// `input` is a `Tensor` with rank `P` and `indices` is a `Tensor` of rank `Q`.
-/// 
+///
 /// `indices` must be integer tensor, containing indices into `input`.
 /// It must be shape \\([d_0, ..., d_{Q-2}, K]\\) where `0 < K <= P`.
-/// 
+///
 /// The innermost dimension of `indices` (with length `K`) corresponds to
 /// indices into elements (if `K = P`) or `(P-K)`-dimensional slices
 /// (if `K < P`) along the `K`th dimension of `input`.
-/// 
+///
 /// `updates` is `Tensor` of rank `Q-1+P-K` with shape:
-/// 
+///
 /// $$[d_0, ..., d_{Q-2}, input.shape[K], ..., input.shape[P-1]].$$
-/// 
+///
 /// For example, say we want to add 4 scattered elements to a rank-1 tensor to 8
 /// elements. In Python, that addition would look like this:
-/// 
+///
 ///     input = tf.constant([1, 2, 3, 4, 5, 6, 7, 8])
 ///     indices = tf.constant([[4], [3], [1], [7]])
 ///     updates = tf.constant([9, 10, 11, 12])
 ///     output = tf.scatter_nd_non_aliasing_add(input, indices, updates)
 ///     with tf.Session() as sess:
 ///       print(sess.run(output))
-/// 
+///
 /// The resulting value `output` would look like this:
-/// 
+///
 ///     [1, 13, 3, 14, 14, 6, 7, 20]
-/// 
+///
 /// See `tf.scatter_nd` for more details about how to make updates to slices.
 ///
 /// Arguments:
@@ -5119,9 +5119,9 @@ class ScatterNdNonAliasingAdd {
 /// Returns the shape of a tensor.
 ///
 /// This operation returns a 1-D integer tensor representing the shape of `input`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is [[[1, 1, 1], [2, 2, 2]], [[3, 3, 3], [4, 4, 4]]]
 /// shape(t) ==> [2, 2, 3]
@@ -5200,9 +5200,9 @@ class ShapeN {
 ///
 /// This operation returns an integer representing the number of elements in
 /// `input`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is [[[1, 1,, 1], [2, 2, 2]], [[3, 3, 3], [4, 4, 4]]]]
 /// size(t) ==> 12
@@ -5246,7 +5246,7 @@ class Size {
 /// The output tensor is a tensor with dimensions described by 'size'
 /// whose values are extracted from 'input' starting at the offsets in
 /// 'begin'.
-/// 
+///
 /// *Requirements*:
 ///   0 <= begin[i] <= begin[i] + size[i] <= Di  for i in [0, n)
 ///
@@ -5294,7 +5294,7 @@ class Snapshot {
 /// SpaceToBatch for 4-D tensors of type T.
 ///
 /// This is a legacy version of the more general SpaceToBatchND.
-/// 
+///
 /// Zero-pads and then rearranges (permutes) blocks of spatial data into batch.
 /// More specifically, this op outputs a copy of the input tensor where values from
 /// the `height` and `width` dimensions are moved to the `batch` dimension. After
@@ -5306,87 +5306,87 @@ class Snapshot {
 /// * input: 4-D with shape `[batch, height, width, depth]`.
 /// * paddings: 2-D tensor of non-negative integers with shape `[2, 2]`. It specifies
 ///   the padding of the input with zeros across the spatial dimensions as follows:
-/// 
+///
 ///       paddings = [[pad_top, pad_bottom], [pad_left, pad_right]]
-/// 
+///
 ///   The effective spatial dimensions of the zero-padded input tensor will be:
-/// 
+///
 ///       height_pad = pad_top + height + pad_bottom
 ///       width_pad = pad_left + width + pad_right
-/// 
+///
 /// The attr `block_size` must be greater than one. It indicates the block size.
-/// 
+///
 ///   * Non-overlapping blocks of size `block_size x block size` in the height and
 ///     width dimensions are rearranged into the batch dimension at each location.
 ///   * The batch of the output tensor is `batch * block_size * block_size`.
 ///   * Both height_pad and width_pad must be divisible by block_size.
-/// 
+///
 /// The shape of the output will be:
-/// 
+///
 ///     [batch*block_size*block_size, height_pad/block_size, width_pad/block_size,
 ///      depth]
-/// 
+///
 /// Some examples:
-/// 
+///
 /// (1) For the following input of shape `[1, 2, 2, 1]` and block_size of 2:
-/// 
+///
 /// ```
 /// x = [[[[1], [2]], [[3], [4]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[4, 1, 1, 1]` and value:
-/// 
+///
 /// ```
 /// [[[[1]]], [[[2]]], [[[3]]], [[[4]]]]
 /// ```
-/// 
+///
 /// (2) For the following input of shape `[1, 2, 2, 3]` and block_size of 2:
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3], [4, 5, 6]],
 ///       [[7, 8, 9], [10, 11, 12]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[4, 1, 1, 3]` and value:
-/// 
+///
 /// ```
 /// [[[[1, 2, 3]]], [[[4, 5, 6]]], [[[7, 8, 9]]], [[[10, 11, 12]]]]
 /// ```
-/// 
+///
 /// (3) For the following input of shape `[1, 4, 4, 1]` and block_size of 2:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [3],  [4]],
 ///       [[5],   [6],  [7],  [8]],
 ///       [[9],  [10], [11],  [12]],
 ///       [[13], [14], [15],  [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[4, 2, 2, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1], [3]], [[9], [11]]],
 ///      [[[2], [4]], [[10], [12]]],
 ///      [[[5], [7]], [[13], [15]]],
 ///      [[[6], [8]], [[14], [16]]]]
 /// ```
-/// 
+///
 /// (4) For the following input of shape `[2, 2, 4, 1]` and block_size of 2:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [3],  [4]],
 ///       [[5],   [6],  [7],  [8]]],
 ///      [[[9],  [10], [11],  [12]],
 ///       [[13], [14], [15],  [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[8, 1, 2, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1], [3]]], [[[9], [11]]], [[[2], [4]]], [[[10], [12]]],
 ///      [[[5], [7]]], [[[13], [15]]], [[[6], [8]]], [[[14], [16]]]]
 /// ```
-/// 
+///
 /// Among others, this operation is useful for reducing atrous convolution into
 /// regular convolution.
 ///
@@ -5424,14 +5424,14 @@ class SpaceToBatch {
 ///   `paddings[i] = [pad_start, pad_end]` specifies the padding for input dimension
 ///   `i + 1`, which corresponds to spatial dimension `i`.  It is required that
 ///   `block_shape[i]` divides `input_shape[i + 1] + pad_start + pad_end`.
-/// 
+///
 /// This operation is equivalent to the following steps:
-/// 
+///
 /// 1. Zero-pad the start and end of dimensions `[1, ..., M]` of the
 ///    input according to `paddings` to produce `padded` of shape `padded_shape`.
-/// 
+///
 /// 2. Reshape `padded` to `reshaped_padded` of shape:
-/// 
+///
 ///      [batch] +
 ///      [padded_shape[1] / block_shape[0],
 ///        block_shape[0],
@@ -5439,93 +5439,93 @@ class SpaceToBatch {
 ///       padded_shape[M] / block_shape[M-1],
 ///       block_shape[M-1]] +
 ///      remaining_shape
-/// 
+///
 /// 3. Permute dimensions of `reshaped_padded` to produce
 ///    `permuted_reshaped_padded` of shape:
-/// 
+///
 ///      block_shape +
 ///      [batch] +
 ///      [padded_shape[1] / block_shape[0],
 ///       ...,
 ///       padded_shape[M] / block_shape[M-1]] +
 ///      remaining_shape
-/// 
+///
 /// 4. Reshape `permuted_reshaped_padded` to flatten `block_shape` into the batch
 ///    dimension, producing an output tensor of shape:
-/// 
+///
 ///      [batch * prod(block_shape)] +
 ///      [padded_shape[1] / block_shape[0],
 ///       ...,
 ///       padded_shape[M] / block_shape[M-1]] +
 ///      remaining_shape
-/// 
+///
 /// Some examples:
-/// 
+///
 /// (1) For the following input of shape `[1, 2, 2, 1]`, `block_shape = [2, 2]`, and
 ///     `paddings = [[0, 0], [0, 0]]`:
-/// 
+///
 /// ```
 /// x = [[[[1], [2]], [[3], [4]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[4, 1, 1, 1]` and value:
-/// 
+///
 /// ```
 /// [[[[1]]], [[[2]]], [[[3]]], [[[4]]]]
 /// ```
-/// 
+///
 /// (2) For the following input of shape `[1, 2, 2, 3]`, `block_shape = [2, 2]`, and
 ///     `paddings = [[0, 0], [0, 0]]`:
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3], [4, 5, 6]],
 ///       [[7, 8, 9], [10, 11, 12]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[4, 1, 1, 3]` and value:
-/// 
+///
 /// ```
 /// [[[[1, 2, 3]]], [[[4, 5, 6]]], [[[7, 8, 9]]], [[[10, 11, 12]]]]
 /// ```
-/// 
+///
 /// (3) For the following input of shape `[1, 4, 4, 1]`, `block_shape = [2, 2]`, and
 ///     `paddings = [[0, 0], [0, 0]]`:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [3],  [4]],
 ///       [[5],   [6],  [7],  [8]],
 ///       [[9],  [10], [11],  [12]],
 ///       [[13], [14], [15],  [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[4, 2, 2, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[1], [3]], [[9], [11]]],
 ///      [[[2], [4]], [[10], [12]]],
 ///      [[[5], [7]], [[13], [15]]],
 ///      [[[6], [8]], [[14], [16]]]]
 /// ```
-/// 
+///
 /// (4) For the following input of shape `[2, 2, 4, 1]`, block_shape = `[2, 2]`, and
 ///     paddings = `[[0, 0], [2, 0]]`:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [3],  [4]],
 ///       [[5],   [6],  [7],  [8]]],
 ///      [[[9],  [10], [11],  [12]],
 ///       [[13], [14], [15],  [16]]]]
 /// ```
-/// 
+///
 /// The output tensor has shape `[8, 1, 3, 1]` and value:
-/// 
+///
 /// ```
 /// x = [[[[0], [1], [3]]], [[[0], [9], [11]]],
 ///      [[[0], [2], [4]]], [[[0], [10], [12]]],
 ///      [[[0], [5], [7]]], [[[0], [13], [15]]],
 ///      [[[0], [6], [8]]], [[[0], [14], [16]]]]
 /// ```
-/// 
+///
 /// Among others, this operation is useful for reducing atrous convolution into
 /// regular convolution.
 ///
@@ -5549,21 +5549,21 @@ class SpaceToBatchND {
 /// this op outputs a copy of the input tensor where values from the `height`
 /// and `width` dimensions are moved to the `depth` dimension.
 /// The attr `block_size` indicates the input block size.
-/// 
+///
 ///   * Non-overlapping blocks of size `block_size x block size` are rearranged
 ///     into depth at each location.
 ///   * The depth of the output tensor is `block_size * block_size * input_depth`.
 ///   * The Y, X coordinates within each block of the input become the high order
 ///     component of the output channel index.
 ///   * The input tensor's height and width must be divisible by block_size.
-/// 
+///
 /// The `data_format` attr specifies the layout of the input and output tensors
 /// with the following options:
 ///   "NHWC": `[ batch, height, width, channels ]`
 ///   "NCHW": `[ batch, channels, height, width ]`
 ///   "NCHW_VECT_C":
 ///       `qint8 [ batch, channels / 4, height, width, 4 ]`
-/// 
+///
 /// It is useful to consider the operation as transforming a 6-D Tensor.
 /// e.g. for data_format = NHWC,
 ///      Each element in the input tensor can be specified via 6 coordinates,
@@ -5573,55 +5573,55 @@ class SpaceToBatchND {
 ///                         within the input block, iC means input channels).
 ///      The output would be a transpose to the following layout:
 ///      n,oY,oX,bY,bX,iC
-/// 
+///
 /// This operation is useful for resizing the activations between convolutions
 /// (but keeping all data), e.g. instead of pooling. It is also useful for training
 /// purely convolutional models.
-/// 
+///
 /// For example, given an input of shape `[1, 2, 2, 1]`, data_format = "NHWC" and
 /// block_size = 2:
-/// 
+///
 /// ```
 /// x = [[[[1], [2]],
 ///       [[3], [4]]]]
 /// ```
-/// 
+///
 /// This operation will output a tensor of shape `[1, 1, 1, 4]`:
-/// 
+///
 /// ```
 /// [[[[1, 2, 3, 4]]]]
 /// ```
-/// 
+///
 /// Here, the input has a batch of 1 and each batch element has shape `[2, 2, 1]`,
 /// the corresponding output will have a single element (i.e. width and height are
 /// both 1) and will have a depth of 4 channels (1 * block_size * block_size).
 /// The output element shape is `[1, 1, 4]`.
-/// 
+///
 /// For an input tensor with larger depth, here of shape `[1, 2, 2, 3]`, e.g.
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3], [4, 5, 6]],
 ///       [[7, 8, 9], [10, 11, 12]]]]
 /// ```
-/// 
+///
 /// This operation, for block_size of 2, will return the following tensor of shape
 /// `[1, 1, 1, 12]`
-/// 
+///
 /// ```
 /// [[[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]]]]
 /// ```
-/// 
+///
 /// Similarly, for the following input of shape `[1 4 4 1]`, and a block size of 2:
-/// 
+///
 /// ```
 /// x = [[[[1],   [2],  [5],  [6]],
 ///       [[3],   [4],  [7],  [8]],
 ///       [[9],  [10], [13],  [14]],
 ///       [[11], [12], [15],  [16]]]]
 /// ```
-/// 
+///
 /// the operator will return the following tensor of shape `[1 2 2 4]`:
-/// 
+///
 /// ```
 /// x = [[[[1, 2, 3, 4],
 ///        [5, 6, 7, 8]],
@@ -5722,16 +5722,16 @@ class SplitV {
 /// all dimensions of size 1 removed. If you don't want to remove all size 1
 /// dimensions, you can remove specific size 1 dimensions by specifying
 /// `axis`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 't' is a tensor of shape [1, 2, 1, 3, 1, 1]
 /// shape(squeeze(t)) ==> [2, 3]
 /// ```
-/// 
+///
 /// Or, to remove specific size 1 dimensions:
-/// 
+///
 /// ```
 /// # 't' is a tensor of shape [1, 2, 1, 3, 1, 1]
 /// shape(squeeze(t, [2, 4])) ==> [1, 2, 3, 1]
@@ -5784,17 +5784,17 @@ class Squeeze {
 /// Stops gradient computation.
 ///
 /// When executed in a graph, this op outputs its input tensor as-is.
-/// 
+///
 /// When building ops to compute gradients, this op prevents the contribution of
 /// its inputs to be taken into account.  Normally, the gradient generator adds ops
 /// to a graph to compute the derivatives of a specified 'loss' by recursively
 /// finding out inputs that contributed to its computation.  If you insert this op
 /// in the graph it inputs are masked from the gradient generator.  They are not
 /// taken into account for computing gradients.
-/// 
+///
 /// This is useful any time you want to compute a value with TensorFlow but need
 /// to pretend that the value was a constant. Some examples include:
-/// 
+///
 /// *  The *EM* algorithm where the *M-step* should not involve backpropagation
 ///    through the output of the *E-step*.
 /// *  Contrastive divergence training of Boltzmann machines where, when
@@ -5823,23 +5823,23 @@ class StopGradient {
 ///
 /// Note, most python users will want to use the Python `Tensor.__getitem__`
 /// or `Variable.__getitem__` rather than this op directly.
-/// 
+///
 /// The goal of this op is to produce a new tensor with a subset of
 /// the elements from the `n` dimensional `input` tensor. The subset is chosen using
 /// a sequence of `m` sparse range specifications encoded into the arguments
 /// of this function. Note, in some cases
 /// `m` could be equal to `n`, but this need not be the case. Each
 /// range specification entry can be one of the following:
-/// 
+///
 /// - An ellipsis (...). Ellipses are used to imply zero or more
 ///   dimensions of full-dimension selection and are produced using
 ///   `ellipsis_mask`. For example, `foo[...]` is the identity slice.
-/// 
+///
 /// - A new axis. This is used to insert a new shape=1 dimension and is
 ///   produced using `new_axis_mask`. For example, `foo[:, ...]` where
 ///   `foo` is shape `(3, 4)` produces a `(1, 3, 4)` tensor.
-/// 
-/// 
+///
+///
 /// - A range `begin:end:stride`. This is used to specify how much to choose from
 ///   a given dimension. `stride` can be any integer but 0.  `begin` is an integer
 ///   which represents the index of the first value to select while `end` represents
@@ -5855,17 +5855,17 @@ class StopGradient {
 ///   and `end` of `0` and `2`. Another example is `foo[-2::-1]` which reverses the
 ///   first dimension of a tensor while dropping the last two (in the original
 ///   order elements). For example `foo = [1,2,3,4]; foo[-2::-1]` is `[4,3]`.
-/// 
+///
 /// - A single index. This is used to keep only elements that have a given
 ///   index. For example (`foo[2, :]` on a shape `(5,6)` tensor produces a
 ///   shape `(6,)` tensor. This is encoded in `begin` and `end` and
 ///   `shrink_axis_mask`.
-/// 
+///
 /// Each conceptual range specification is encoded in the op's argument. This
 /// encoding is best understand by considering a non-trivial example. In
 /// particular,
 /// `foo[1, 2:4, None, ..., :-3:-1, :]` will be encoded as
-/// 
+///
 /// ```
 /// begin = [1, 2, x, x, 0, x] # x denotes don't care (usually 0)
 /// end = [2, 4, x, x, -3, x]
@@ -5876,37 +5876,37 @@ class StopGradient {
 /// new_axis_mask = 1<<2 = 4
 /// shrink_axis_mask = 1<<0 = 1
 /// ```
-/// 
+///
 /// In this case if `foo.shape` is (5, 5, 5, 5, 5, 5) the final shape of
 /// the slice becomes (2, 1, 5, 5, 2, 5).
 /// Let us walk step by step through each argument specification.
-/// 
+///
 /// 1.  The first argument in the example slice is turned into `begin = 1` and
 /// `end = begin + 1 = 2`. To disambiguate from the original spec `2:4` we
 /// also set the appropriate bit in `shrink_axis_mask`.
-/// 
+///
 /// 2. `2:4` is contributes 2, 4, 1 to begin, end, and stride. All masks have
 /// zero bits contributed.
-/// 
+///
 /// 3. None is a synonym for `tf.newaxis`. This means insert a dimension of size 1
 /// dimension in the final shape. Dummy values are contributed to begin,
 /// end and stride, while the new_axis_mask bit is set.
-/// 
+///
 /// 4. `...` grab the full ranges from as many dimensions as needed to
 /// fully specify a slice for every dimension of the input shape.
-/// 
+///
 /// 5. `:-3:-1` shows the use of negative indices. A negative index `i` associated
 /// with a dimension that has shape `s` is converted to a positive index
 /// `s + i`. So `-1` becomes `s-1` (i.e. the last element). This conversion
 /// is done internally so begin, end and strides receive x, -3, and -1.
 /// The appropriate begin_mask bit is set to indicate the start range is the
 /// full range (ignoring the x).
-/// 
+///
 /// 6. `:` indicates that the entire contents of the corresponding dimension
 /// is selected. This is equivalent to `::` or `0::1`. begin, end, and strides
 /// receive 0, 0, and 1, respectively. The appropriate bits in `begin_mask` and
 /// `end_mask` are also set.
-/// 
+///
 /// *Requirements*:
 ///   `0 != strides[i] for i in [0, m)`
 ///   `ellipsis_mask must be a power of two (only one ellipsis)`
@@ -6055,7 +6055,7 @@ class StridedSlice {
 /// The values of `value` are assigned to the positions in the variable
 /// `ref` that are selected by the slice parameters. The slice parameters
 /// `begin`, `end`, `strides`, etc. work exactly as in `StridedSlice`.
-/// 
+///
 /// NOTE this op currently does not support broadcasting and so `value`'s
 /// shape must be exactly the shape produced by the slice of `ref`.
 ///
@@ -6146,7 +6146,7 @@ class StridedSliceAssign {
 /// `shape`, its gradient will have the same shape (which is passed here
 /// as `shape`). The gradient will be zero in any element that the slice
 /// does not select.
-/// 
+///
 /// Arguments are the same as StridedSliceGrad with the exception that
 /// `dy` is the input gradient to be propagated and `shape` is the
 /// shape of `StridedSlice`'s `input`.
@@ -6239,26 +6239,26 @@ class StridedSliceGrad {
 /// This operation is very similar to `tf.scatter_nd_add`, except that the updates
 /// are added onto an existing tensor (as opposed to a variable). If the memory
 /// for the existing tensor cannot be re-used, a copy is made and updated.
-/// 
+///
 /// `indices` is an integer tensor containing indices into a new tensor of shape
 /// `tensor.shape`.  The last dimension of `indices` can be at most the rank of
 /// `tensor.shape`:
-/// 
+///
 ///     indices.shape[-1] <= tensor.shape.rank
-/// 
+///
 /// The last dimension of `indices` corresponds to indices into elements
 /// (if `indices.shape[-1] = tensor.shape.rank`) or slices
 /// (if `indices.shape[-1] < tensor.shape.rank`) along dimension
 /// `indices.shape[-1]` of `tensor.shape`.  `updates` is a tensor with shape
-/// 
+///
 ///     indices.shape[:-1] + tensor.shape[indices.shape[-1]:]
-/// 
+///
 /// The simplest form of tensor_scatter_add is to add individual elements to a
 /// tensor by index. For example, say we want to add 4 elements in a rank-1
 /// tensor with 8 elements.
-/// 
+///
 /// In Python, this scatter add operation would look like this:
-/// 
+///
 /// ```python
 ///     indices = tf.constant([[4], [3], [1], [7]])
 ///     updates = tf.constant([9, 10, 11, 12])
@@ -6266,17 +6266,17 @@ class StridedSliceGrad {
 ///     updated = tf.tensor_scatter_nd_add(tensor, indices, updates)
 ///     print(updated)
 /// ```
-/// 
+///
 /// The resulting tensor would look like this:
-/// 
+///
 ///     [1, 12, 1, 11, 10, 1, 1, 13]
-/// 
+///
 /// We can also, insert entire slices of a higher rank tensor all at once. For
 /// example, if we wanted to insert two slices in the first dimension of a
 /// rank-3 tensor with two matrices of new values.
-/// 
+///
 /// In Python, this scatter add operation would look like this:
-/// 
+///
 /// ```python
 ///     indices = tf.constant([[0], [2]])
 ///     updates = tf.constant([[[5, 5, 5, 5], [6, 6, 6, 6],
@@ -6287,14 +6287,14 @@ class StridedSliceGrad {
 ///     updated = tf.tensor_scatter_nd_add(tensor, indices, updates)
 ///     print(updated)
 /// ```
-/// 
+///
 /// The resulting tensor would look like this:
-/// 
+///
 ///     [[[6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8], [9, 9, 9, 9]],
 ///      [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
 ///      [[6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8], [9, 9, 9, 9]],
 ///      [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]]]
-/// 
+///
 /// Note that on CPU, if an out of bound index is found, an error is returned.
 /// On GPU, if an out of bound index is found, the index is ignored.
 ///
@@ -6369,25 +6369,25 @@ class TensorScatterMin {
 /// This operation is very similar to `tf.scatter_nd_sub`, except that the updates
 /// are subtracted from an existing tensor (as opposed to a variable). If the memory
 /// for the existing tensor cannot be re-used, a copy is made and updated.
-/// 
+///
 /// `indices` is an integer tensor containing indices into a new tensor of shape
 /// `shape`.  The last dimension of `indices` can be at most the rank of `shape`:
-/// 
+///
 ///     indices.shape[-1] <= shape.rank
-/// 
+///
 /// The last dimension of `indices` corresponds to indices into elements
 /// (if `indices.shape[-1] = shape.rank`) or slices
 /// (if `indices.shape[-1] < shape.rank`) along dimension `indices.shape[-1]` of
 /// `shape`.  `updates` is a tensor with shape
-/// 
+///
 ///     indices.shape[:-1] + shape[indices.shape[-1]:]
-/// 
+///
 /// The simplest form of tensor_scatter_sub is to subtract individual elements
 /// from a tensor by index. For example, say we want to insert 4 scattered elements
 /// in a rank-1 tensor with 8 elements.
-/// 
+///
 /// In Python, this scatter subtract operation would look like this:
-/// 
+///
 /// ```python
 ///     indices = tf.constant([[4], [3], [1], [7]])
 ///     updates = tf.constant([9, 10, 11, 12])
@@ -6395,17 +6395,17 @@ class TensorScatterMin {
 ///     updated = tf.tensor_scatter_nd_sub(tensor, indices, updates)
 ///     print(updated)
 /// ```
-/// 
+///
 /// The resulting tensor would look like this:
-/// 
+///
 ///     [1, -10, 1, -9, -8, 1, 1, -11]
-/// 
+///
 /// We can also, insert entire slices of a higher rank tensor all at once. For
 /// example, if we wanted to insert two slices in the first dimension of a
 /// rank-3 tensor with two matrices of new values.
-/// 
+///
 /// In Python, this scatter add operation would look like this:
-/// 
+///
 /// ```python
 ///     indices = tf.constant([[0], [2]])
 ///     updates = tf.constant([[[5, 5, 5, 5], [6, 6, 6, 6],
@@ -6416,14 +6416,14 @@ class TensorScatterMin {
 ///     updated = tf.tensor_scatter_nd_sub(tensor, indices, updates)
 ///     print(updated)
 /// ```
-/// 
+///
 /// The resulting tensor would look like this:
-/// 
+///
 ///     [[[-4, -4, -4, -4], [-5, -5, -5, -5], [-6, -6, -6, -6], [-7, -7, -7, -7]],
 ///      [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
 ///      [[-4, -4, -4, -4], [-5, -5, -5, -5], [-6, -6, -6, -6], [-7, -7, -7, -7]],
 ///      [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]]]
-/// 
+///
 /// Note that on CPU, if an out of bound index is found, an error is returned.
 /// On GPU, if an out of bound index is found, the index is ignored.
 ///
@@ -6454,37 +6454,37 @@ class TensorScatterSub {
 /// This operation is very similar to `tf.scatter_nd`, except that the updates are
 /// scattered onto an existing tensor (as opposed to a zero-tensor). If the memory
 /// for the existing tensor cannot be re-used, a copy is made and updated.
-/// 
+///
 /// If `indices` contains duplicates, then we pick the last update for the index.
-/// 
+///
 /// If an out of bound index is found on CPU, an error is returned.
-/// 
+///
 /// **WARNING**: There are some GPU specific semantics for this operation.
 /// - If an out of bound index is found, the index is ignored.
 /// - The order in which updates are applied is nondeterministic, so the output
 /// will be nondeterministic if `indices` contains duplicates.
-/// 
+///
 /// `indices` is an integer tensor containing indices into a new tensor of shape
 /// `shape`.
-/// 
+///
 /// * `indices` must have at least 2 axes: `(num_updates, index_depth)`.
 /// * The last axis of `indices` is how deep to index into `tensor` so  this index
 ///   depth must be less than the rank of `tensor`: `indices.shape[-1] <= tensor.ndim`
-/// 
+///
 /// if `indices.shape[-1] = tensor.rank` this Op indexes and updates scalar elements.
 /// if `indices.shape[-1] < tensor.rank` it indexes and updates slices of the input
 /// `tensor`.
-/// 
+///
 /// Each `update` has a rank of `tensor.rank - indices.shape[-1]`.
 /// The overall shape of `updates` is:
-/// 
+///
 /// ```
 /// indices.shape[:-1] + tensor.shape[indices.shape[-1]:]
 /// ```
-/// 
+///
 /// For usage examples see the python [tf.tensor_scatter_nd_update](
 /// https://www.tensorflow.org/api_docs/python/tf/tensor_scatter_nd_update) function
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -6513,7 +6513,7 @@ class TensorScatterUpdate {
 /// The values of `value` are assigned to the positions in the tensor `input` that
 /// are selected by the slice parameters. The slice parameters `begin` `end`
 /// `strides` etc. work exactly as in `StridedSlice`.
-/// 
+///
 /// NOTE this op currently does not support broadcasting and so `value`'s shape
 /// must be exactly the shape produced by the slice of `input`.
 ///
@@ -6606,7 +6606,7 @@ class TensorStridedSliceUpdate {
 /// and the values of `input` are replicated `multiples[i]` times along the 'i'th
 /// dimension. For example, tiling `[a b c d]` by `[2]` produces
 /// `[a b c d a b c d]`.
-/// 
+///
 /// >>> a = tf.constant([[1,2,3],[4,5,6]], tf.int32)
 /// >>> b = tf.constant([1,2], tf.int32)
 /// >>> tf.tile(a, b)
@@ -6675,18 +6675,18 @@ class Transpose {
 /// sorted in the same order that they occur in `x`; `x` does not need to be sorted.
 /// This operation also returns a tensor `idx` the same size as `x` that contains
 /// the index of each value of `x` in the unique output `y`. In other words:
-/// 
+///
 /// `y[idx[i]] = x[i] for i in [0, 1,...,rank(x) - 1]`
-/// 
+///
 /// Examples:
-/// 
+///
 /// ```
 /// # tensor 'x' is [1, 1, 2, 4, 4, 4, 7, 8, 8]
 /// y, idx = unique(x)
 /// y ==> [1, 2, 4, 7, 8]
 /// idx ==> [0, 0, 1, 2, 2, 2, 3, 4, 4]
 /// ```
-/// 
+///
 /// ```
 /// # tensor 'x' is [4, 5, 1, 2, 3, 3, 4, 5]
 /// y, idx = unique(x)
@@ -6736,20 +6736,20 @@ class Unique {
 /// the number of the elements in `x` along the `axis` dimension. It
 /// contains the index in the unique output `y`.
 /// In other words, for an `1-D` tensor `x` with `axis = None:
-/// 
+///
 /// `y[idx[i]] = x[i] for i in [0, 1,...,rank(x) - 1]`
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'x' is [1, 1, 2, 4, 4, 4, 7, 8, 8]
 /// y, idx = unique(x)
 /// y ==> [1, 2, 4, 7, 8]
 /// idx ==> [0, 0, 1, 2, 2, 2, 3, 4, 4]
 /// ```
-/// 
+///
 /// For an `2-D` tensor `x` with `axis = 0`:
-/// 
+///
 /// ```
 /// # tensor 'x' is [[1, 0, 0],
 /// #                [1, 0, 0],
@@ -6759,9 +6759,9 @@ class Unique {
 ///        [2, 0, 0]]
 /// idx ==> [0, 0, 1]
 /// ```
-/// 
+///
 /// For an `2-D` tensor `x` with `axis = 1`:
-/// 
+///
 /// ```
 /// # tensor 'x' is [[1, 0, 0],
 /// #                [1, 0, 0],
@@ -6817,11 +6817,11 @@ class UniqueV2 {
 /// tensor `idx` the same size as `x` that contains the index of each value of `x`
 /// in the unique output `y`. Finally, it returns a third tensor `count` that
 /// contains the count of each element of `y` in `x`. In other words:
-/// 
+///
 /// `y[idx[i]] = x[i] for i in [0, 1,...,rank(x) - 1]`
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'x' is [1, 1, 2, 4, 4, 4, 7, 8, 8]
 /// y, idx, count = unique_with_counts(x)
@@ -6875,11 +6875,11 @@ class UniqueWithCounts {
 /// `axis` dimension. The `idx` contains the index in the unique output `y`
 /// and the `count` contains the count in the unique output `y`.
 /// In other words, for an `1-D` tensor `x` with `axis = None:
-/// 
+///
 /// `y[idx[i]] = x[i] for i in [0, 1,...,rank(x) - 1]`
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # tensor 'x' is [1, 1, 2, 4, 4, 4, 7, 8, 8]
 /// y, idx, count = unique_with_counts(x)
@@ -6887,9 +6887,9 @@ class UniqueWithCounts {
 /// idx ==> [0, 0, 1, 2, 2, 2, 3, 4, 4]
 /// count ==> [2, 1, 3, 1, 2]
 /// ```
-/// 
+///
 /// For an `2-D` tensor `x` with `axis = 0`:
-/// 
+///
 /// ```
 /// # tensor 'x' is [[1, 0, 0],
 /// #                [1, 0, 0],
@@ -6900,9 +6900,9 @@ class UniqueWithCounts {
 /// idx ==> [0, 0, 1]
 /// count ==> [2, 1]
 /// ```
-/// 
+///
 /// For an `2-D` tensor `x` with `axis = 1`:
-/// 
+///
 /// ```
 /// # tensor 'x' is [[1, 0, 0],
 /// #                [1, 0, 0],
@@ -6959,15 +6959,15 @@ class UniqueWithCountsV2 {
 ///
 /// Unpacks `num` tensors from `value` by chipping it along the `axis` dimension.
 /// For example, given a tensor of shape `(A, B, C, D)`;
-/// 
+///
 /// If `axis == 0` then the i'th tensor in `output` is the slice `value[i, :, :, :]`
 ///   and each tensor in `output` will have shape `(B, C, D)`. (Note that the
 ///   dimension unpacked along is gone, unlike `split`).
-/// 
+///
 /// If `axis == 1` then the i'th tensor in `output` is the slice `value[:, i, :, :]`
 ///   and each tensor in `output` will have shape `(A, C, D)`.
 /// Etc.
-/// 
+///
 /// This is the opposite of `pack`.
 ///
 /// Arguments:
@@ -7012,9 +7012,9 @@ class Unstack {
 
 /// Converts an array of flat indices into a tuple of coordinate arrays.
 ///
-/// 
+///
 /// Example:
-/// 
+///
 /// ```
 /// y = tf.unravel_index(indices=[2, 5, 7], dims=[3, 3])
 /// # 'dims' represent a hypothetical (3, 3) tensor of indices:
@@ -7028,7 +7028,7 @@ class Unstack {
 /// # 7 ==> (2, 1)
 /// y ==> [[0, 1, 2], [2, 2, 1]]
 /// ```
-/// 
+///
 /// @compatibility(numpy)
 /// Equivalent to np.unravel_index
 /// @end_compatibility
@@ -7063,9 +7063,9 @@ class UnravelIndex {
 /// represents the coordinates of the true elements. Keep in mind, the shape of
 /// the output tensor can vary depending on how many true values there are in
 /// `condition`. Indices are output in row-major order.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```
 /// # 'input' tensor is [[True, False]
 /// #                    [True, False]]
@@ -7073,7 +7073,7 @@ class UnravelIndex {
 /// # 'input' has rank of 2, so coordinates have two indices.
 /// where(input) ==> [[0, 0],
 ///                   [1, 0]]
-/// 
+///
 /// # `condition` tensor is [[[True, False]
 /// #                     [True, False]]
 /// #                    [[False, True]
@@ -7087,7 +7087,7 @@ class UnravelIndex {
 ///                   [1, 0, 1],
 ///                   [1, 1, 1],
 ///                   [2, 1, 1]]
-/// 
+///
 /// # `condition` tensor is [[[1.5,  0.0]
 /// #                     [-0.5, 0.0]]
 /// #                    [[0.0,  0.25]
@@ -7101,7 +7101,7 @@ class UnravelIndex {
 ///                   [1, 0, 1],
 ///                   [1, 1, 1],
 ///                   [2, 1, 1]]
-/// 
+///
 /// # `condition` tensor is [[[1.5 + 0.0j, 0.0  + 0.0j]
 /// #                     [0.0 + 0.5j, 0.0  + 0.0j]]
 /// #                    [[0.0 + 0.0j, 0.25 + 1.5j]

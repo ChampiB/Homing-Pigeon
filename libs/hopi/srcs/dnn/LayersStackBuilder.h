@@ -14,9 +14,7 @@
 #include "tensorflow/core/framework/tensor.h"
 #include "tensorflow/core/public/session.h"
 #include "tensorflow/core/lib/io/path.h"
-#include "tensorflow/core/summary/summary_file_writer.h"
 #include "tensorflow/cc/tools/freeze_saved_model.h"
-#include "tensorflow/core/kernels/image/image_ops.h"
 
 class LayersStackBuilder {
 public:

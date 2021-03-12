@@ -606,7 +606,6 @@ void ConstOp::valueAttr(Attribute attr) {
 }
 
 void ConstOp::build(::mlir::OpBuilder &odsBuilder, ::mlir::OperationState &odsState, Attribute value) {
-
       auto* ctx = value.getContext();
       odsState.addAttribute("value", value);
       odsState.addTypes(TFRAttrType::get(ctx));

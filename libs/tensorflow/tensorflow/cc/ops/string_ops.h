@@ -21,13 +21,13 @@ namespace ops {
 /// Converts each entry in the given tensor to strings.
 ///
 /// Supports many numeric types and boolean.
-/// 
+///
 /// For Unicode, see the
 /// [https://www.tensorflow.org/tutorials/representation/unicode](Working with Unicode text)
 /// tutorial.
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> tf.strings.as_string([3, 2])
 /// <tf.Tensor: shape=(2,), dtype=string, numpy=array([b'3', b'2'], dtype=object)>
 /// >>> tf.strings.as_string([3.1415926, 2.71828], precision=2).numpy()
@@ -165,7 +165,7 @@ class DecodeBase64 {
 /// en.wikipedia.org/wiki/Base64. Base64 strings may have padding with '=' at the
 /// end so that the encoded has length multiple of 4. See Padding section of the
 /// link above.
-/// 
+///
 /// Web-safe means that the encoder uses - and _ instead of + and /.
 ///
 /// Arguments:
@@ -215,9 +215,9 @@ class EncodeBase64 {
 /// counted backwards from the end, with `-1` being equivalent to `n - 1`.  If
 /// indices are not specified, joins across all dimensions beginning from `n - 1`
 /// through `0`.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 /// # tensor `a` is [["a", "b"], ["c", "d"]]
 /// tf.reduce_join(a, 0) ==> ["ac", "bd"]
@@ -298,11 +298,11 @@ class ReduceJoin {
 /// string tensor which is applied to every element of the input tensor.
 /// The boolean values (True or False) of the output tensor indicate
 /// if the input matches the regex pattern provided.
-/// 
+///
 /// The pattern follows the re2 syntax (https://github.com/google/re2/wiki/Syntax)
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> tf.strings.regex_full_match(["TF lib", "lib TF"], ".*lib$")
 /// <tf.Tensor: shape=(2,), dtype=bool, numpy=array([ True, False])>
 /// >>> tf.strings.regex_full_match(["TF lib", "lib TF"], ".*TF$")
@@ -454,9 +454,9 @@ class StringFormat {
 /// Joins the strings in the given list of string tensors into one tensor;
 ///
 /// with the given separator (default is an empty separator).
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> s = ["hello", "world", "tensorflow"]
 /// >>> tf.strings.join(s, " ")
 /// <tf.Tensor: shape=(), dtype=string, numpy=b'hello world tensorflow'>
@@ -505,13 +505,13 @@ class StringJoin {
 /// String lengths of `input`.
 ///
 /// Computes the length of each string given in the input tensor.
-/// 
+///
 /// >>> strings = tf.constant(['Hello','TensorFlow', '\U0001F642'])
 /// >>> tf.strings.length(strings).numpy() # default counts bytes
 /// array([ 5, 10, 4], dtype=int32)
 /// >>> tf.strings.length(strings, unit="UTF8_CHAR").numpy()
 /// array([ 5, 10, 1], dtype=int32)
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -564,10 +564,10 @@ class StringLength {
 /// Converts all uppercase characters into their respective lowercase replacements.
 ///
 /// Example:
-/// 
+///
 /// >>> tf.strings.lower("CamelCase string and ALL CAPS")
 /// <tf.Tensor: shape=(), dtype=string, numpy=b'camelcase string and all caps'>
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -645,16 +645,16 @@ class StringNGrams {
 /// Let N be the size of source (typically N will be the batch size). Split each
 /// element of `input` based on `delimiter` and return a `SparseTensor`
 /// containing the splitted tokens. Empty tokens are ignored.
-/// 
+///
 /// `delimiter` can be empty, or a string of split characters. If `delimiter` is an
 ///  empty string, each element of `input` is split into individual single-byte
 ///  character strings, including splitting of UTF-8 multibyte sequences. Otherwise
 ///  every character of `delimiter` is a potential split point.
-/// 
+///
 /// For example:
 ///   N = 2, input[0] is 'hello world' and input[1] is 'a b c', then the output
 ///   will be
-/// 
+///
 ///   indices = [0, 0;
 ///              0, 1;
 ///              1, 0;
@@ -712,7 +712,7 @@ class StringSplit {
 /// Let N be the size of source (typically N will be the batch size). Split each
 /// element of `source` based on `sep` and return a `SparseTensor`
 /// containing the split tokens. Empty tokens are ignored.
-/// 
+///
 /// For example, N = 2, source[0] is 'hello world' and source[1] is 'a b c',
 /// then the output will be
 /// ```
@@ -724,14 +724,14 @@ class StringSplit {
 /// st.shape = [2, 3]
 /// st.values = ['hello', 'world', 'a', 'b', 'c']
 /// ```
-/// 
+///
 /// If `sep` is given, consecutive delimiters are not grouped together and are
 /// deemed to delimit empty strings. For example, source of `"1<>2<><>3"` and
 /// sep of `"<>"` returns `["1", "2", "", "3"]`. If `sep` is None or an empty
 /// string, consecutive whitespace are regarded as a single separator, and the
 /// result will contain no empty strings at the startor end if the string has
 /// leading or trailing whitespace.
-/// 
+///
 /// Note that the above mentioned behavior matches python's str.split.
 ///
 /// Arguments:
@@ -784,9 +784,9 @@ class StringSplitV2 {
 ///
 /// Returns:
 /// * `Output`: A string `Tensor` of the same shape as the input.
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> tf.strings.strip(["\nTensorFlow", "     The python library    "]).numpy()
 /// array([b'TensorFlow', b'The python library'], dtype=object)
 class StringStrip {
@@ -804,7 +804,7 @@ class StringStrip {
 ///
 /// The hash function is deterministic on the content of the string within the
 /// process.
-/// 
+///
 /// Note that the hash function may change from time to time.
 /// This functionality will be deprecated and it's recommended to use
 /// `tf.string_to_hash_bucket_fast()` or `tf.string_to_hash_bucket_strong()`.
@@ -835,9 +835,9 @@ class StringToHashBucket {
 /// unimportant. There is a risk of adversaries constructing inputs that all hash
 /// to the same bucket. To prevent this problem, use a strong hash function with
 /// `tf.string_to_hash_bucket_strong`.
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> tf.strings.to_hash_bucket_fast(["Hello", "TensorFlow", "2.x"], 3).numpy()
 /// array([0, 2, 2])
 ///
@@ -865,19 +865,19 @@ class StringToHashBucketFast {
 /// The hash function is deterministic on the content of the string within the
 /// process. The hash function is a keyed hash function, where attribute `key`
 /// defines the key of the hash function. `key` is an array of 2 elements.
-/// 
+///
 /// A strong hash is important when inputs may be malicious, e.g. URLs with
 /// additional components. Adversaries could try to make their inputs hash to the
 /// same bucket for a denial-of-service attack or to skew the results. A strong
 /// hash can be used to make it difficult to find inputs with a skewed hash value
 /// distribution over buckets. This requires that the hash function is
 /// seeded by a high-entropy (random) "key" unknown to the adversary.
-/// 
+///
 /// The additional robustness comes at a cost of roughly 4x higher compute
 /// time than `tf.string_to_hash_bucket_fast`.
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> tf.strings.to_hash_bucket_strong(["Hello", "TF"], 3, [1, 2]).numpy()
 /// array([2, 0])
 ///
@@ -906,10 +906,10 @@ class StringToHashBucketStrong {
 /// Converts all lowercase characters into their respective uppercase replacements.
 ///
 /// Example:
-/// 
+///
 /// >>> tf.strings.upper("CamelCase string and ALL CAPS")
 /// <tf.Tensor: shape=(), dtype=string, numpy=b'CAMELCASE STRING AND ALL CAPS'>
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -948,38 +948,38 @@ class StringUpper {
 ///
 /// For each string in the input `Tensor`, creates a substring starting at index
 /// `pos` with a total length of `len`.
-/// 
+///
 /// If `len` defines a substring that would extend beyond the length of the input
 /// string, or if `len` is negative, then as many characters as possible are used.
-/// 
+///
 /// A negative `pos` indicates distance within the string backwards from the end.
-/// 
+///
 /// If `pos` specifies an index which is out of range for any of the input strings,
 /// then an `InvalidArgumentError` is thrown.
-/// 
+///
 /// `pos` and `len` must have the same shape, otherwise a `ValueError` is thrown on
 /// Op creation.
-/// 
+///
 /// *NOTE*: `Substr` supports broadcasting up to two dimensions. More about
 /// broadcasting
 /// [here](http://docs.scipy.org/doc/numpy/user/basics.broadcasting.html)
-/// 
+///
 /// ---
-/// 
+///
 /// Examples
-/// 
+///
 /// Using scalar `pos` and `len`:
-/// 
+///
 /// ```python
 /// input = [b'Hello', b'World']
 /// position = 1
 /// length = 3
-/// 
+///
 /// output = [b'ell', b'orl']
 /// ```
-/// 
+///
 /// Using `pos` and `len` with same shape as `input`:
-/// 
+///
 /// ```python
 /// input = [[b'ten', b'eleven', b'twelve'],
 ///          [b'thirteen', b'fourteen', b'fifteen'],
@@ -990,14 +990,14 @@ class StringUpper {
 /// length =   [[2, 3, 4],
 ///             [4, 3, 2],
 ///             [5, 5, 5]]
-/// 
+///
 /// output = [[b'en', b'eve', b'lve'],
 ///           [b'hirt', b'urt', b'te'],
 ///           [b'ixtee', b'vente', b'hteen']]
 /// ```
-/// 
+///
 /// Broadcasting `pos` and `len` onto `input`:
-/// 
+///
 /// ```
 /// input = [[b'ten', b'eleven', b'twelve'],
 ///          [b'thirteen', b'fourteen', b'fifteen'],
@@ -1005,30 +1005,30 @@ class StringUpper {
 ///          [b'nineteen', b'twenty', b'twentyone']]
 /// position = [1, 2, 3]
 /// length =   [1, 2, 3]
-/// 
+///
 /// output = [[b'e', b'ev', b'lve'],
 ///           [b'h', b'ur', b'tee'],
 ///           [b'i', b've', b'hte'],
 ///           [b'i', b'en', b'nty']]
 /// ```
-/// 
+///
 /// Broadcasting `input` onto `pos` and `len`:
-/// 
+///
 /// ```
 /// input = b'thirteen'
 /// position = [1, 5, 7]
 /// length =   [3, 2, 1]
-/// 
+///
 /// output = [b'hir', b'ee', b'n']
 /// ```
-/// 
+///
 /// Raises:
-/// 
+///
 ///   * `ValueError`: If the first argument cannot be converted to a
 ///      Tensor of `dtype string`.
 ///   * `InvalidArgumentError`: If indices are out of range.
 ///   * `ValueError`: If `pos` and `len` are not the same shape.
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object
@@ -1086,19 +1086,19 @@ class Substr {
 /// This operation converts Unicode code points to script codes corresponding to
 /// each code point. Script codes correspond to International Components for
 /// Unicode (ICU) UScriptCode values.
-/// 
+///
 /// See
 /// [ICU project docs](http://icu-project.org/apiref/icu4c/uscript_8h.html)
 /// for more details on script codes.
-/// 
+///
 /// For an example, see the unicode strings guide on [unicode scripts]
 /// (https://www.tensorflow.org/tutorials/load_data/unicode#representing_unicode).
-/// 
+///
 /// Returns -1 (USCRIPT_INVALID_CODE) for invalid codepoints. Output shape will
 /// match input shape.
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> tf.strings.unicode_script([1, 31, 38])
 /// <tf.Tensor: shape=(3,), dtype=int32, numpy=array([0, 0, 0], dtype=int32)>
 ///
@@ -1130,24 +1130,24 @@ class UnicodeScript {
 /// invalid encoding positions in the input are skipped and not included in the
 /// output. If it set to `strict` then any invalid formatting will result in an
 /// InvalidArgument error.
-/// 
+///
 /// This operation can be used with `output_encoding = input_encoding` to enforce
 /// correct formatting for inputs even if they are already in the desired encoding.
-/// 
+///
 /// If the input is prefixed by a Byte Order Mark needed to determine encoding
 /// (e.g. if the encoding is UTF-16 and the BOM indicates big-endian), then that
 /// BOM will be consumed and not emitted into the output. If the input encoding
 /// is marked with an explicit endianness (e.g. UTF-16-BE), then the BOM is
 /// interpreted as a non-breaking-space and is preserved in the output (including
 /// always for UTF-8).
-/// 
+///
 /// The end result is that if the input is marked as an explicit endianness the
 /// transcoding is faithful to all codepoints in the source. If it is not marked
 /// with an explicit endianness, the BOM is not considered part of the string itself
 /// but as metadata, and so is not preserved in the output.
-/// 
+///
 /// Examples:
-/// 
+///
 /// >>> tf.strings.unicode_transcode(["Hello", "TensorFlow", "2.x"], "UTF-8", "UTF-16-BE")
 /// <tf.Tensor: shape=(3,), dtype=string, numpy=
 /// array([b'\x00H\x00e\x00l\x00l\x00o',
@@ -1176,7 +1176,7 @@ class UnicodeScript {
 /// formatting in the input when `errors='replace'`. Any valid unicode codepoint may
 /// be used. The default value is the default unicode replacement character is
 /// 0xFFFD or U+65533.)
-/// 
+///
 /// Note that for UTF-8, passing a replacement character expressible in 1 byte, such
 /// as ' ', will preserve string alignment to the source since invalid bytes will be
 /// replaced with a 1-byte replacement. For UTF-16-BE and UTF-16-LE, any 1 or 2 byte
@@ -1209,7 +1209,7 @@ class UnicodeTranscode {
     /// formatting in the input when `errors='replace'`. Any valid unicode codepoint may
     /// be used. The default value is the default unicode replacement character is
     /// 0xFFFD or U+65533.)
-    /// 
+    ///
     /// Note that for UTF-8, passing a replacement character expressible in 1 byte, such
     /// as ' ', will preserve string alignment to the source since invalid bytes will be
     /// replaced with a 1-byte replacement. For UTF-16-BE and UTF-16-LE, any 1 or 2 byte
@@ -1263,14 +1263,14 @@ class UnicodeTranscode {
 ///
 /// Computes the string join along segments of a tensor.
 /// Given `segment_ids` with rank `N` and `data` with rank `N+M`:
-/// 
+///
 ///     `output[i, k1...kM] = strings.join([data[j1...jN, k1...kM])`
-/// 
+///
 /// where the join is over all [j1...jN] such that segment_ids[j1...jN] = i.
 /// Strings are joined in row-major order.
-/// 
+///
 /// For example:
-/// 
+///
 /// ```python
 /// inputs = [['Y', 'q', 'c'], ['Y', '6', '6'], ['p', 'G', 'a']]
 /// output_array = string_ops.unsorted_segment_join(inputs=inputs,
@@ -1278,8 +1278,8 @@ class UnicodeTranscode {
 ///                                                 num_segments=2,
 ///                                                 separator=':'))
 /// # output_array ==> [['Y', '6', '6'], ['Y:p', 'q:G', 'c:a']]
-/// 
-/// 
+///
+///
 /// inputs = ['this', 'is', 'a', 'test']
 /// output_array = string_ops.unsorted_segment_join(inputs=inputs,
 ///                                                 segment_ids=[0, 0, 0, 0],

@@ -317,7 +317,7 @@ class BiasAddGrad {
 /// and a filter / kernel tensor of shape
 /// `[filter_height, filter_width, in_channels, out_channels]`, this op
 /// performs the following:
-/// 
+///
 /// 1. Flattens the filter to a 2-D matrix with shape
 ///    `[filter_height * filter_width * in_channels, output_channels]`.
 /// 2. Extracts image patches from the input tensor to form a *virtual*
@@ -325,13 +325,13 @@ class BiasAddGrad {
 ///    filter_height * filter_width * in_channels]`.
 /// 3. For each patch, right-multiplies the filter matrix and the image patch
 ///    vector.
-/// 
+///
 /// In detail, with the default NHWC format,
-/// 
+///
 ///     output[b, i, j, k] =
 ///         sum_{di, dj, q} input[b, strides[1] * i + di, strides[2] * j + dj, q] *
 ///                         filter[di, dj, q, k]
-/// 
+///
 /// Must have `strides[0] = strides[3] = 1`.  For the most common case of the same
 /// horizontal and vertices strides, `strides = [1, stride, stride, 1]`.
 ///
@@ -703,7 +703,7 @@ class Conv2DBackpropInput {
 /// In signal processing, cross-correlation is a measure of similarity of
 /// two waveforms as a function of a time-lag applied to one of them. This
 /// is also known as a sliding dot product or sliding inner-product.
-/// 
+///
 /// Our Conv3D implements a form of cross-correlation.
 ///
 /// Arguments:
@@ -1031,7 +1031,7 @@ class DataFormatDimMap {
 /// Permute input tensor from `src_format` to `dst_format`.
 ///
 /// Input tensor must be a vector of size 4, or a 4x2 tensor.
-/// 
+///
 /// For example, with `src_format` of `NHWC`, `dst_format` of `NCHW`, and inputs:
 /// ```
 /// [1, 2, 3, 4]
@@ -1113,7 +1113,7 @@ class DataFormatVecPermute {
 /// a different filter to each input channel (expanding from 1 channel to
 /// `channel_multiplier` channels for each), then concatenates the results
 /// together. Thus, the output has `in_channels * channel_multiplier` channels.
-/// 
+///
 /// ```
 /// for k in 0..in_channels-1
 ///   for q in 0..channel_multiplier-1
@@ -1121,7 +1121,7 @@ class DataFormatVecPermute {
 ///       sum_{di, dj} input[b, strides[1] * i + di, strides[2] * j + dj, k] *
 ///                         filter[di, dj, k, q]
 /// ```
-/// 
+///
 /// Must have `strides[0] = strides[3] = 1`.  For the most common case of the same
 /// horizontal and vertices strides, `strides = [1, stride, stride, 1]`.
 ///
@@ -1449,20 +1449,20 @@ class DepthwiseConv2dNativeBackpropInput {
 /// `[batch, out_height, out_width, depth]`. The spatial dimensions of the output
 /// tensor depend on the `padding` algorithm. We currently only support the default
 /// "NHWC" `data_format`.
-/// 
+///
 /// In detail, the grayscale morphological 2-D dilation is the max-sum correlation
 /// (for consistency with `conv2d`, we use unmirrored filters):
-/// 
+///
 ///     output[b, y, x, c] =
 ///        max_{dy, dx} input[b,
 ///                           strides[1] * y + rates[1] * dy,
 ///                           strides[2] * x + rates[2] * dx,
 ///                           c] +
 ///                     filter[dy, dx, c]
-/// 
+///
 /// Max-pooling is a special case when the filter has size equal to the pooling
 /// kernel size and contains all zeros.
-/// 
+///
 /// Note on duality: The dilation of `input` by the `filter` is equal to the
 /// negation of the erosion of `-input` by the reflected `filter`.
 ///
@@ -1595,11 +1595,11 @@ class Elu {
 /// difference between pseudorandom and random.
 /// * overlapping: When set to True, it means when pooling, the values at the boundary
 /// of adjacent pooling cells are used by both cells. For example:
-/// 
+///
 /// `index  0  1  2  3  4`
-/// 
+///
 /// `value  20 5  16 3  7`
-/// 
+///
 /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
 /// The result would be [41/3, 26/3] for fractional avg pooling.
 /// * deterministic: When set to True, a fixed pooling region will be used when
@@ -1632,11 +1632,11 @@ class FractionalAvgPool {
 
     /// When set to True, it means when pooling, the values at the boundary
     /// of adjacent pooling cells are used by both cells. For example:
-    /// 
+    ///
     /// `index  0  1  2  3  4`
-    /// 
+    ///
     /// `value  20 5  16 3  7`
-    /// 
+    ///
     /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
     /// The result would be [41/3, 26/3] for fractional avg pooling.
     ///
@@ -1720,26 +1720,26 @@ class FractionalAvgPool {
 /// a factor of N, where N is an integer.  Fractional max pooling, as you might
 /// expect from the word "fractional", means that the overall reduction ratio N
 /// does not have to be an integer.
-/// 
+///
 /// The sizes of the pooling regions are generated randomly but are fairly uniform.
 /// For example, let's look at the height dimension, and the constraints on the
 /// list of rows that will be pool boundaries.
-/// 
+///
 /// First we define the following:
-/// 
+///
 /// 1.  input_row_length : the number of rows from the input set
 /// 2.  output_row_length : which will be smaller than the input
 /// 3.  alpha = input_row_length / output_row_length : our reduction ratio
 /// 4.  K = floor(alpha)
 /// 5.  row_pooling_sequence : this is the result list of pool boundary rows
-/// 
+///
 /// Then, row_pooling_sequence should satisfy:
-/// 
+///
 /// 1.  a[0] = 0 : the first value of the sequence is 0
 /// 2.  a[end] = input_row_length : the last value of the sequence is the size
 /// 3.  K <= (a[i+1] - a[i]) <= K+1 : all intervals are K or K+1 size
 /// 4.  length(row_pooling_sequence) = output_row_length+1
-/// 
+///
 /// For more details on fractional max pooling, see this paper:
 /// [Benjamin Graham, Fractional Max-Pooling](http://arxiv.org/abs/1412.6071)
 ///
@@ -1760,11 +1760,11 @@ class FractionalAvgPool {
 /// difference between pseudorandom and random.
 /// * overlapping: When set to True, it means when pooling, the values at the boundary
 /// of adjacent pooling cells are used by both cells. For example:
-/// 
+///
 /// `index  0  1  2  3  4`
-/// 
+///
 /// `value  20 5  16 3  7`
-/// 
+///
 /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
 /// The result would be [20, 16] for fractional max pooling.
 /// * deterministic: When set to True, a fixed pooling region will be used when
@@ -1797,11 +1797,11 @@ class FractionalMaxPool {
 
     /// When set to True, it means when pooling, the values at the boundary
     /// of adjacent pooling cells are used by both cells. For example:
-    /// 
+    ///
     /// `index  0  1  2  3  4`
-    /// 
+    ///
     /// `value  20 5  16 3  7`
-    /// 
+    ///
     /// If the pooling sequence is [0, 2, 4], then 16, at index 2 will be used twice.
     /// The result would be [20, 16] for fractional max pooling.
     ///
@@ -2612,13 +2612,13 @@ class FusedResizeAndPadConv2D {
 /// from the `TopK` op in its handling of ties; if multiple classes have the
 /// same prediction value and straddle the top-`k` boundary, all of those
 /// classes are considered to be in the top `k`.
-/// 
+///
 /// More formally, let
-/// 
+///
 ///   \\(predictions_i\\) be the predictions for all classes for example `i`,
 ///   \\(targets_i\\) be the target class for example `i`,
 ///   \\(out_i\\) be the output for example `i`,
-/// 
+///
 /// $$out_i = predictions_{i, targets_i} \in TopKIncludingTies(predictions_i)$$
 ///
 /// Arguments:
@@ -2649,13 +2649,13 @@ class InTopK {
 /// from the `TopK` op in its handling of ties; if multiple classes have the
 /// same prediction value and straddle the top-`k` boundary, all of those
 /// classes are considered to be in the top `k`.
-/// 
+///
 /// More formally, let
-/// 
+///
 ///   \\(predictions_i\\) be the predictions for all classes for example `i`,
 ///   \\(targets_i\\) be the target class for example `i`,
 ///   \\(out_i\\) be the output for example `i`,
-/// 
+///
 /// $$out_i = predictions_{i, targets_i} \in TopKIncludingTies(predictions_i)$$
 ///
 /// Arguments:
@@ -2681,7 +2681,7 @@ class InTopKV2 {
 /// L2 Loss.
 ///
 /// Computes half the L2 norm of a tensor without the `sqrt`:
-/// 
+///
 ///     output = sum(t ** 2) / 2
 ///
 /// Arguments:
@@ -2707,11 +2707,11 @@ class L2Loss {
 /// dimension), and each vector is normalized independently.  Within a given vector,
 /// each component is divided by the weighted, squared sum of inputs within
 /// `depth_radius`.  In detail,
-/// 
+///
 ///     sqr_sum[a, b, c, d] =
 ///         sum(input[a, b, c, d - depth_radius : d + depth_radius + 1] ** 2)
 ///     output = input / (bias + alpha * sqr_sum) ** beta
-/// 
+///
 /// For details, see [Krizhevsky et al., ImageNet classification with deep
 /// convolutional neural networks (NIPS 2012)](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks).
 ///
@@ -2799,7 +2799,7 @@ class LRN {
 /// Computes log softmax activations.
 ///
 /// For each batch `i` and class `j` we have
-/// 
+///
 ///     logsoftmax[i, j] = logits[i, j] - log(sum(exp(logits[i])))
 ///
 /// Arguments:
@@ -3364,7 +3364,7 @@ class MaxPoolV2 {
 /// `[b, y, x, c]` becomes flattened index:
 /// `(y * width + x) * channels + c` if `include_batch_in_index` is False;
 /// `((b * height + y) * width + x) * channels + c` if `include_batch_in_index` is True.
-/// 
+///
 /// The indices returned are always in `[0, height) x [0, width)` before flattening,
 /// even if padding is involved and the mathematically correct answer is outside
 /// (either negative or too large).  This is a bug, but fixing it is difficult to do
@@ -3431,10 +3431,10 @@ class MaxPoolWithArgmax {
 ///
 /// If the input is a vector (rank-1), finds the entries which is the nth-smallest
 /// value in the vector and outputs their values as scalar tensor.
-/// 
+///
 /// For matrices (resp. higher rank input), computes the entries which is the
 /// nth-smallest value in each row (resp. vector along the last dimension). Thus,
-/// 
+///
 ///     values.shape = input.shape[:-1]
 ///
 /// Arguments:
@@ -3889,11 +3889,11 @@ class Relu6 {
 /// Computes scaled exponential linear: `scale * alpha * (exp(features) - 1)`
 ///
 /// if < 0, `scale * features` otherwise.
-/// 
+///
 /// To be used together with
 /// `initializer = tf.variance_scaling_initializer(factor=1.0, mode='FAN_IN')`.
 /// For correct dropout, use `tf.contrib.nn.alpha_dropout`.
-/// 
+///
 /// See [Self-Normalizing Neural Networks](https://arxiv.org/abs/1706.02515)
 ///
 /// Arguments:
@@ -3915,7 +3915,7 @@ class Selu {
 /// Computes softmax activations.
 ///
 /// For each batch `i` and class `j` we have
-/// 
+///
 ///     $$softmax[i, j] = exp(logits[i, j]) / sum_j(exp(logits[i, j]))$$
 ///
 /// Arguments:
@@ -4002,7 +4002,7 @@ class Softsign {
 /// a matrix of label probabilities, but rather a single label per row
 /// of features.  This label is considered to have probability 1.0 for the
 /// given row.
-/// 
+///
 /// Inputs are the logits, not probabilities.
 ///
 /// Arguments:
@@ -4030,12 +4030,12 @@ class SparseSoftmaxCrossEntropyWithLogits {
 /// If the input is a vector (rank-1), finds the `k` largest entries in the vector
 /// and outputs their values and indices as vectors.  Thus `values[j]` is the
 /// `j`-th largest entry in `input`, and its index is `indices[j]`.
-/// 
+///
 /// For matrices (resp. higher rank input), computes the top `k` entries in each
 /// row (resp. vector along the last dimension).  Thus,
-/// 
+///
 ///     values.shape = indices.shape = input.shape[:-1] + [k]
-/// 
+///
 /// If two elements are equal, the lower-index element appears first.
 ///
 /// Arguments:

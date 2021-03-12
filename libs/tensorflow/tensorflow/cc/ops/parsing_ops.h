@@ -115,7 +115,7 @@ class DecodeCSV {
 ///
 /// This op decompresses each element of the `bytes` input `Tensor`, which
 /// is assumed to be compressed using the given `compression_type`.
-/// 
+///
 /// The `output` is a string `Tensor` of the same shape as `bytes`,
 /// each element containing the decompressed data from the corresponding
 /// element in `bytes`.
@@ -1227,13 +1227,13 @@ class SerializeTensor {
 ///
 /// (Note that int32 overflow results in an error while float overflow
 /// results in a rounded value.)
-/// 
+///
 /// Example:
-/// 
+///
 /// >>> strings = ["5.0", "3.0", "7.0"]
 /// >>> tf.strings.to_number(strings)
 /// <tf.Tensor: shape=(3,), dtype=float32, numpy=array([5., 3., 7.], dtype=float32)>
-/// 
+///
 ///
 /// Arguments:
 /// * scope: A Scope object

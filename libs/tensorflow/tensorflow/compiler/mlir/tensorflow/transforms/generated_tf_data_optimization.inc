@@ -15,18 +15,18 @@ struct FuseMapAndBatch : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::Operation::operand_range drop_remainder(op0->getOperands());
-    ::mlir::Operation::operand_range input_dataset(op0->getOperands());
-    ::mlir::ArrayAttr output_types;
-    ::mlir::Operation::operand_range other_arguments(op0->getOperands());
-    ::mlir::SymbolRefAttr f;
-    ::mlir::ArrayAttr output_shapes;
-    ::mlir::BoolAttr use_inter_op_parallelism;
-    ::mlir::BoolAttr preserve_cardinality;
-    ::mlir::Operation::operand_range batch_size(op0->getOperands());
-    ::mlir::BoolAttr parallel_copy;
-    ::mlir::ArrayAttr batch_output_types;
     ::mlir::ArrayAttr batch_output_shapes;
+    ::mlir::Operation::operand_range drop_remainder(op0->getOperands());
+    ::mlir::Operation::operand_range batch_size(op0->getOperands());
+    ::mlir::ArrayAttr output_shapes;
+    ::mlir::BoolAttr preserve_cardinality;
+    ::mlir::ArrayAttr output_types;
+    ::mlir::ArrayAttr batch_output_types;
+    ::mlir::SymbolRefAttr f;
+    ::mlir::BoolAttr parallel_copy;
+    ::mlir::BoolAttr use_inter_op_parallelism;
+    ::mlir::Operation::operand_range other_arguments(op0->getOperands());
+    ::mlir::Operation::operand_range input_dataset(op0->getOperands());
     ::mlir::Operation *tblgen_ops[2];
 
     // Match

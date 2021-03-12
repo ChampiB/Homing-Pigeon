@@ -18,16 +18,16 @@
 /* #undef LLVM_ENABLE_DUMP */
 
 /* Target triple LLVM will generate code for by default */
-#define LLVM_DEFAULT_TARGET_TRIPLE "x86_64-pc-win32"
+#define LLVM_DEFAULT_TARGET_TRIPLE "x86_64-unknown-linux_gnu"
 
 /* Define if threads enabled */
-#define LLVM_ENABLE_THREADS 0
+#define LLVM_ENABLE_THREADS 1
 
 /* Has gcc/MSVC atomic intrinsics */
 #define LLVM_HAS_ATOMICS 1
 
 /* Host triple LLVM will be executed on */
-#define LLVM_HOST_TRIPLE "x86_64-pc-win32"
+#define LLVM_HOST_TRIPLE "x86_64-unknown-linux_gnu"
 
 /* LLVM architecture name for the native architecture, if available */
 #define LLVM_NATIVE_ARCH X86
@@ -51,7 +51,7 @@
 #define LLVM_NATIVE_TARGETMC LLVMInitializeX86TargetMC
 
 /* Define if this is Unixish platform */
-/* #undef LLVM_ON_UNIX */
+#define LLVM_ON_UNIX 1
 
 /* Define if we have the Intel JIT API runtime support library */
 #define LLVM_USE_INTEL_JITEVENTS 0
@@ -89,6 +89,6 @@
 /* #undef LLVM_HAVE_TF_AOT */
 
 /* Define to 1 if you have the <sysexits.h> header file. */
-/* #undef HAVE_SYSEXITS_H */
+#define HAVE_SYSEXITS_H 1
 
 #endif

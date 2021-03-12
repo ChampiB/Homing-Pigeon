@@ -15,9 +15,9 @@ struct CstrBroadcastableEqOps : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::shape::CstrBroadcastableOp op;
-    ::mlir::Operation::operand_range lhs(op0->getOperands());
     ::mlir::Operation::operand_range rhs(op0->getOperands());
+    ::mlir::Operation::operand_range lhs(op0->getOperands());
+    ::mlir::shape::CstrBroadcastableOp op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match
@@ -67,8 +67,8 @@ struct CstrEqEqOps : public ::mlir::RewritePattern {
   ::mlir::LogicalResult matchAndRewrite(::mlir::Operation *op0,
       ::mlir::PatternRewriter &rewriter) const override {
     // Variables for capturing values and attributes used while creating ops
-    ::mlir::shape::CstrEqOp op;
     ::mlir::Operation::operand_range shapes(op0->getOperands());
+    ::mlir::shape::CstrEqOp op;
     ::mlir::Operation *tblgen_ops[1];
 
     // Match

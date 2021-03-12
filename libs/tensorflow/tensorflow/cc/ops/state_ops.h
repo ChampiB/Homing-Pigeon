@@ -213,7 +213,7 @@ class CountUpTo {
 /// All other uses of 'ref' *must* have executed before this op.
 /// This is typically achieved by chaining the ref through each assign op, or by
 /// using control dependencies.
-/// 
+///
 /// Outputs the final value of the tensor pointed to by 'ref'.
 ///
 /// Arguments:
@@ -284,23 +284,23 @@ class ResourceCountUpTo {
 /// Applies sparse addition to individual values or slices in a Variable.
 ///
 /// `ref` is a `Tensor` with rank `P` and `indices` is a `Tensor` of rank `Q`.
-/// 
+///
 /// `indices` must be integer tensor, containing indices into `ref`.
 /// It must be shape `[d_0, ..., d_{Q-2}, K]` where `0 < K <= P`.
-/// 
+///
 /// The innermost dimension of `indices` (with length `K`) corresponds to
 /// indices into elements (if `K = P`) or slices (if `K < P`) along the `K`th
 /// dimension of `ref`.
-/// 
+///
 /// `updates` is `Tensor` of rank `Q-1+P-K` with shape:
-/// 
+///
 /// ```
 /// [d_0, ..., d_{Q-2}, ref.shape[K], ..., ref.shape[P-1]]
 /// ```
-/// 
+///
 /// For example, say we want to add 4 scattered elements to a rank-1 tensor to
 /// 8 elements. In Python, that addition would look like this:
-/// 
+///
 /// ```python
 /// ref = tf.Variable([1, 2, 3, 4, 5, 6, 7, 8], use_resource=True)
 /// indices = tf.constant([[4], [3], [1], [7]])
@@ -309,11 +309,11 @@ class ResourceCountUpTo {
 /// with tf.Session() as sess:
 ///   print sess.run(add)
 /// ```
-/// 
+///
 /// The resulting update to ref would look like this:
-/// 
+///
 ///     [1, 13, 3, 14, 14, 6, 7, 20]
-/// 
+///
 /// See `tf.scatter_nd` for more details about how to make updates to
 /// slices.
 ///
@@ -462,23 +462,23 @@ class ResourceScatterNdMin {
 /// Applies sparse subtraction to individual values or slices in a Variable.
 ///
 /// `ref` is a `Tensor` with rank `P` and `indices` is a `Tensor` of rank `Q`.
-/// 
+///
 /// `indices` must be integer tensor, containing indices into `ref`.
 /// It must be shape `[d_0, ..., d_{Q-2}, K]` where `0 < K <= P`.
-/// 
+///
 /// The innermost dimension of `indices` (with length `K`) corresponds to
 /// indices into elements (if `K = P`) or slices (if `K < P`) along the `K`th
 /// dimension of `ref`.
-/// 
+///
 /// `updates` is `Tensor` of rank `Q-1+P-K` with shape:
-/// 
+///
 /// ```
 /// [d_0, ..., d_{Q-2}, ref.shape[K], ..., ref.shape[P-1]]
 /// ```
-/// 
+///
 /// For example, say we want to subtract 4 scattered elements from a rank-1 tensor
 /// with 8 elements. In Python, that subtraction would look like this:
-/// 
+///
 /// ```python
 /// ref = tf.Variable([1, 2, 3, 4, 5, 6, 7, 8], use_resource=True)
 /// indices = tf.constant([[4], [3], [1], [7]])
@@ -487,11 +487,11 @@ class ResourceScatterNdMin {
 /// with tf.Session() as sess:
 ///   print sess.run(sub)
 /// ```
-/// 
+///
 /// The resulting update to ref would look like this:
-/// 
+///
 ///     [1, -9, 3, -6, -4, 6, 7, -4]
-/// 
+///
 /// See `tf.scatter_nd` for more details about how to make updates to
 /// slices.
 ///
@@ -544,25 +544,25 @@ class ResourceScatterNdSub {
 /// Applies sparse `updates` to individual values or slices within a given
 ///
 /// variable according to `indices`.
-/// 
+///
 /// `ref` is a `Tensor` with rank `P` and `indices` is a `Tensor` of rank `Q`.
-/// 
+///
 /// `indices` must be integer tensor, containing indices into `ref`.
 /// It must be shape `[d_0, ..., d_{Q-2}, K]` where `0 < K <= P`.
-/// 
+///
 /// The innermost dimension of `indices` (with length `K`) corresponds to
 /// indices into elements (if `K = P`) or slices (if `K < P`) along the `K`th
 /// dimension of `ref`.
-/// 
+///
 /// `updates` is `Tensor` of rank `Q-1+P-K` with shape:
-/// 
+///
 /// ```
 /// [d_0, ..., d_{Q-2}, ref.shape[K], ..., ref.shape[P-1]].
 /// ```
-/// 
+///
 /// For example, say we want to update 4 scattered elements to a rank-1 tensor to
 /// 8 elements. In Python, that update would look like this:
-/// 
+///
 /// ```python
 ///     ref = tf.Variable([1, 2, 3, 4, 5, 6, 7, 8])
 ///     indices = tf.constant([[4], [3], [1] ,[7]])
@@ -571,11 +571,11 @@ class ResourceScatterNdSub {
 ///     with tf.Session() as sess:
 ///       print sess.run(update)
 /// ```
-/// 
+///
 /// The resulting update to ref would look like this:
-/// 
+///
 ///     [1, 11, 3, 10, 9, 6, 7, 12]
-/// 
+///
 /// See `tf.scatter_nd` for more details about how to make updates to
 /// slices.
 ///
@@ -629,24 +629,24 @@ class ResourceScatterNdUpdate {
 /// Adds sparse updates to a variable reference.
 ///
 /// This operation computes
-/// 
+///
 ///     # Scalar indices
 ///     ref[indices, ...] += updates[...]
-/// 
+///
 ///     # Vector indices (for each i)
 ///     ref[indices[i], ...] += updates[i, ...]
-/// 
+///
 ///     # High rank indices (for each i, ..., j)
 ///     ref[indices[i, ..., j], ...] += updates[i, ..., j, ...]
-/// 
+///
 /// This operation outputs `ref` after the update is done.
 /// This makes it easier to chain operations that need to use the reset value.
-/// 
+///
 /// Duplicate entries are handled correctly: if multiple `indices` reference
 /// the same location, their contributions add.
-/// 
+///
 /// Requires `updates.shape = indices.shape + ref.shape[1:]` or `updates.shape = []`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/ScatterAdd.png" alt>
 /// </div>
@@ -700,24 +700,24 @@ class ScatterAdd {
 /// Divides a variable reference by sparse updates.
 ///
 /// This operation computes
-/// 
+///
 /// ```python
 ///     # Scalar indices
 ///     ref[indices, ...] /= updates[...]
-/// 
+///
 ///     # Vector indices (for each i)
 ///     ref[indices[i], ...] /= updates[i, ...]
-/// 
+///
 ///     # High rank indices (for each i, ..., j)
 ///     ref[indices[i, ..., j], ...] /= updates[i, ..., j, ...]
 /// ```
-/// 
+///
 /// This operation outputs `ref` after the update is done.
 /// This makes it easier to chain operations that need to use the reset value.
-/// 
+///
 /// Duplicate entries are handled correctly: if multiple `indices` reference
 /// the same location, their contributions divide.
-/// 
+///
 /// Requires `updates.shape = indices.shape + ref.shape[1:]` or `updates.shape = []`.
 ///
 /// Arguments:
@@ -769,24 +769,24 @@ class ScatterDiv {
 /// Reduces sparse updates into a variable reference using the `max` operation.
 ///
 /// This operation computes
-/// 
+///
 ///     # Scalar indices
 ///     ref[indices, ...] = max(ref[indices, ...], updates[...])
-/// 
+///
 ///     # Vector indices (for each i)
 ///     ref[indices[i], ...] = max(ref[indices[i], ...], updates[i, ...])
-/// 
+///
 ///     # High rank indices (for each i, ..., j)
 ///     ref[indices[i, ..., j], ...] = max(ref[indices[i, ..., j], ...], updates[i, ..., j, ...])
-/// 
+///
 /// This operation outputs `ref` after the update is done.
 /// This makes it easier to chain operations that need to use the reset value.
-/// 
+///
 /// Duplicate entries are handled correctly: if multiple `indices` reference
 /// the same location, their contributions combine.
-/// 
+///
 /// Requires `updates.shape = indices.shape + ref.shape[1:]` or `updates.shape = []`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/ScatterAdd.png" alt>
 /// </div>
@@ -840,24 +840,24 @@ class ScatterMax {
 /// Reduces sparse updates into a variable reference using the `min` operation.
 ///
 /// This operation computes
-/// 
+///
 ///     # Scalar indices
 ///     ref[indices, ...] = min(ref[indices, ...], updates[...])
-/// 
+///
 ///     # Vector indices (for each i)
 ///     ref[indices[i], ...] = min(ref[indices[i], ...], updates[i, ...])
-/// 
+///
 ///     # High rank indices (for each i, ..., j)
 ///     ref[indices[i, ..., j], ...] = min(ref[indices[i, ..., j], ...], updates[i, ..., j, ...])
-/// 
+///
 /// This operation outputs `ref` after the update is done.
 /// This makes it easier to chain operations that need to use the reset value.
-/// 
+///
 /// Duplicate entries are handled correctly: if multiple `indices` reference
 /// the same location, their contributions combine.
-/// 
+///
 /// Requires `updates.shape = indices.shape + ref.shape[1:]` or `updates.shape = []`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/ScatterAdd.png" alt>
 /// </div>
@@ -911,24 +911,24 @@ class ScatterMin {
 /// Multiplies sparse updates into a variable reference.
 ///
 /// This operation computes
-/// 
+///
 /// ```python
 ///     # Scalar indices
 ///     ref[indices, ...] *= updates[...]
-/// 
+///
 ///     # Vector indices (for each i)
 ///     ref[indices[i], ...] *= updates[i, ...]
-/// 
+///
 ///     # High rank indices (for each i, ..., j)
 ///     ref[indices[i, ..., j], ...] *= updates[i, ..., j, ...]
 /// ```
-/// 
+///
 /// This operation outputs `ref` after the update is done.
 /// This makes it easier to chain operations that need to use the reset value.
-/// 
+///
 /// Duplicate entries are handled correctly: if multiple `indices` reference
 /// the same location, their contributions multiply.
-/// 
+///
 /// Requires `updates.shape = indices.shape + ref.shape[1:]` or `updates.shape = []`.
 ///
 /// Arguments:
@@ -980,23 +980,23 @@ class ScatterMul {
 /// Applies sparse addition to individual values or slices in a Variable.
 ///
 /// `ref` is a `Tensor` with rank `P` and `indices` is a `Tensor` of rank `Q`.
-/// 
+///
 /// `indices` must be integer tensor, containing indices into `ref`.
 /// It must be shape `[d_0, ..., d_{Q-2}, K]` where `0 < K <= P`.
-/// 
+///
 /// The innermost dimension of `indices` (with length `K`) corresponds to
 /// indices into elements (if `K = P`) or slices (if `K < P`) along the `K`th
 /// dimension of `ref`.
-/// 
+///
 /// `updates` is `Tensor` of rank `Q-1+P-K` with shape:
-/// 
+///
 /// ```
 /// [d_0, ..., d_{Q-2}, ref.shape[K], ..., ref.shape[P-1]]
 /// ```
-/// 
+///
 /// For example, say we want to add 4 scattered elements to a rank-1 tensor to
 /// 8 elements. In Python, that addition would look like this:
-/// 
+///
 /// ```python
 /// ref = tf.Variable([1, 2, 3, 4, 5, 6, 7, 8])
 /// indices = tf.constant([[4], [3], [1], [7]])
@@ -1005,11 +1005,11 @@ class ScatterMul {
 /// with tf.Session() as sess:
 ///   print sess.run(add)
 /// ```
-/// 
+///
 /// The resulting update to ref would look like this:
-/// 
+///
 ///     [1, 13, 3, 14, 14, 6, 7, 20]
-/// 
+///
 /// See `tf.scatter_nd` for more details about how to make updates to
 /// slices.
 ///
@@ -1066,25 +1066,25 @@ class ScatterNdAdd {
 /// Applies sparse subtraction to individual values or slices in a Variable.
 ///
 /// within a given variable according to `indices`.
-/// 
+///
 /// `ref` is a `Tensor` with rank `P` and `indices` is a `Tensor` of rank `Q`.
-/// 
+///
 /// `indices` must be integer tensor, containing indices into `ref`.
 /// It must be shape `[d_0, ..., d_{Q-2}, K]` where `0 < K <= P`.
-/// 
+///
 /// The innermost dimension of `indices` (with length `K`) corresponds to
 /// indices into elements (if `K = P`) or slices (if `K < P`) along the `K`th
 /// dimension of `ref`.
-/// 
+///
 /// `updates` is `Tensor` of rank `Q-1+P-K` with shape:
-/// 
+///
 /// ```
 /// [d_0, ..., d_{Q-2}, ref.shape[K], ..., ref.shape[P-1]]
 /// ```
-/// 
+///
 /// For example, say we want to subtract 4 scattered elements from a rank-1 tensor
 /// with 8 elements. In Python, that subtraction would look like this:
-/// 
+///
 /// ```python
 /// ref = tf.Variable([1, 2, 3, 4, 5, 6, 7, 8])
 /// indices = tf.constant([[4], [3], [1], [7]])
@@ -1093,11 +1093,11 @@ class ScatterNdAdd {
 /// with tf.Session() as sess:
 ///   print sess.run(sub)
 /// ```
-/// 
+///
 /// The resulting update to ref would look like this:
-/// 
+///
 ///     [1, -9, 3, -6, -4, 6, 7, -4]
-/// 
+///
 /// See `tf.scatter_nd` for more details about how to make updates to
 /// slices.
 ///
@@ -1154,23 +1154,23 @@ class ScatterNdSub {
 /// Applies sparse `updates` to individual values or slices within a given
 ///
 /// variable according to `indices`.
-/// 
+///
 /// `ref` is a `Tensor` with rank `P` and `indices` is a `Tensor` of rank `Q`.
-/// 
+///
 /// `indices` must be integer tensor, containing indices into `ref`.
 /// It must be shape \\([d_0, ..., d_{Q-2}, K]\\) where `0 < K <= P`.
-/// 
+///
 /// The innermost dimension of `indices` (with length `K`) corresponds to
 /// indices into elements (if `K = P`) or slices (if `K < P`) along the `K`th
 /// dimension of `ref`.
-/// 
+///
 /// `updates` is `Tensor` of rank `Q-1+P-K` with shape:
-/// 
+///
 /// $$[d_0, ..., d_{Q-2}, ref.shape[K], ..., ref.shape[P-1]].$$
-/// 
+///
 /// For example, say we want to update 4 scattered elements to a rank-1 tensor to
 /// 8 elements. In Python, that update would look like this:
-/// 
+///
 /// ```python
 ///     ref = tf.Variable([1, 2, 3, 4, 5, 6, 7, 8])
 ///     indices = tf.constant([[4], [3], [1] ,[7]])
@@ -1179,14 +1179,14 @@ class ScatterNdSub {
 ///     with tf.Session() as sess:
 ///       print sess.run(update)
 /// ```
-/// 
+///
 /// The resulting update to ref would look like this:
-/// 
+///
 ///     [1, 11, 3, 10, 9, 6, 7, 12]
-/// 
+///
 /// See `tf.scatter_nd` for more details about how to make updates to
 /// slices.
-/// 
+///
 /// See also `tf.scatter_update` and `tf.batch_scatter_update`.
 ///
 /// Arguments:
@@ -1244,22 +1244,22 @@ class ScatterNdUpdate {
 /// ```python
 ///     # Scalar indices
 ///     ref[indices, ...] -= updates[...]
-/// 
+///
 ///     # Vector indices (for each i)
 ///     ref[indices[i], ...] -= updates[i, ...]
-/// 
+///
 ///     # High rank indices (for each i, ..., j)
 ///     ref[indices[i, ..., j], ...] -= updates[i, ..., j, ...]
 /// ```
-/// 
+///
 /// This operation outputs `ref` after the update is done.
 /// This makes it easier to chain operations that need to use the reset value.
-/// 
+///
 /// Duplicate entries are handled correctly: if multiple `indices` reference
 /// the same location, their (negated) contributions add.
-/// 
+///
 /// Requires `updates.shape = indices.shape + ref.shape[1:]` or `updates.shape = []`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/ScatterSub.png" alt>
 /// </div>
@@ -1313,31 +1313,31 @@ class ScatterSub {
 /// Applies sparse updates to a variable reference.
 ///
 /// This operation computes
-/// 
+///
 /// ```python
 ///     # Scalar indices
 ///     ref[indices, ...] = updates[...]
-/// 
+///
 ///     # Vector indices (for each i)
 ///     ref[indices[i], ...] = updates[i, ...]
-/// 
+///
 ///     # High rank indices (for each i, ..., j)
 ///     ref[indices[i, ..., j], ...] = updates[i, ..., j, ...]
 /// ```
-/// 
+///
 /// This operation outputs `ref` after the update is done.
 /// This makes it easier to chain operations that need to use the reset value.
-/// 
+///
 /// If values in `ref` is to be updated more than once, because there are
 /// duplicate entries in `indices`, the order at which the updates happen
 /// for each value is undefined.
-/// 
+///
 /// Requires `updates.shape = indices.shape + ref.shape[1:]` or `updates.shape = []`.
-/// 
+///
 /// <div style="width:70%; margin:auto; margin-bottom:10px; margin-top:20px;">
 /// <img style="width:100%" src="https://www.tensorflow.org/images/ScatterUpdate.png" alt>
 /// </div>
-/// 
+///
 /// See also `tf.batch_scatter_update` and `tf.scatter_nd_update`.
 ///
 /// Arguments:
@@ -1390,12 +1390,12 @@ class ScatterUpdate {
 ///
 /// This is an experimental op for internal use only and it is possible to use this
 /// op in unsafe ways.  DO NOT USE unless you fully understand the risks.
-/// 
+///
 /// It is the caller's responsibility to ensure that 'ref' is eventually passed to a
 /// matching 'DestroyTemporaryVariable' op after all other uses have completed.
-/// 
+///
 /// Outputs a ref to the tensor state so it may be read or modified.
-/// 
+///
 ///   E.g.
 ///       var = state_ops._temporary_variable([1, 2], types.float_)
 ///       var_name = var.op.name

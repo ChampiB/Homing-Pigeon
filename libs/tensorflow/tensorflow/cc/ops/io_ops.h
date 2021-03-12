@@ -282,9 +282,9 @@ class MatchingFiles {
 ///
 /// result is one logical checkpoint, with one physical metadata file and renamed
 /// data files.
-/// 
+///
 /// Intended for "grouping" multiple checkpoints in a sharded checkpoint setup.
-/// 
+///
 /// If delete_old_dirs is true, attempts to delete recursively the dirname of each
 /// path in the input checkpoint_prefixes.  This is useful when those paths are non
 /// user-facing temporary locations.
@@ -509,7 +509,7 @@ class ReaderSerializeState {
 /// instance because a tensor was saved as slices), `file_pattern` may contain
 /// wildcard symbols (`*` and `?`) in the filename portion only, not in the
 /// directory portion.
-/// 
+///
 /// If a `file_pattern` matches several files, `preferred_shard` can be used to hint
 /// in which file the requested tensor is likely to be found. This op will first
 /// open the file at index `preferred_shard` in the list of matching files and try
@@ -519,7 +519,7 @@ class ReaderSerializeState {
 /// of a matching `Save` Op may speed up Restore.  This attribute only affects
 /// performance, not correctness.  The default value -1 means files are processed in
 /// order.
-/// 
+///
 /// See also `RestoreSlice`.
 ///
 /// Arguments:
@@ -574,7 +574,7 @@ class Restore {
 /// This is like `Restore` except that restored tensor can be listed as filling
 /// only a slice of a larger tensor.  `shape_and_slice` specifies the shape of the
 /// larger tensor and the slice that the restored tensor covers.
-/// 
+///
 /// The `shape_and_slice` input has the same format as the
 /// elements of the `shapes_and_slices` input of the `SaveSlices` op.
 ///
@@ -637,11 +637,11 @@ class RestoreSlice {
 ///   - Otherwise the V1 read path is invoked.
 /// Relying on this behavior is not recommended, as the ability to fall back to read
 /// V1 might be deprecated and eventually removed.
-/// 
+///
 /// By default, restores the named tensors in full.  If the caller wishes to restore
 /// specific slices of stored tensors, "shape_and_slices" should be non-empty
 /// strings and correspondingly well-formed.
-/// 
+///
 /// Callers must ensure all the named tensors are indeed stored in the checkpoint.
 ///
 /// Arguments:
@@ -672,7 +672,7 @@ class RestoreV2 {
 ///
 /// The size of `tensor_names` must match the number of tensors in `data`. `data[i]`
 /// is written to `filename` with name `tensor_names[i]`.
-/// 
+///
 /// See also `SaveSlices`.
 ///
 /// Arguments:
@@ -699,22 +699,22 @@ class Save {
 /// a slice of a larger tensor.  `shapes_and_slices` specifies the shape of the
 /// larger tensor and the slice that this tensor covers. `shapes_and_slices` must
 /// have as many elements as `tensor_names`.
-/// 
+///
 /// Elements of the `shapes_and_slices` input must either be:
-/// 
+///
 /// *  The empty string, in which case the corresponding tensor is
 ///    saved normally.
 /// *  A string of the form `dim0 dim1 ... dimN-1 slice-spec` where the
 ///    `dimI` are the dimensions of the larger tensor and `slice-spec`
 ///    specifies what part is covered by the tensor to save.
-/// 
+///
 /// `slice-spec` itself is a `:`-separated list: `slice0:slice1:...:sliceN-1`
 /// where each `sliceI` is either:
-/// 
+///
 /// *  The string `-` meaning that the slice covers all indices of this dimension
 /// *  `start,length` where `start` and `length` are integers.  In that
 ///    case the slice covers `length` indices starting at `start`.
-/// 
+///
 /// See also `Save`.
 ///
 /// Arguments:
