@@ -38,14 +38,6 @@ namespace hopi::distributions {
 
     Dirichlet::Dirichlet(const std::vector<Eigen::MatrixXd> &p) {
         param = p;
-        filters.push_back(p.size());
-        filters.push_back(p[0].rows());
-        filters.push_back(p[0].cols());
-    }
-
-    Dirichlet::Dirichlet(const std::vector<Eigen::MatrixXd> &p, const std::vector<int> &f) {
-        param = p;
-        filters = f;
     }
 
     DistributionType Dirichlet::type() const {
@@ -55,8 +47,8 @@ namespace hopi::distributions {
     [[nodiscard]] std::vector<Eigen::MatrixXd> Dirichlet::logParams() const {
         std::vector<Eigen::MatrixXd> res;
 
-        for (int i = 0; i < filters[0]; ++i) {
-            res.emplace_back(param[i].block(0, 0, filters[1], filters[2]).array().log());
+        for (const auto & i : param) {
+            res.emplace_back(i.array().log());
         }
         return res;
     }
@@ -64,16 +56,15 @@ namespace hopi::distributions {
     [[nodiscard]] std::vector<Eigen::MatrixXd> Dirichlet::params() const {
         std::vector<Eigen::MatrixXd> res;
 
-        for (int i = 0; i < filters[0]; ++i) {
-            res.emplace_back(param[i].block(0, 0, filters[1], filters[2]));
+        for (const auto & i : param) {
+            res.emplace_back(i);
         }
         return res;
     }
 
     void Dirichlet::updateParams(std::vector<Eigen::MatrixXd> &p) {
-        for (int i = 0; i < filters[0]; ++i) {
-            param[i].block(0, 0, filters[1], filters[2]) =
-                p[i].block(0, 0, filters[1], filters[2]);
+        for (int i = 0; i < param.size(); ++i) {
+            param[i] = p[i];
         }
     }
 
@@ -94,9 +85,9 @@ namespace hopi::distributions {
     double Dirichlet::entropy() {
         double e = 0;
 
-        for (int i = 0; i < filters[0]; ++i) {
-            for (int j = 0; j < filters[2]; ++j) {
-                e += entropy(param[i].block(0, j, filters[1], 1));
+        for (auto & i : param) {
+            for (int j = 0; j < param[0].cols(); ++j) {
+                e += entropy(i.block(0, j, param[0].rows(), 1));
             }
         }
         return e;
@@ -114,10 +105,6 @@ namespace hopi::distributions {
             }
         }
         return m;
-    }
-
-    void Dirichlet::setFilters(const std::vector<int> &f) {
-        filters = f;
     }
 
     void Dirichlet::increaseParam(int matrixId, int rowId, int colId) {

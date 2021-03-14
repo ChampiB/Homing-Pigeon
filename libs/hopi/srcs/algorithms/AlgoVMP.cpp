@@ -53,7 +53,7 @@ namespace hopi::algorithms {
         AdjacentFactorsIter factorIt(var);
         while (*factorIt != nullptr) {
             if (post_param.empty()) {
-                // posterior parameters <- message
+                // posterior parameters = message
                 post_param = (*factorIt)->message(var);
             } else {
                 // posterior parameters += message

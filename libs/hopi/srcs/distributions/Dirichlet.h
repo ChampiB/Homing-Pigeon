@@ -20,7 +20,6 @@ namespace hopi::distributions {
 
     public:
         explicit Dirichlet(const std::vector<Eigen::MatrixXd> &param);
-        Dirichlet(const std::vector<Eigen::MatrixXd> &p, const std::vector<int> &f);
         [[nodiscard]] DistributionType type() const override;
         [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
         [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
@@ -28,12 +27,10 @@ namespace hopi::distributions {
         double entropy() override;
         static double entropy(Eigen::MatrixXd p);
         static std::vector<Eigen::MatrixXd> expectedLog(std::vector<Eigen::MatrixXd> p);
-        void setFilters(const std::vector<int> &f); // TODO TEST
         void increaseParam(int matrixId, int rowId, int colId);
 
     private:
         std::vector<Eigen::MatrixXd> param;
-        std::vector<int> filters; // a vector of size 3 defining how many matrices, rows and columns should be updated.
     };
 
 }

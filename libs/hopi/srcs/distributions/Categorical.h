@@ -29,11 +29,9 @@ namespace hopi::distributions {
         [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
         void updateParams(std::vector<Eigen::MatrixXd> &param) override;
         double entropy() override;
-        void setFilters(int f); // TODO TEST
 
     private:
         Eigen::MatrixXd param;
-        int filter;
     };
 
 }
