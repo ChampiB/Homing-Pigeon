@@ -30,23 +30,31 @@ set(HOPI_SRCS
         srcs/iterators/ObservedVarIter.h srcs/iterators/ObservedVarIter.cpp
         srcs/nodes/DirichletNode.cpp srcs/nodes/DirichletNode.h
         srcs/distributions/Dirichlet.cpp srcs/distributions/Dirichlet.h
-        srcs/math/Functions.cpp srcs/math/Functions.h
-        srcs/dnn/LayersStackBuilder.cpp srcs/dnn/LayersStackBuilder.h)
+        srcs/math/Functions.cpp srcs/math/Functions.h)
 
+# Add hopi library
 add_library(hopi STATIC ${HOPI_SRCS})
 target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/hopi/srcs)
+
+# Link eigen
 target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/eigen)
 
-# Link tensorflow to Homing-Pigeon
-target_link_libraries(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/libtensorflow_cc.so)
-target_link_libraries(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/libtensorflow_framework.so)
-target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow)
-target_include_directories(hopi PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/src)
+# Link pytorch
+set(Torch_DIR "${HOMING_PIGEON_ROOT}/libs/torch/share/cmake/Torch")
+set(Caffe2_DIR "${HOMING_PIGEON_ROOT}/libs/torch/share/cmake/Caffe2")
 
-# Link protobuf to Homing-Pigeon
-include(FindProtobuf)
-find_package(Protobuf REQUIRED)
-target_link_libraries(hopi PUBLIC ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${PROTOBUF_LIBRARY})
+find_package(Torch REQUIRED)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+target_link_libraries(hopi PUBLIC "${TORCH_LIBRARIES}")
+
+if (MSVC)
+    file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+    add_custom_command(TARGET hopi
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${TORCH_DLLS}
+            $<TARGET_FILE_DIR:hopi>)
+endif (MSVC)
 
 #
 # Homing Pigeon: Unit tests

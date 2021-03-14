@@ -15,14 +15,28 @@ function(add_example)
         message(WARNING "Unparsed argument: ${arg}")
     endforeach()
 
-    # Add the executable and link the libraries: hopi and tensorflow
+    # Add the executable
     add_executable(${ADD_EXAMPLE_NAME} ${HOMING_PIGEON_ROOT}/examples/${ADD_EXAMPLE_NAME}.cpp)
+
+    # Link hopi
     add_dependencies(${ADD_EXAMPLE_NAME} hopi)
     target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC hopi)
-    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/libtensorflow_cc.so)
-    target_link_libraries(${ADD_EXAMPLE_NAME} PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/libtensorflow_framework.so)
-    target_include_directories(${ADD_EXAMPLE_NAME} PUBLIC ${HOMING_PIGEON_ROOT}/libs/eigen)
-    target_include_directories(${ADD_EXAMPLE_NAME} PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow)
-    target_include_directories(${ADD_EXAMPLE_NAME} PUBLIC ${HOMING_PIGEON_ROOT}/libs/tensorflow/src)
+
+    # Link pytorch
+    set(Torch_DIR "${HOMING_PIGEON_ROOT}/libs/torch/share/cmake/Torch")
+    set(Caffe2_DIR "${HOMING_PIGEON_ROOT}/libs/torch/share/cmake/Caffe2")
+
+    find_package(Torch REQUIRED)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TORCH_CXX_FLAGS}")
+    target_link_libraries(hopi PUBLIC "${TORCH_LIBRARIES}")
+
+    if (MSVC)
+        file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+        add_custom_command(TARGET hopi
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${TORCH_DLLS}
+                $<TARGET_FILE_DIR:hopi>)
+    endif (MSVC)
 
 endfunction()
