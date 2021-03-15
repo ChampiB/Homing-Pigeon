@@ -62,7 +62,7 @@ namespace hopi::distributions {
 
     std::vector<MatrixXd> Categorical::logParams() const {
         MatrixXd copy = param;
-        return {copy};
+        return {copy.array().log()};
     }
 
     std::vector<MatrixXd> Categorical::params() const {
@@ -82,7 +82,7 @@ namespace hopi::distributions {
         auto p   = params()[0];
         auto lp  = logParams()[0];
 
-        for (int i = 0; i < params().size(); ++i) {
+        for (int i = 0; i < p.size(); ++i) {
             if (p(i,0) != 0) {
                 e -= p(i,0) * lp(i,0);
             }
