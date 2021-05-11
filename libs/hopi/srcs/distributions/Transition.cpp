@@ -4,52 +4,21 @@
 
 #include "Transition.h"
 #include "nodes/VarNode.h"
-#include "nodes/TransitionNode.h"
 #include "math/Functions.h"
-#include "graphs/FactorGraph.h"
-#include "Categorical.h"
 #include <Eigen/Dense>
 
 using namespace hopi::nodes;
-using namespace hopi::graphs;
 using namespace hopi::math;
 using namespace Eigen;
 
 namespace hopi::distributions {
 
-    VarNode *Transition::create(VarNode *s, const Eigen::MatrixXd& param) {
-        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(std::make_unique<TransitionNode>(s, var));
-
-        var->setParent(factor);
-        var->setPrior(std::make_unique<Transition>(param));
-        var->setPosterior(std::make_unique<Categorical>(
-            MatrixXd::Constant(param.rows(), 1, 1.0 / param.rows())
-        ));
-
-        s->addChild(factor);
-        return var;
+    std::unique_ptr<Transition> Transition::create(const MatrixXd &p) {
+        return std::make_unique<Transition>(p);
     }
 
-    VarNode *Transition::create(VarNode *s, VarNode *param) {
-        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(std::make_unique<TransitionNode>(s, var, param));
-
-        var->setParent(factor);
-        auto dim = param->prior()->params()[0].rows();
-        var->setPosterior(std::make_unique<Categorical>(
-            MatrixXd::Constant(dim, 1, 1.0 / dim)
-        ));
-
-        s->addChild(factor);
-        param->addChild(factor);
-        return var;
-    }
-
-    Transition::Transition(Eigen::MatrixXd p) {
-        param = std::move(p);
+    Transition::Transition(const Eigen::MatrixXd &p) {
+        param = p;
     }
 
     [[nodiscard]] DistributionType Transition::type() const {

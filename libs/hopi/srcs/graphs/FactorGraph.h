@@ -21,7 +21,8 @@ namespace hopi::graphs {
     class FactorGraph {
     public:
         static std::shared_ptr<FactorGraph> current();
-        static void setCurrent(std::shared_ptr<FactorGraph> ptr);
+        static void setCurrent(std::shared_ptr<FactorGraph> &ptr);
+        static void setCurrent(std::shared_ptr<FactorGraph> &&ptr);
 
     public:
         FactorGraph();
@@ -56,7 +57,6 @@ namespace hopi::graphs {
         nodes::VarNode *node(int index);
         nodes::FactorNode *factor(int index);
         void loadEvidence(int nobs, const std::string& file_name);
-        static Eigen::MatrixXd oneHot(int size, int index);
         void removeHiddenChildren(nodes::VarNode *node);
         void removeBranch(nodes::FactorNode *node);
         void removeNullNodes();

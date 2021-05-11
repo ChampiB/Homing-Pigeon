@@ -4,16 +4,18 @@
 
 #include "nodes/FactorNode.h"
 
-#include <utility>
-
 namespace hopi::nodes {
 
     std::string FactorNode::name() const {
         return _name;
     }
 
-    void FactorNode::setName(std::string name) {
-        _name = std::move(name);
+    void FactorNode::setName(std::string &name) {
+        _name = name;
+    }
+
+    void FactorNode::setName(std::string &&name) {
+        _name = name;
     }
 
 }

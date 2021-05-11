@@ -19,7 +19,8 @@ namespace hopi::nodes {
         virtual VarNode *child() = 0;
         virtual std::vector<Eigen::MatrixXd> message(VarNode *to) = 0;
         [[nodiscard]] std::string name() const;
-        void setName(std::string name);
+        void setName(std::string &name);
+        void setName(std::string &&name);
         virtual double vfe() = 0;
 
     private:

@@ -27,8 +27,8 @@ namespace hopi::math {
 
     double Functions::KL(Distribution *d1, Distribution *d2) {
         static map<int, double (*)(Distribution *, Distribution *)> mapping{
-                make_pair(DistributionType::CATEGORICAL, &Functions::KL_Categorical),
-                make_pair(DistributionType::DIRICHLET, &Functions::KL_Dirichlet)
+                {DistributionType::CATEGORICAL, &Functions::KL_Categorical},
+                {DistributionType::DIRICHLET, &Functions::KL_Dirichlet}
         };
 
         if (d1->type() != d2->type()) {
@@ -129,6 +129,34 @@ namespace hopi::math {
                                            - r * (1.0f / 132.0f)))));
 
         return value;
+    }
+
+    MatrixXd Functions::oneHot(int size, int index) {
+        MatrixXd vec = MatrixXd::Constant(size, 1, 0);
+        vec(index, 0) = 1;
+        return vec;
+    }
+
+    MatrixXd Functions::uniformColumnWise(int rows, int columns) {
+        return MatrixXd::Constant(rows, columns, 1.0 / rows);
+    }
+
+    std::vector<MatrixXd> Functions::uniformColumnWise(int matrices, int rows, int columns) {
+        std::vector<MatrixXd> vec;
+
+        for (int i = 0; i < matrices; ++i) {
+            vec.emplace_back(uniformColumnWise(rows, columns));
+        }
+        return vec;
+    }
+
+    std::vector<MatrixXd> Functions::constant(int matrices, int rows, int columns, double value) {
+        std::vector<MatrixXd> vec;
+
+        for (int i = 0; i < matrices; ++i) {
+            vec.emplace_back(MatrixXd::Constant(rows, columns, value));
+        }
+        return vec;
     }
 
 }

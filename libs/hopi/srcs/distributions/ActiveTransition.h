@@ -7,6 +7,7 @@
 
 #include "Distribution.h"
 #include <vector>
+#include <memory>
 #include <Eigen/Dense>
 
 namespace hopi::nodes {
@@ -17,15 +18,10 @@ namespace hopi::distributions {
 
     class ActiveTransition : public Distribution {
     public:
-        static nodes::VarNode *create(
-            nodes::VarNode *s, nodes::VarNode *a, const std::vector<Eigen::MatrixXd>& param
-        );
-        static nodes::VarNode *create(
-            nodes::VarNode *s, nodes::VarNode *a, nodes::VarNode *param
-        );
+        static std::unique_ptr<ActiveTransition> create(const std::vector<Eigen::MatrixXd> &param);
 
     public:
-        explicit ActiveTransition(std::vector<Eigen::MatrixXd> param);
+        explicit ActiveTransition(const std::vector<Eigen::MatrixXd> &param);
         [[nodiscard]] DistributionType type() const override;
         [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
         [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;

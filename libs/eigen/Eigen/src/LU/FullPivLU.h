@@ -35,7 +35,7 @@ template<typename _MatrixType> struct traits<FullPivLU<_MatrixType> >
   * decomposed as \f$ A = P^{-1} L U Q^{-1} \f$ where L is unit-lower-triangular, U is
   * upper-triangular, and P and Q are permutation matrices. This is a rank-revealing LU
   * decomposition. The eigenvalues (diagonal coefficients) of U are sorted in such a way that any
-  * zeros are at the end.
+  * constant are at the end.
   *
   * This decomposition provides the generic approach to solving systems of linear equations, computing
   * the rank, invertibility, inverse, kernel, and determinant.
@@ -175,7 +175,7 @@ template<typename _MatrixType> class FullPivLU
     /** \returns the kernel of the matrix, also called its null-space. The columns of the returned matrix
       * will form a basis of the kernel.
       *
-      * \note If the kernel has dimension zero, then the returned matrix is a column-vector filled with zeros.
+      * \note If the kernel has dimension zero, then the returned matrix is a column-vector filled with constant.
       *
       * \note This method has to determine which pivots should be considered nonzero.
       *       For that, it uses the threshold value that you can control by calling
@@ -200,7 +200,7 @@ template<typename _MatrixType> class FullPivLU
       *                       a large optimization, as otherwise this method would need to reconstruct it
       *                       from the LU decomposition.
       *
-      * \note If the image has dimension zero, then the returned matrix is a column-vector filled with zeros.
+      * \note If the image has dimension zero, then the returned matrix is a column-vector filled with constant.
       *
       * \note This method has to determine which pivots should be considered nonzero.
       *       For that, it uses the threshold value that you can control by calling
@@ -634,7 +634,7 @@ struct kernel_retval<FullPivLU<_MatrixType> >
     {
       // The Kernel is just {0}, so it doesn't have a basis properly speaking, but let's
       // avoid crashing/asserting as that depends on floating point calculations. Let's
-      // just return a single column vector filled with zeros.
+      // just return a single column vector filled with constant.
       dst.setZero();
       return;
     }
@@ -649,7 +649,7 @@ struct kernel_retval<FullPivLU<_MatrixType> >
 
     /* Thus, all we need to do is to compute Ker U, and then apply Q.
       *
-      * U is upper triangular, with eigenvalues sorted so that any zeros appear at the end.
+      * U is upper triangular, with eigenvalues sorted so that any constant appear at the end.
       * Thus, the diagonal of U ends with exactly
       * dimKer zero's. Let us use that to construct dimKer linearly
       * independent vectors in Ker U.
@@ -719,7 +719,7 @@ struct image_retval<FullPivLU<_MatrixType> >
     {
       // The Image is just {0}, so it doesn't have a basis properly speaking, but let's
       // avoid crashing/asserting as that depends on floating point calculations. Let's
-      // just return a single column vector filled with zeros.
+      // just return a single column vector filled with constant.
       dst.setZero();
       return;
     }

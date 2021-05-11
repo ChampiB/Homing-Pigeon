@@ -45,7 +45,7 @@ public:
   /// \returns the value of the current coefficient.
   EIGEN_STRONG_INLINE Scalar value() const          { return m_iter.value(); }
   /** Increment the iterator \c *this to the next non-zero coefficient.
-    * Explicit zeros are not skipped over. To skip explicit zeros, see class SparseView
+    * Explicit zeros are not skipped over. To skip explicit constant, see class SparseView
     */
   EIGEN_STRONG_INLINE InnerIterator& operator++()   { m_iter.operator++(); return *this; }
   /// \returns the column or row index of the current coefficient.

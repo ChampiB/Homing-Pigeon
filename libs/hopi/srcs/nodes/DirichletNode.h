@@ -6,6 +6,8 @@
 #define EXPERIMENTS_AI_TS_DIRICHLETNODE_H
 
 #include "FactorNode.h"
+#include "api/API.h"
+#include <memory>
 
 namespace hopi::nodes {
     class VarNode;
@@ -14,6 +16,9 @@ namespace hopi::nodes {
 namespace hopi::nodes {
 
     class DirichletNode : public FactorNode {
+    public:
+        static std::unique_ptr<DirichletNode> create(RV *node);
+
     public:
         explicit DirichletNode(VarNode *node);
         VarNode *parent(int index) override;

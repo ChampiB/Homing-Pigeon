@@ -4,14 +4,21 @@
 
 #include "ActiveTransitionNode.h"
 #include "distributions/Distribution.h"
+#include "nodes/VarNode.h"
 #include "distributions/Dirichlet.h"
-#include <Eigen/Dense>
-#include "VarNode.h"
 
 using namespace Eigen;
 using namespace hopi::distributions;
 
 namespace hopi::nodes {
+
+    std::unique_ptr<ActiveTransitionNode> ActiveTransitionNode::create(RV *f, RV *a, RV *t, RV *b) {
+        return std::make_unique<ActiveTransitionNode>(f, a, t, b);
+    }
+
+    std::unique_ptr<ActiveTransitionNode> ActiveTransitionNode::create(RV *f, RV *a, RV *t) {
+        return std::make_unique<ActiveTransitionNode>(f, a, t);
+    }
 
     ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t, VarNode *b) {
         from = f;

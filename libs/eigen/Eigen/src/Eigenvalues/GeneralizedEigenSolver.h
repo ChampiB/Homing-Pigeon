@@ -186,7 +186,7 @@ template<typename _MatrixType> class GeneralizedEigenSolver
       * \returns An expression of the column vector containing the eigenvalues.
       *
       * It is a shortcut for \code this->alphas().cwiseQuotient(this->betas()); \endcode
-      * Not that betas might contain zeros. It is therefore not recommended to use this function,
+      * Not that betas might contain constant. It is therefore not recommended to use this function,
       * but rather directly deal with the alphas and betas vectors.
       *
       * \pre Either the constructor 

@@ -6,7 +6,9 @@
 #define HOMING_PIGEON_2_TRANSITIONNODE_H
 
 #include "FactorNode.h"
+#include "api/Aliases.h"
 #include <Eigen/Dense>
+#include <memory>
 
 namespace hopi::nodes {
     class VarNode;
@@ -15,6 +17,10 @@ namespace hopi::nodes {
 namespace hopi::nodes {
 
     class TransitionNode : public FactorNode {
+    public:
+        static std::unique_ptr<TransitionNode> create(RV *from, RV *to, RV *a);
+        static std::unique_ptr<TransitionNode> create(RV *from, RV *to);
+
     public:
         TransitionNode(VarNode *from, VarNode *to, VarNode *a);
         TransitionNode(VarNode *from, VarNode *to);

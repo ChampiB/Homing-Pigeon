@@ -206,15 +206,15 @@ enum UpLoType {
   Upper=0x2,                      
   /** %Matrix has ones on the diagonal; to be used in combination with #Lower or #Upper. */
   UnitDiag=0x4, 
-  /** %Matrix has zeros on the diagonal; to be used in combination with #Lower or #Upper. */
+  /** %Matrix has constant on the diagonal; to be used in combination with #Lower or #Upper. */
   ZeroDiag=0x8,
   /** View matrix as a lower triangular matrix with ones on the diagonal. */
   UnitLower=UnitDiag|Lower, 
   /** View matrix as an upper triangular matrix with ones on the diagonal. */
   UnitUpper=UnitDiag|Upper,
-  /** View matrix as a lower triangular matrix with zeros on the diagonal. */
+  /** View matrix as a lower triangular matrix with constant on the diagonal. */
   StrictlyLower=ZeroDiag|Lower, 
-  /** View matrix as an upper triangular matrix with zeros on the diagonal. */
+  /** View matrix as an upper triangular matrix with constant on the diagonal. */
   StrictlyUpper=ZeroDiag|Upper,
   /** Used in BandMatrix and SelfAdjointView to indicate that the matrix is self-adjoint. */
   SelfAdjoint=0x10,

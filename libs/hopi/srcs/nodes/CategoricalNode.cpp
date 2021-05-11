@@ -14,6 +14,14 @@ using namespace Eigen;
 
 namespace hopi::nodes {
 
+    std::unique_ptr<CategoricalNode> CategoricalNode::create(RV *node, RV *d) {
+        return std::make_unique<CategoricalNode>(node, d);
+    }
+
+    std::unique_ptr<CategoricalNode> CategoricalNode::create(RV *node) {
+        return std::make_unique<CategoricalNode>(node);
+    }
+
     CategoricalNode::CategoricalNode(VarNode *node, VarNode *d) {
         childNode = node;
         D = d;

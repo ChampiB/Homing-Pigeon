@@ -166,7 +166,7 @@ template<typename MatrixType, int _DiagIndex> class Diagonal
     const internal::variable_if_dynamicindex<Index, DiagIndex> m_index;
 
   private:
-    // some compilers may fail to optimize std::max etc in case of compile-time constants...
+    // some compilers may fail to optimize std::max etc in case of compile-time constant...
     EIGEN_DEVICE_FUNC
     EIGEN_STRONG_INLINE Index absDiagIndex() const { return m_index.value()>0 ? m_index.value() : -m_index.value(); }
     EIGEN_DEVICE_FUNC

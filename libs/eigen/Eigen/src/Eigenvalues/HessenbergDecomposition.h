@@ -37,7 +37,7 @@ struct traits<HessenbergDecompositionMatrixHReturnType<MatrixType> >
   * the real case, the Hessenberg decomposition consists of an orthogonal
   * matrix \f$ Q \f$ and a Hessenberg matrix \f$ H \f$ such that \f$ A = Q H
   * Q^T \f$. An orthogonal matrix is a matrix whose inverse equals its
-  * transpose (\f$ Q^{-1} = Q^T \f$). A Hessenberg matrix has zeros below the
+  * transpose (\f$ Q^{-1} = Q^T \f$). A Hessenberg matrix has constant below the
   * subdiagonal, so it is almost upper triangular. The Hessenberg decomposition
   * of a complex matrix is \f$ A = Q H Q^* \f$ with \f$ Q \f$ unitary (that is,
   * \f$ Q^{-1} = Q^* \f$).

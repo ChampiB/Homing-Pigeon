@@ -17,12 +17,12 @@ namespace hopi::graphs{
 
 namespace hopi::iterators {
 
-    class ObservedVarIter : public std::iterator<std::forward_iterator_tag,hopi::nodes::VarNode*> {
+    class ObservedVarIter : public std::iterator<std::forward_iterator_tag,nodes::VarNode*> {
     public:
-        explicit ObservedVarIter(hopi::graphs::FactorGraph *fg);
+        explicit ObservedVarIter(graphs::FactorGraph *fg);
 
     public:
-        hopi::nodes::VarNode *operator*();
+        nodes::VarNode *operator*();
         ObservedVarIter &operator++();
         ObservedVarIter &operator=(const ObservedVarIter &other);
         bool operator==(const ObservedVarIter &other) const;
@@ -32,7 +32,7 @@ namespace hopi::iterators {
         void nextObservedVar();
 
     private:
-        hopi::graphs::FactorGraph *_fg;
+        graphs::FactorGraph *_fg;
         int _currentIndex;
         int _currVarIndex;
     };

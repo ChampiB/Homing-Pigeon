@@ -14,6 +14,9 @@ namespace hopi::environments {
 
     class MazeEnv : public Environment {
     public:
+        static std::unique_ptr<MazeEnv> create(const std::string& file);
+
+    public:
         enum Action: int {
             UP    = 0,
             DOWN  = 1,

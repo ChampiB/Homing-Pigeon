@@ -7,6 +7,8 @@
 
 #include "FactorNode.h"
 #include <Eigen/Dense>
+#include <api/Aliases.h>
+#include <memory>
 
 namespace hopi::nodes {
     class VarNode;
@@ -15,6 +17,10 @@ namespace hopi::nodes {
 namespace hopi::nodes {
 
     class ActiveTransitionNode : public FactorNode {
+    public:
+        static std::unique_ptr<ActiveTransitionNode> create(RV *from, RV *action, RV *to, RV *B);
+        static std::unique_ptr<ActiveTransitionNode> create(RV *from, RV *action, RV *to);
+
     public:
         ActiveTransitionNode(VarNode *from, VarNode *action, VarNode *to, VarNode *B);
         ActiveTransitionNode(VarNode *from, VarNode *action, VarNode *to);

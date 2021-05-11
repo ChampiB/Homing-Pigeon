@@ -30,7 +30,10 @@ set(HOPI_SRCS
         srcs/iterators/ObservedVarIter.h srcs/iterators/ObservedVarIter.cpp
         srcs/nodes/DirichletNode.cpp srcs/nodes/DirichletNode.h
         srcs/distributions/Dirichlet.cpp srcs/distributions/Dirichlet.h
-        srcs/math/Functions.cpp srcs/math/Functions.h)
+        srcs/math/Functions.cpp srcs/math/Functions.h
+        srcs/algorithms/AlgoTreeConfig.cpp srcs/algorithms/AlgoTreeConfig.h
+        srcs/api/API.cpp srcs/api/API.h
+        srcs/api/Aliases.h)
 
 # Add hopi library
 add_library(hopi STATIC ${HOPI_SRCS})
@@ -77,7 +80,10 @@ set (TEST_HOPI_SRCS
         tests/nodes/TestTransitionNode.cpp
         tests/nodes/TestVarNode.cpp
         tests/math/FunctionsTest.cpp
+        # Helpers and contexts only useful for the unit tests
         tests/contexts/FactorGraphContexts.cpp tests/contexts/FactorGraphContexts.h
-        tests/helpers/Files.cpp tests/helpers/Files.h)
+        tests/helpers/Files.cpp tests/helpers/Files.h
+        tests/helpers/UnitTests.cpp tests/helpers/UnitTests.h
+        )
 
 add_unit_tests(LIB_NAME hopi TEST_FILES ${TEST_HOPI_SRCS})

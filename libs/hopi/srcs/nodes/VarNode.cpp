@@ -11,6 +11,10 @@ using namespace hopi::distributions;
 
 namespace hopi::nodes {
 
+    std::unique_ptr<VarNode> VarNode::create(VarNodeType type) {
+        return std::make_unique<VarNode>(type);
+    }
+
     VarNode::VarNode(VarNodeType type) : N(0), G(-1), _type(type), A(-1),
         _parent(nullptr), _prior(nullptr), _posterior(nullptr), _biased(nullptr) {}
 
@@ -94,8 +98,12 @@ namespace hopi::nodes {
         _children.push_back(c);
     }
 
-    void VarNode::setName(std::string name) {
-        _name = std::move(name);
+    void VarNode::setName(std::string &name) {
+        _name = name;
+    }
+
+    void VarNode::setName(std::string &&name) {
+        _name = name;
     }
 
     std::string VarNode::name() const {

@@ -6,6 +6,7 @@
 #define EXPERIMENTS_AI_TS_DIRICHLET_H
 
 #include "Distribution.h"
+#include <memory>
 
 namespace hopi::nodes {
     class VarNode;
@@ -15,8 +16,7 @@ namespace hopi::distributions {
 
     class Dirichlet : public Distribution {
     public:
-        static nodes::VarNode *create(const std::vector<Eigen::MatrixXd>& param);
-        static nodes::VarNode *create(const Eigen::MatrixXd& param);
+        static std::unique_ptr<Dirichlet> create(const std::vector<Eigen::MatrixXd> &p);
 
     public:
         explicit Dirichlet(const std::vector<Eigen::MatrixXd> &param);

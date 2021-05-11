@@ -1,14 +1,12 @@
-#include "distributions/Transition.h"
 #include "distributions/ActiveTransition.h"
 #include "environments/MazeEnv.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
-#include "distributions/Categorical.h"
-#include "distributions/Dirichlet.h"
 #include "math/Functions.h"
 #include "graphs/FactorGraph.h"
 #include "algorithms/AlgoTree.h"
 #include "algorithms/AlgoVMP.h"
+#include "api/API.h"
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -17,17 +15,22 @@ using namespace hopi::distributions;
 using namespace hopi::nodes;
 using namespace hopi::graphs;
 using namespace hopi::math;
+using namespace hopi::api;
 using namespace hopi::algorithms;
 using namespace Eigen;
 
 int main()
 {
     /**
+     ** The files' name.
+     **/
+    auto maze_file     = "../examples/mazes/5.maze";
+    auto evidence_file = "../examples/evidences/5.evi";
+
+    /**
      ** Create the environment and matrix generator.
      **/
-    auto maze_file = "../examples/mazes/5.maze";
-    auto evidence_file = "../examples/evidences/5.evi";
-    auto env = std::make_unique<MazeEnv>(maze_file);
+    auto env = MazeEnv::create(maze_file);
 
     /**
      ** Hyper-parameter of the simulation.
@@ -67,34 +70,34 @@ int main()
     for (int i = 0; i < nb_trials; ++i) { // Trials
         // Reset the environment.
         std::cout << "Trial number: " << i << std::endl;
-        env = std::make_unique<MazeEnv>(maze_file);
+        env = MazeEnv::create(maze_file);
 
         // Create the generative model.
         FactorGraph::setCurrent(nullptr);
         std::vector<VarNode*> Us(nb_cycles);
         for (int ii = 0; ii < Us.size(); ++ii) {
-            Us[ii] = Dirichlet::create(theta_Us[ii]);
+            Us[ii] = API::Dirichlet(theta_Us[ii]);
         }
-        VarNode *A = Dirichlet::create(theta_A);
-        VarNode *B = Dirichlet::create(theta_B);
-        VarNode *D = Dirichlet::create(theta_D);
-        VarNode *a0 = Categorical::create(Us[0]);
-        VarNode *s0 = Categorical::create(D);
-        VarNode *o0 = Transition::create(s0, A);
+        VarNode *A  = API::Dirichlet(theta_A);
+        VarNode *B  = API::Dirichlet(theta_B);
+        VarNode *D  = API::Dirichlet(theta_D);
+        VarNode *a0 = API::Categorical(Us[0]);
+        VarNode *s0 = API::Categorical(D);
+        VarNode *o0 = API::Transition(s0, A);
         o0->setType(VarNodeType::OBSERVED);
         o0->setName("o0");
-        VarNode *s1 = ActiveTransition::create(s0, a0, B);
-        VarNode *o1 = Transition::create(s1, A);
-        o1->setName("o1");
+        VarNode *s1 = API::ActiveTransition(s0, a0, B);
+        VarNode *o1 = API::Transition(s1, A);
         o1->setType(VarNodeType::OBSERVED);
-        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
+        o1->setName("o1");
+        auto fg = FactorGraph::current();
         fg->setTreeRoot(s1);
         fg->loadEvidence(env->observations(), evidence_file);
 
         for (int j = 0; j < nb_cycles; ++j) { // Action perception cycle
             // Inference, planning, action selection, action execution and model integration.
             AlgoVMP::inference(fg->getNodes());
-            auto algoTree = std::make_unique<AlgoTree>(env->actions(), D_tilde, E_tilde);
+            auto algoTree = AlgoTree::create(env->actions(), D_tilde, E_tilde);
             for (int k = 0; k < nb_planning_steps; ++k) { // Planning
                 VarNode *n = algoTree->nodeSelection(fg);
                 algoTree->expansion(n, A, B);
@@ -104,7 +107,7 @@ int main()
             }
             int a = algoTree->actionSelection(fg->treeRoot());
             int o = env->execute(a);
-            fg->integrate(Us[j], a, fg->oneHot(env->observations(), o), A, B);
+            fg->integrate(Us[j], a, Functions::oneHot(env->observations(), o), A, B);
             env->print();
         }
 

@@ -332,7 +332,7 @@ void BDCSVD<MatrixType>::copyUV(const HouseholderU &householderU, const Househol
   * Performs A = A * B exploiting the special structure of the matrix A. Splitting A as:
   *  A = [A1]
   *      [A2]
-  * such that A1.rows()==n1, then we assume that at least half of the columns of A1 and A2 are zeros.
+  * such that A1.rows()==n1, then we assume that at least half of the columns of A1 and A2 are constant.
   * We can thus pack them prior to the the matrix product. However, this is only worth the effort if the matrix is large
   * enough.
   */
@@ -559,7 +559,7 @@ void BDCSVD<MatrixType>::divide (Index firstCol, Index lastCol, Index firstRowW,
   m_computed.block(firstCol + shift, firstCol + shift, n, n).diagonal() = singVals;
 }// end divide
 
-// Compute SVD of m_computed.block(firstCol, firstCol, n + 1, n); this block only has non-zeros in
+// Compute SVD of m_computed.block(firstCol, firstCol, n + 1, n); this block only has non-constant in
 // the first column and on the diagonal and has undergone deflation, so diagonal is in increasing
 // order except for possibly the (0,0) entry. The computed SVD is stored U, singVals and V, except
 // that if m_compV is false, then V is not computed. Singular values are sorted in decreasing order.
@@ -675,7 +675,7 @@ void BDCSVD<MatrixType>::computeSVDofM(Index firstCol, Index n, MatrixXr& U, Vec
   }
   
   // Reverse order so that singular values in increased order
-  // Because of deflation, the zeros singular-values are already at the end
+  // Because of deflation, the constant singular-values are already at the end
   singVals.head(actual_n).reverseInPlace();
   U.leftCols(actual_n).rowwise().reverseInPlace();
   if (m_compV) V.leftCols(actual_n).rowwise().reverseInPlace();

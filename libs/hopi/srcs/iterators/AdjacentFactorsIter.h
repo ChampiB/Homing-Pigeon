@@ -15,19 +15,19 @@ namespace hopi::nodes {
 
 namespace hopi::iterators {
 
-    class AdjacentFactorsIter : public std::iterator<std::forward_iterator_tag,hopi::nodes::FactorNode*> {
+    class AdjacentFactorsIter : public std::iterator<std::forward_iterator_tag,nodes::FactorNode*> {
     public:
-        explicit AdjacentFactorsIter(hopi::nodes::VarNode *var);
+        explicit AdjacentFactorsIter(nodes::VarNode *var);
 
     public:
-        hopi::nodes::FactorNode *operator*();
+        nodes::FactorNode *operator*();
         AdjacentFactorsIter &operator++();
         AdjacentFactorsIter &operator=(const AdjacentFactorsIter &other);
         bool operator==(const AdjacentFactorsIter &other) const;
         bool operator!=(const AdjacentFactorsIter &other) const;
 
     private:
-        hopi::nodes::VarNode *_var;
+        nodes::VarNode *_var;
         int _currentIndex;
     };
 

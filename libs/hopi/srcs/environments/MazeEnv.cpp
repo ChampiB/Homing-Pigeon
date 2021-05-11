@@ -10,6 +10,10 @@ using namespace Eigen;
 
 namespace hopi::environments {
 
+    std::unique_ptr<MazeEnv> MazeEnv::create(const std::string &file) {
+        return std::make_unique<MazeEnv>(file);
+    }
+
     MazeEnv::MazeEnv(const std::string& file) {
         std::pair<int,int> maze_size;
         std::ifstream input(file);

@@ -17,11 +17,12 @@ namespace hopi::distributions {
 
     class Categorical : public Distribution {
     public:
-        static nodes::VarNode *create(const Eigen::MatrixXd& param);
-        static nodes::VarNode *create(nodes::VarNode *param);
+        static std::unique_ptr<Categorical> create(const Eigen::MatrixXd &param);
+        static std::unique_ptr<Categorical> create(const Eigen::MatrixXd &&param);
 
     public:
-        explicit Categorical(Eigen::MatrixXd param);
+        explicit Categorical(const Eigen::MatrixXd &param);
+        explicit Categorical(const Eigen::MatrixXd &&param);
         [[nodiscard]] DistributionType type() const override;
         [[nodiscard]] int cardinality() const;
         [[nodiscard]] double p(int id) const; // Probability of X = id.

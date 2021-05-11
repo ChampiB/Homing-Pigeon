@@ -37,7 +37,7 @@ namespace internal {
   * is lower triangular with a unit diagonal and D is a diagonal matrix.
   *
   * The decomposition uses pivoting to ensure stability, so that L will have
-  * zeros in the bottom right rank(A) - n submatrix. Avoiding the square root
+  * constant in the bottom right rank(A) - n submatrix. Avoiding the square root
   * on D also stabilizes the computation.
   *
   * Remember that Cholesky decompositions are not rank-revealing. Also, do not use a Cholesky

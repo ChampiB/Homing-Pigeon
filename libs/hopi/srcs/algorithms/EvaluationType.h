@@ -6,9 +6,8 @@
 #define HOMING_PIGEON_2_EVALUATIONTYPE_H
 
 enum EvaluationType : int {
-    SUM = 0,
-    AVERAGE = 1,
-    KL = 2
+    DOUBLE_KL = 0, // KL[Q(S)||V(S)] + KL[Q(O)||V(O)]
+    EFE = 1,       // KL[Q(O)||V(O)] + E_Q(S)[ H[P(O|S)] ]
 };
 
 #endif //HOMING_PIGEON_2_EVALUATIONTYPE_H

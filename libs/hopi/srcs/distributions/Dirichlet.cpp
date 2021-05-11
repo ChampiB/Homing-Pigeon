@@ -2,38 +2,18 @@
 // Created by tmac3 on 06/01/2021.
 //
 
-#include <iostream>
 #include "Dirichlet.h"
-#include "graphs/FactorGraph.h"
 #include "nodes/VarNode.h"
-#include "nodes/DirichletNode.h"
 #include "math/Functions.h"
 
-using namespace hopi::graphs;
 using namespace hopi::nodes;
 using namespace hopi::math;
 using namespace Eigen;
 
 namespace hopi::distributions {
 
-    VarNode *Dirichlet::create(const MatrixXd& param) {
-        std::vector<MatrixXd> p = { param };
-        return create(p);
-    }
-
-    nodes::VarNode *Dirichlet::create(const std::vector<MatrixXd>& param) {
-        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(std::make_unique<DirichletNode>(var));
-        std::vector<MatrixXd> param_copy;
-
-        for (const auto & i : param) {
-            param_copy.push_back(i);
-        }
-        var->setParent(factor);
-        var->setPrior(std::make_unique<Dirichlet>(param));
-        var->setPosterior(std::make_unique<Dirichlet>(param_copy));
-        return var;
+    std::unique_ptr<Dirichlet> Dirichlet::create(const std::vector<Eigen::MatrixXd> &p) {
+        return std::make_unique<Dirichlet>(p);
     }
 
     Dirichlet::Dirichlet(const std::vector<Eigen::MatrixXd> &p) {

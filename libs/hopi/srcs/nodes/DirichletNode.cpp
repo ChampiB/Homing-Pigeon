@@ -12,6 +12,10 @@ using namespace hopi::math;
 
 namespace hopi::nodes {
 
+    std::unique_ptr<DirichletNode> DirichletNode::create(RV *node) {
+        return std::make_unique<DirichletNode>(node);
+    }
+
     DirichletNode::DirichletNode(VarNode *node) {
         childNode = node;
     }

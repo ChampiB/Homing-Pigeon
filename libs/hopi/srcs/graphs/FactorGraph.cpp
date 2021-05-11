@@ -3,18 +3,20 @@
 //
 
 #include <fstream>
-#include <distributions/Transition.h>
 #include <distributions/Dirichlet.h>
 #include "distributions/Categorical.h"
-#include "distributions/ActiveTransition.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
+#include "math/Functions.h"
+#include "api/API.h"
 #include "FactorGraph.h"
 #include "iterators/ObservedVarIter.h"
 
 using namespace hopi::nodes;
 using namespace hopi::iterators;
 using namespace hopi::distributions;
+using namespace hopi::math;
+using namespace hopi::api;
 using namespace Eigen;
 
 namespace hopi::graphs {
@@ -27,8 +29,12 @@ namespace hopi::graphs {
         return currentFactorGraph;
     }
 
-    void FactorGraph::setCurrent(std::shared_ptr<FactorGraph> ptr) {
-        currentFactorGraph = std::move(ptr);
+    void FactorGraph::setCurrent(std::shared_ptr<FactorGraph> &ptr) {
+        currentFactorGraph = ptr;
+    }
+
+    void FactorGraph::setCurrent(std::shared_ptr<FactorGraph> &&ptr) {
+        currentFactorGraph = ptr;
     }
 
     FactorGraph::FactorGraph() : _tree_root(nullptr) {}
@@ -95,17 +101,11 @@ namespace hopi::graphs {
             ObservedVarIter it(this);
             while (*it != nullptr) {
                 if ((*it)->name() == name) {
-                    (*it)->setPosterior(std::make_unique<Categorical>(oneHot(nobs, obs)));
+                    (*it)->setPosterior(Categorical::create(Functions::oneHot(nobs, obs)));
                 }
                 ++it;
             }
         }
-    }
-
-    MatrixXd FactorGraph::oneHot(int size, int index) {
-        MatrixXd vec = MatrixXd::Constant(size, 1, 0);
-        vec(index, 0) = 1;
-        return vec;
     }
 
     void FactorGraph::removeHiddenChildren(VarNode *node) {
@@ -128,7 +128,7 @@ namespace hopi::graphs {
         removeHiddenChildren(_tree_root);
         MatrixXd action_param = MatrixXd::Constant(B.size(), 1, 0.1 / (B.size() - 1));
         action_param(action, 0) = 0.9;
-        auto a = Categorical::create(action_param);
+        auto a = API::Categorical(action_param);
         integrate(a, observation, A, B);
     }
 
@@ -142,7 +142,7 @@ namespace hopi::graphs {
         int actions = B->prior()->params().size();
         MatrixXd action_param = MatrixXd::Constant(actions, 1, 0.1 / (actions - 1));
         action_param(action, 0) = 0.9;
-        auto a = Categorical::create(action_param);
+        auto a = API::Categorical(action_param);
         integrate(a, observation, A, B);
     }
 
@@ -160,7 +160,7 @@ namespace hopi::graphs {
         // Create new slide of action/state/observation.
         auto d = dynamic_cast<Dirichlet*>(U->prior());
         d->increaseParam(0, action, 0);
-        auto a = Categorical::create(U);
+        auto a = API::Categorical(U);
         integrate(a, observation, A, B);
     }
 
@@ -171,9 +171,9 @@ namespace hopi::graphs {
             T1 A, T2 B
     ) {
         // Create new slide of action/state/observation.
-        auto *new_root = ActiveTransition::create(_tree_root, a, B);
-        auto o         = Transition::create(new_root, A);
-        o->setPosterior(std::make_unique<Categorical>(observation));
+        auto *new_root = API::ActiveTransition(_tree_root, a, B);
+        auto o         = API::Transition(new_root, A);
+        o->setPosterior(Categorical::create(observation));
         o->setType(VarNodeType::OBSERVED);
         // Clean up the factor graph
         _tree_root->removeNullChildren();

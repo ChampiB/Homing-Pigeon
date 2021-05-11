@@ -115,7 +115,7 @@ EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,true,
     Scalar* _res,       Index resIncr, Index resStride,
     const Scalar& alpha, level3_blocking<Scalar,Scalar>& blocking)
   {
-    // strip zeros
+    // strip constant
     Index diagSize  = (std::min)(_rows,_depth);
     Index rows      = IsLower ? _rows : diagSize;
     Index depth     = IsLower ? diagSize : _depth;
@@ -191,7 +191,7 @@ EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,true,
           Index blockBOffset = k1;
 
           // => GEBP with the micro triangular block
-          // The trick is to pack this micro block while filling the opposite triangular part with zeros.
+          // The trick is to pack this micro block while filling the opposite triangular part with constant.
           // To this end we do an extra triangular copy to a small temporary buffer
           for (Index k=0;k<actualPanelWidth;++k)
           {
@@ -274,7 +274,7 @@ EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,false,
     const Scalar& alpha, level3_blocking<Scalar,Scalar>& blocking)
   {
     const Index PacketBytes = packet_traits<Scalar>::size*sizeof(Scalar);
-    // strip zeros
+    // strip constant
     Index diagSize  = (std::min)(_cols,_depth);
     Index rows      = _rows;
     Index depth     = IsLower ? _depth : diagSize;
@@ -333,7 +333,7 @@ EIGEN_DONT_INLINE void product_triangular_matrix_matrix<Scalar,Index,Mode,false,
 
       pack_rhs(geb, rhs.getSubMapper(actual_k2,IsLower ? 0 : k2), actual_kc, rs);
 
-      // pack the triangular part of the rhs padding the unrolled blocks with zeros
+      // pack the triangular part of the rhs padding the unrolled blocks with constant
       if(ts>0)
       {
         for (Index j2=0; j2<actual_kc; j2+=SmallPanelWidth)

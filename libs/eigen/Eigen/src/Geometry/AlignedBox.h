@@ -40,7 +40,7 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
   typedef Matrix<Scalar,AmbientDimAtCompileTime,1>  VectorType;
   typedef CwiseBinaryOp<internal::scalar_sum_op<Scalar>, const VectorType, const VectorType> VectorTypeSum;
 
-  /** Define constants to name the corners of a 1D, 2D or 3D axis aligned bounding box */
+  /** Define constant to name the corners of a 1D, 2D or 3D axis aligned bounding box */
   enum CornerType
   {
     /** 1D names @{ */
@@ -136,9 +136,9 @@ EIGEN_MAKE_ALIGNED_OPERATOR_NEW_IF_VECTORIZABLE_FIXED_SIZE(_Scalar,_AmbientDim)
 
   /** \returns the vertex of the bounding box at the corner defined by
     * the corner-id corner. It works only for a 1D, 2D or 3D bounding box.
-    * For 1D bounding boxes corners are named by 2 enum constants:
+    * For 1D bounding boxes corners are named by 2 enum constant:
     * BottomLeft and BottomRight.
-    * For 2D bounding boxes, corners are named by 4 enum constants:
+    * For 2D bounding boxes, corners are named by 4 enum constant:
     * BottomLeft, BottomRight, TopLeft, TopRight.
     * For 3D bounding boxes, the following names are added:
     * BottomLeftCeil, BottomRightCeil, TopLeftCeil, TopRightCeil.

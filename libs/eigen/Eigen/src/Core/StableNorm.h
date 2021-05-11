@@ -65,11 +65,11 @@ blueNorm_impl(const EigenBase<Derived>& _vec)
   {
     int ibeta, it, iemin, iemax, iexp;
     RealScalar eps;
-    // This program calculates the machine-dependent constants
+    // This program calculates the machine-dependent constant
     // bl, b2, slm, s2m, relerr overfl
     // from the "basic" machine-dependent numbers
     // nbig, ibeta, it, iemin, iemax, rbig.
-    // The following define the basic machine-dependent constants.
+    // The following define the basic machine-dependent constant.
     // For portability, the PORT subprograms "ilmaeh" and "rlmach"
     // are used. For any specific computer, each of the assignment
     // statements can be replaced

@@ -21,6 +21,9 @@ namespace hopi::nodes {
 
     class VarNode {
     public:
+        static std::unique_ptr<VarNode> create(VarNodeType type);
+
+    public:
         explicit VarNode(VarNodeType type);
         void setPrior(std::unique_ptr<distributions::Distribution> prior);
         void setPosterior(std::unique_ptr<distributions::Distribution> posterior);
@@ -29,7 +32,8 @@ namespace hopi::nodes {
         void setAction(int action);
         void setG(double g);
         void setType(VarNodeType type);
-        void setName(std::string name);
+        void setName(std::string &name);
+        void setName(std::string &&name);
         void incrementN();
         FactorNode *parent();
         std::vector<FactorNode *>::iterator firstChild();

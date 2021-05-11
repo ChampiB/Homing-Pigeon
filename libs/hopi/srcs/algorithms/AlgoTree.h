@@ -9,9 +9,7 @@
 #include <random>
 #include <Eigen/Dense>
 #include <map>
-#include "EvaluationType.h"
-#include "BackPropagationType.h"
-#include "NodeSelectionType.h"
+#include "AlgoTreeConfig.h"
 
 namespace hopi::graphs {
     class FactorGraph;
@@ -25,48 +23,66 @@ namespace hopi::distributions {
 
 namespace hopi::algorithms {
 
+    // Definition of aliases
+    using VarNodePair = std::pair<nodes::VarNode*, nodes::VarNode*>;
+    using NodeSelectionFn = nodes::VarNode *(AlgoTree::*)();
+    using EvaluationFn = double (*)(nodes::VarNode *, nodes::VarNode *);
+
     class AlgoTree {
     public:
-        AlgoTree(int n_actions, Eigen::MatrixXd state_pref, Eigen::MatrixXd obs_pref, int max_tree_depth = -1);
-        nodes::VarNode *nodeSelection(
-                const std::shared_ptr<graphs::FactorGraph>& fg,
-                NodeSelectionType type = NodeSelectionType::SOFTMAX_SAMPLING
-        );
-        void expansion(nodes::VarNode *p, Eigen::MatrixXd& A, std::vector<Eigen::MatrixXd>& B);
+        // Factories
+        static std::unique_ptr<AlgoTree> create(int n_acts, Eigen::MatrixXd &&state_pref, Eigen::MatrixXd &&obs_pref);
+        static std::unique_ptr<AlgoTree> create(int n_acts, Eigen::MatrixXd &state_pref, Eigen::MatrixXd &obs_pref);
+        static std::unique_ptr<AlgoTree> create(AlgoTreeConfig &config);
+
+    public:
+        // Constructors
+        explicit AlgoTree(int n_acts, Eigen::MatrixXd &&state_pref, Eigen::MatrixXd &&obs_pref);
+        explicit AlgoTree(int n_acts, Eigen::MatrixXd &state_pref, Eigen::MatrixXd &obs_pref);
+        explicit AlgoTree(AlgoTreeConfig &config);
+        explicit AlgoTree(AlgoTreeConfig &&config);
+
+    public:
+        // Core functions
+        nodes::VarNode *nodeSelection(const std::shared_ptr<graphs::FactorGraph>& fg);
+        void expansion(nodes::VarNode *p, const Eigen::MatrixXd& A, const std::vector<Eigen::MatrixXd>& B);
         void expansion(nodes::VarNode *p, nodes::VarNode *A, nodes::VarNode *B);
-        void evaluation(EvaluationType type = EvaluationType::KL);
-        static void backpropagation(nodes::VarNode *node, nodes::VarNode *root, BackPropagationType type = UPWARD_BP);
+        void evaluation();
+        void backpropagation(nodes::VarNode *node, nodes::VarNode *root) const;
         static int actionSelection(nodes::VarNode *root);
 
     public:
+        // Auxiliary functions
         std::vector<int> unexploredActions(nodes::VarNode *node) const;
         [[nodiscard]] std::vector<nodes::VarNode*> lastExpandedNodes() const;
-        static bool CompareQuality(
-                std::pair<nodes::VarNode*,nodes::VarNode*> a1,
-                std::pair<nodes::VarNode*,nodes::VarNode*> a2
-        );
-        int distance_from_root(nodes::VarNode *n);
-
-    private:
-        static void evaluationSum(nodes::VarNode *s, nodes::VarNode *o);
-        void evaluationAverage(nodes::VarNode *s, nodes::VarNode *o);
-        static void evaluationKL(nodes::VarNode *s, nodes::VarNode *o);
-
-        nodes::VarNode *nodeSelectionMin(const std::shared_ptr<graphs::FactorGraph>& fg);
-        nodes::VarNode *nodeSelectionSampling(const std::shared_ptr<graphs::FactorGraph>& fg);
-        nodes::VarNode *nodeSelectionSoftmaxSampling(const std::shared_ptr<graphs::FactorGraph>& fg);
+        static bool CompareQuality(VarNodePair a1, VarNodePair a2);
+        int distanceFromRoot(nodes::VarNode *n);
 
     private:
         std::default_random_engine gen; // Random number generator
+        std::vector<VarNodePair> us;    // Unexplored states: state-observation pairs
+        VarNodePair last_expansion;     // State-observation pair
+        nodes::VarNode *tree_root;
+        AlgoTreeConfig config;
 
     private:
-        std::vector<std::pair<nodes::VarNode*,nodes::VarNode*>> us; // unexplored states: pair state and observation
-        std::pair<nodes::VarNode*,nodes::VarNode*> last_expansion;
-        Eigen::MatrixXd state_pref;
-        Eigen::MatrixXd obs_pref;
-        int n_actions;
-        nodes::VarNode *tree_root;
-        int _mtd; // max tree depth
+        // The implementation of node selection, evaluation and quality to use.
+        NodeSelectionFn nodeSelectionImpl;
+        EvaluationFn evaluationImpl;
+
+        // Configuration functions
+        static NodeSelectionFn nodeSelectionFn(NodeSelectionType type);
+        static EvaluationFn    evaluationFn(EvaluationType type);
+
+        // Different kind of evaluation
+        static double doubleKL(nodes::VarNode *s, nodes::VarNode *o);
+        static double efe(nodes::VarNode *s, nodes::VarNode *o);
+
+        // Different kind of node selection
+        nodes::VarNode *nodeSelectionMin();
+        nodes::VarNode *nodeSelectionSampling();
+        nodes::VarNode *nodeSelectionSoftmaxSampling();
+
     };
 
 }

@@ -4,48 +4,29 @@
 
 #include "Categorical.h"
 #include "nodes/VarNode.h"
-#include "nodes/CategoricalNode.h"
 #include "math/Functions.h"
-#include "graphs/FactorGraph.h"
 #include <Eigen/Dense>
 
 using namespace hopi::nodes;
-using namespace hopi::graphs;
 using namespace hopi::math;
 using namespace Eigen;
 
 namespace hopi::distributions {
 
-    VarNode *Categorical::create(const Eigen::MatrixXd& param) {
-        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(std::make_unique<CategoricalNode>(var));
-
-        var->setParent(factor);
-        var->setPrior(std::make_unique<Categorical>(param));
-        var->setPosterior(std::make_unique<Categorical>(
-            MatrixXd::Constant(param.rows(), 1, 1.0 / param.rows())
-        ));
-        return var;
+    std::unique_ptr<Categorical> Categorical::create(const Eigen::MatrixXd &param) {
+        return std::make_unique<Categorical>(param);
     }
 
-    VarNode *Categorical::create(VarNode *param) {
-        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(std::make_unique<CategoricalNode>(var, param));
-
-        var->setParent(factor);
-        auto dim = param->prior()->params()[0].rows();
-        var->setPosterior(std::make_unique<Categorical>(
-            MatrixXd::Constant(dim, 1, 1.0 / dim)
-        ));
-
-        param->addChild(factor);
-        return var;
+    std::unique_ptr<Categorical> Categorical::create(const Eigen::MatrixXd &&param) {
+        return std::make_unique<Categorical>(param);
     }
 
-    Categorical::Categorical(Eigen::MatrixXd p) {
-        param = std::move(p);
+    Categorical::Categorical(const Eigen::MatrixXd &p) {
+        param = p;
+    }
+
+    Categorical::Categorical(const Eigen::MatrixXd &&p) {
+        param = p;
     }
 
     DistributionType Categorical::type() const {
@@ -53,7 +34,7 @@ namespace hopi::distributions {
     }
 
     int Categorical::cardinality() const {
-        return param.size();
+        return (int)param.size();
     }
 
     double Categorical::p(int id) const{

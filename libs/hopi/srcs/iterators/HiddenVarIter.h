@@ -17,12 +17,12 @@ namespace hopi::graphs{
 
 namespace hopi::iterators {
 
-    class HiddenVarIter : public std::iterator<std::forward_iterator_tag,hopi::nodes::VarNode*> {
+    class HiddenVarIter : public std::iterator<std::forward_iterator_tag,nodes::VarNode*> {
     public:
         explicit HiddenVarIter(const std::vector<nodes::VarNode*>& vars);
 
     public:
-        hopi::nodes::VarNode *operator*();
+        nodes::VarNode *operator*();
         HiddenVarIter &operator++();
         HiddenVarIter &operator=(const HiddenVarIter &other);
         bool operator==(const HiddenVarIter &other) const;

@@ -35,7 +35,7 @@ namespace Eigen {
   * v_i^* \f$. The i-th Householder coefficient \f$ h_i \f$ is a scalar and the i-th Householder vector \f$
   * v_i \f$ is a vector of the form
   * \f[ 
-  * v_i = [\underbrace{0, \ldots, 0}_{i-1\mbox{ zeros}}, 1, \underbrace{*, \ldots,*}_{n-i\mbox{ arbitrary entries}} ]. 
+  * v_i = [\underbrace{0, \ldots, 0}_{i-1\mbox{ constant}}, 1, \underbrace{*, \ldots,*}_{n-i\mbox{ arbitrary entries}} ].
   * \f]
   * The last \f$ n-i \f$ entries of \f$ v_i \f$ are called the essential part of the Householder vector.
   *
@@ -192,7 +192,7 @@ template<typename VectorsType, typename CoeffsType, int Side> class HouseholderS
       * This function returns the essential part of the Householder vector \f$ v_i \f$. This is a vector of
       * length \f$ n-i \f$ containing the last \f$ n-i \f$ entries of the vector
       * \f[ 
-      * v_i = [\underbrace{0, \ldots, 0}_{i-1\mbox{ zeros}}, 1, \underbrace{*, \ldots,*}_{n-i\mbox{ arbitrary entries}} ]. 
+      * v_i = [\underbrace{0, \ldots, 0}_{i-1\mbox{ constant}}, 1, \underbrace{*, \ldots,*}_{n-i\mbox{ arbitrary entries}} ].
       * \f]
       * The index \f$ i \f$ equals \p k + shift(), corresponding to the k-th column of the matrix \p v
       * passed to the constructor.

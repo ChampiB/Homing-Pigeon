@@ -13,6 +13,14 @@ using namespace Eigen;
 
 namespace hopi::nodes {
 
+    std::unique_ptr<TransitionNode> TransitionNode::create(RV *from, RV *to, RV *a) {
+        return std::make_unique<TransitionNode>(from, to, a);
+    }
+
+    std::unique_ptr<TransitionNode> TransitionNode::create(RV *from, RV *to) {
+        return std::make_unique<TransitionNode>(from, to);
+    }
+
     TransitionNode::TransitionNode(VarNode *f, VarNode *t, VarNode *a) {
         from = f;
         to = t;
