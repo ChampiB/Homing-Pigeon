@@ -6,7 +6,7 @@
 
 #include "catch.hpp"
 #include "contexts/FactorGraphContexts.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 #include "api/API.h"
 #include "distributions/Categorical.h"
 #include "distributions/Transition.h"
@@ -15,7 +15,7 @@
 #include "nodes/FactorNode.h"
 #include "nodes/VarNode.h"
 #include "helpers/UnitTests.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 using namespace hopi::distributions;
 using namespace hopi::algorithms;
@@ -23,19 +23,17 @@ using namespace hopi::nodes;
 using namespace hopi::math;
 using namespace hopi::api;
 using namespace tests;
-using namespace Eigen;
+using namespace torch;
 
 TEST_CASE( "AlgoTree.lastExpandedNodes returns the nodes from the last expansion." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.node_selection_type = MIN;
         auto algo = AlgoTree(conf);
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
 
         auto n1 = algo.nodeSelection(fg);
-        algo.expansion(n1, A, B);
+        algo.expansion(n1, Ops::uniformColumnWise({2,2}), Ops::uniformColumnWise({3,2,2}));
         auto vec = algo.lastExpandedNodes();
         REQUIRE( vec.size() == 2 );
         REQUIRE( vec[0] == fg->node(fg->nodes() - 2) );
@@ -46,12 +44,12 @@ TEST_CASE( "AlgoTree.lastExpandedNodes returns the nodes from the last expansion
 TEST_CASE( "Evaluation (DOUBLE_KL) compute the quality of the last hidden state expanded (posterior == biased)." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.node_selection_type = MIN;
         conf.evaluation_type = DOUBLE_KL;
         auto algo = AlgoTree(conf);
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
 
         auto n1 = algo.nodeSelection(fg);
         algo.expansion(n1, A, B);
@@ -72,18 +70,16 @@ TEST_CASE( "Evaluation (DOUBLE_KL) compute the quality of the last hidden state 
 TEST_CASE( "Evaluation (DOUBLE_KL) compute the quality of the last hidden state expanded (posterior != biased)." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto d1 = Categorical::create(Functions::uniformColumnWise(2, 1));
-        MatrixXd state_pref(2, 1);
-        state_pref << 0.3,
-                      0.7;
+        auto d1 = Categorical::create(Ops::uniformColumnWise({2}));
+        Tensor state_pref = torch::tensor({0.3,0.7});
         auto d2 = Categorical::create(state_pref);
-        auto conf = AlgoTreeConfig(3, state_pref, Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, state_pref, Ops::uniformColumnWise({2}));
         conf.node_selection_type = MIN;
         conf.evaluation_type = DOUBLE_KL;
         auto algo = AlgoTree(conf);
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
-        auto kl = Functions::KL(d1.get(), d2.get());
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
+        auto kl = Ops::KL(d1.get(), d2.get());
 
         auto n1 = algo.nodeSelection(fg);
         algo.expansion(n1, A, B); // First expansion
@@ -108,11 +104,11 @@ TEST_CASE( "Evaluation (DOUBLE_KL) compute the quality of the last hidden state 
 TEST_CASE( "Node selection (MIN) consistently returns the node with lowest G." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.node_selection_type = MIN;
         auto algo = AlgoTree(conf);
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
 
         auto n1 = algo.nodeSelection(fg);
         algo.expansion(n1, A, B); // First expansion
@@ -141,47 +137,43 @@ TEST_CASE( "Node selection (MIN) consistently returns the node with lowest G." )
 TEST_CASE( "Node selection (SOFTMAX_SAMPLING) returns well distributed nodes." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.node_selection_type = SOFTMAX_SAMPLING;
         auto algo = AlgoTree(conf);
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
-        std::vector<VarNode*> nodes;
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
+        std::vector<VarNode*> n;
 
         // Perform three expansion (one per action)
         for (int j = 0; j < 3; ++j) {
             for (int i = 0; i < 20; ++i) {
-                auto n1 = algo.nodeSelection(fg);
-                REQUIRE( n1 == fg->treeRoot() );
+                REQUIRE( algo.nodeSelection(fg) == fg->treeRoot() );
             }
             algo.expansion(algo.nodeSelection(fg), A, B); // Three first expansions
-            nodes.push_back(fg->node(fg->nodes() - 2));
+            n.push_back(fg->node(fg->nodes() - 2));
         }
 
-        // Compute the true probability distribution of node sampling
-        nodes[0]->setG(-0.19);
-        nodes[1]->setG(-0.01);
-        nodes[2]->setG(-0.8);
-        MatrixXd true_p(3,1);
-        true_p(nodes[0]->action(), 0) = 0.19;
-        true_p(nodes[1]->action(), 0) = 0.01;
-        true_p(nodes[2]->action(), 0) = 0.8;
-        true_p = Functions::softmax(true_p);
+        // Compute the true p distribution of node sampling
+        n[0]->setG(-0.19);
+        n[1]->setG(-0.01);
+        n[2]->setG(-0.8);
+        Tensor true_p = torch::empty({3});
+        true_p[n[0]->action()] = 0.19;
+        true_p[n[1]->action()] = 0.01;
+        true_p[n[2]->action()] = 0.8;
+        true_p = torch::softmax(true_p, 0);
 
         // Compute the approximate probability distribution of node sampling
-        MatrixXd probability = MatrixXd::Constant(3, 1, 0);
+        Tensor p = torch::zeros({3});
         int N = 10000;
         for (int i = 0; i < N; ++i) {
-            auto n1 = algo.nodeSelection(fg);
-            ++probability(n1->action(), 0);
+            p[algo.nodeSelection(fg)->action()] += 1;
         }
-        for (int i = 0; i < probability.size(); ++i) {
-            probability(i, 0) /= N;
-        }
+        p /= N;
 
         // Compare the approximate and true distribution
-        for (int i = 0; i < probability.size(); ++i) {
-            REQUIRE( probability(nodes[i]->action(), 0) == Approx(true_p(nodes[i]->action(), 0)).epsilon(0.2) );
+        for (int i = 0; i < p.numel(); ++i) {
+            REQUIRE(p[n[i]->action()].item<double>() == Approx(true_p[n[i]->action()].item<double>()).epsilon(0.2) );
         }
     });
 }
@@ -189,18 +181,16 @@ TEST_CASE( "Node selection (SOFTMAX_SAMPLING) returns well distributed nodes." )
 TEST_CASE( "Node selection (SAMPLING) consistently returns well distributed nodes." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.node_selection_type = SAMPLING;
         auto algo = AlgoTree(conf);
-
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
         std::vector<VarNode*> nodes;
 
         for (int j = 0; j < 3; ++j) {
             for (int i = 0; i < 20; ++i) {
-                auto n1 = algo.nodeSelection(fg);
-                REQUIRE( n1 == fg->treeRoot() );
+                REQUIRE( algo.nodeSelection(fg) == fg->treeRoot() );
             }
             algo.expansion(algo.nodeSelection(fg), A, B); // Three first expansions
             nodes.push_back(fg->node(fg->nodes() - 2));
@@ -208,15 +198,16 @@ TEST_CASE( "Node selection (SAMPLING) consistently returns well distributed node
         nodes[0]->setG(-0.19);
         nodes[1]->setG(-0.01);
         nodes[2]->setG(-0.8);
-        std::vector<double> probability(3);
+
+        // Compute approximate probability distribution
+        Tensor p = torch::zeros({3});
         int N = 10000;
         for (int i = 0; i < N; ++i) {
-            auto n1 = algo.nodeSelection(fg);
-            ++probability[n1->action()];
+            p[algo.nodeSelection(fg)->action()] += 1;
         }
-        for (int i = 0; i < probability.size(); ++i) {
-            probability[nodes[i]->action()] /= (double)N;
-            REQUIRE( probability[nodes[i]->action()] == Approx(-nodes[i]->g()).epsilon(0.2) );
+        p /= N;
+        for (int i = 0; i < p.numel(); ++i) {
+            REQUIRE(p[nodes[i]->action()].item<double>() == Approx(-nodes[i]->g()).epsilon(0.2) );
         }
     });
 }
@@ -224,10 +215,10 @@ TEST_CASE( "Node selection (SAMPLING) consistently returns well distributed node
 TEST_CASE( "Expansion add two nodes and properly connect them, i.e. future state and observation." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto algo = AlgoTree(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto algo = AlgoTree(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         auto root = fg->treeRoot();
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
         int nNodes = fg->nodes();
         int nFactors = fg->factors();
 
@@ -252,10 +243,10 @@ TEST_CASE( "Expansion add two nodes and properly connect them, i.e. future state
 TEST_CASE( "After expansion(s) unexploredActions returns only actions not in the node's children." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto algo = AlgoTree(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto algo = AlgoTree(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         auto root = fg->treeRoot();
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        MatrixXd B = Functions::uniformColumnWise(2, 2);
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({2,2});
 
         auto sI = API::Transition(root, B);
         sI->setAction(0);
@@ -287,21 +278,19 @@ TEST_CASE( "After expansion(s) unexploredActions returns only actions not in the
 TEST_CASE( "AlgoTree stop to expand when reaching the maximal depth (max_depth == 2)." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.max_tree_depth = 2;
         auto algo = AlgoTree(conf);
         auto root = fg->treeRoot();
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
 
         for (int i = 0; i < 12; ++i) {
-            auto n = algo.nodeSelection(fg);
-            algo.expansion(n, A, B);
+            algo.expansion(algo.nodeSelection(fg), A, B);
         }
 
         try {
-            auto n = algo.nodeSelection(fg);
-            algo.expansion(n, A, B);
+            algo.expansion(algo.nodeSelection(fg), A, B);
             REQUIRE( false );
         } catch (std::runtime_error &e) {
             // Good, no expansion have been done.
@@ -312,20 +301,18 @@ TEST_CASE( "AlgoTree stop to expand when reaching the maximal depth (max_depth =
 TEST_CASE( "AlgoTree stop to expand when reaching the maximal depth (max_depth == 1)." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.max_tree_depth = 1;
         auto algo = AlgoTree(conf);
-        MatrixXd A = Functions::uniformColumnWise(2, 2);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(3, 2, 2);
+        Tensor A = Ops::uniformColumnWise({2,2});
+        Tensor B = Ops::uniformColumnWise({3,2,2});
 
         for (int i = 0; i < 3; ++i) {
-            auto n = algo.nodeSelection(fg);
-            algo.expansion(n, A, B);
+            algo.expansion(algo.nodeSelection(fg), A, B);
         }
 
         try {
-            auto n = algo.nodeSelection(fg);
-            algo.expansion(n, A, B);
+            algo.expansion(algo.nodeSelection(fg), A, B);
             REQUIRE( false );
         } catch (std::runtime_error &e) {
             // Good, no expansion have been done.
@@ -336,9 +323,9 @@ TEST_CASE( "AlgoTree stop to expand when reaching the maximal depth (max_depth =
 TEST_CASE( "Back-propagation increases N and G on all ancestors (UPWARD_BP)." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto algo = AlgoTree(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto algo = AlgoTree(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         auto root = fg->treeRoot();
-        auto B = Functions::uniformColumnWise(2, 2);
+        auto B = Ops::uniformColumnWise({2,2});
         auto c0 = API::Transition(root, B);
         auto c1 = API::Transition(root, B);
         auto c2 = API::Transition(root, B);
@@ -402,11 +389,11 @@ TEST_CASE( "Back-propagation increases N and G on all ancestors (UPWARD_BP)." ) 
 TEST_CASE( "Back-propagation increases N on all ancestors (NO_BP)." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.back_propagation_type = NO_BP;
         auto algo = AlgoTree(conf);
         auto root = fg->treeRoot();
-        auto B = Functions::uniformColumnWise(2, 2);
+        auto B = Ops::uniformColumnWise({2, 2});
         auto c0 = API::Transition(root, B);
         auto c1 = API::Transition(root, B);
         auto c2 = API::Transition(root, B);
@@ -470,11 +457,11 @@ TEST_CASE( "Back-propagation increases N on all ancestors (NO_BP)." ) {
 TEST_CASE( "Back-propagation increases N on all ancestors (DOWNWARD_BP)." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.back_propagation_type = DOWNWARD_BP;
         auto algo = AlgoTree(conf);
         auto root = fg->treeRoot();
-        auto B = Functions::uniformColumnWise(2, 2);
+        auto B  = Ops::uniformColumnWise({2,2});
         auto c0 = API::Transition(root, B);
         auto c1 = API::Transition(root, B);
         auto c2 = API::Transition(root, B);
@@ -538,9 +525,9 @@ TEST_CASE( "Back-propagation increases N on all ancestors (DOWNWARD_BP)." ) {
 TEST_CASE( "Action selection returns the child variable with the highest N." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto algo = AlgoTree(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto algo = AlgoTree(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         auto root = fg->treeRoot();
-        auto B = Functions::uniformColumnWise(2, 2);
+        auto B = Ops::uniformColumnWise({2,2});
         auto c0 = API::Transition(root, B);
         c0->setAction(0);
         auto c1 = API::Transition(root, B);
@@ -570,7 +557,7 @@ TEST_CASE( "Action selection returns the child variable with the highest N." ) {
 TEST_CASE( "Before any expansion unexploredActions on the tree's root returns all actions." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto algo = AlgoTree(3, MatrixXd::Constant(2, 1, 0.5), MatrixXd::Constant(2, 1, 0.5));
+        auto algo = AlgoTree(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         auto act = algo.unexploredActions(fg->treeRoot());
 
         REQUIRE( act.size() == 3 );
@@ -584,7 +571,7 @@ TEST_CASE( "Before any expansion unexploredActions on the tree's root returns al
 TEST_CASE( "First node selection returns the tree's root." ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        auto conf = AlgoTreeConfig(3, Functions::uniformColumnWise(2, 1), Functions::uniformColumnWise(2, 1));
+        auto conf = AlgoTreeConfig(3, Ops::uniformColumnWise({2}), Ops::uniformColumnWise({2}));
         conf.back_propagation_type = DOWNWARD_BP;
         auto algo = AlgoTree(conf);
 
@@ -619,20 +606,20 @@ TEST_CASE( "CompareQuality correctly compares node's quality of first node in th
 // TODO what if p(X = x) = 0 for some x ?
 TEST_CASE( "KL of identical distributions is zero." ) {
     UnitTests::run([](){
-        auto d1 = Categorical::create(Functions::uniformColumnWise(5, 1));
-        auto d2 = Categorical::create(Functions::uniformColumnWise(5, 1));
+        auto d1 = Categorical::create(Ops::uniformColumnWise({5}));
+        auto d2 = Categorical::create(Ops::uniformColumnWise({5}));
 
-        REQUIRE(Functions::KL(d1.get(), d2.get()) == 0 );
+        REQUIRE(Ops::KL(d1.get(), d2.get()) == 0 );
     });
 }
 
 TEST_CASE( "KL between non-categorical distributions is not supported." ) {
     UnitTests::run([](){
-        auto d1 = Transition::create(Functions::uniformColumnWise(5, 4));
-        auto d2 = Transition::create(Functions::uniformColumnWise(5, 4));
+        auto d1 = Transition::create(Ops::uniformColumnWise({5,4}));
+        auto d2 = Transition::create(Ops::uniformColumnWise({5,4}));
 
         try {
-            Functions::KL(d1.get(), d2.get());
+            Ops::KL(d1.get(), d2.get());
             REQUIRE( false );
         } catch (const std::runtime_error& error) {
             REQUIRE( true );
@@ -643,33 +630,14 @@ TEST_CASE( "KL between non-categorical distributions is not supported." ) {
 TEST_CASE( "KL of non identical distributions is not zero." ) {
     UnitTests::run([](){
         // First distribution
-        auto d1 = Categorical::create(Functions::uniformColumnWise(2, 1));
+        auto d1 = Categorical::create(Ops::uniformColumnWise({2}));
         // Second distribution
-        MatrixXd param2 = MatrixXd(2, 1);
-        param2 << 0.1,
-                0.9;
+        Tensor param2 = torch::tensor({0.1,0.9});
         auto d2 = Categorical::create(param2);
         // True KL divergence
         double kl_result = 0.5 * (std::log(0.5) - std::log(0.1)) + 0.5 * (std::log(0.5) - std::log(0.9));
 
-        REQUIRE(Functions::KL(d1.get(), d2.get()) == kl_result );
+        REQUIRE(Ops::KL(d1.get(), d2.get()) == kl_result );
     });
 }
 
-TEST_CASE( "EFE is computed correctly." ) {
-    UnitTests::run([](){
-        // Distribution over hidden states
-        MatrixXd paramS(2,1);
-        paramS << 0.2, 0.8;
-        auto s = API::Categorical(paramS);
-        // Distribution over observations
-        MatrixXd paramO(3,2);
-        paramO << 0.2, 0.7,
-            0.8, 0.3;
-        auto o = API::Transition(s, paramO);
-        // True EFE
-        double efe_result = 0.5 * (std::log(0.5) - std::log(0.1)) + 0.5 * (std::log(0.5) - std::log(0.9));
-
-        REQUIRE(AlgoTree::efe(s, o) == efe_result );
-    });
-}

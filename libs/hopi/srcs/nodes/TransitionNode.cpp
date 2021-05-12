@@ -3,13 +3,13 @@
 //
 
 #include "TransitionNode.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include "nodes/VarNode.h"
 #include "distributions/Dirichlet.h"
 
 using namespace hopi::nodes;
 using namespace hopi::distributions;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::nodes {
 
@@ -42,7 +42,7 @@ namespace hopi::nodes {
         return to;
     }
 
-    std::vector<MatrixXd> TransitionNode::message(VarNode *t) {
+    Tensor TransitionNode::message(VarNode *t) {
         if (t == to) {
             return toMessage();
         } else if (t == from) {
@@ -54,22 +54,22 @@ namespace hopi::nodes {
         }
     }
 
-    std::vector<MatrixXd> TransitionNode::toMessage() {
-        MatrixXd A_bar = getLogA();
-        MatrixXd hat = from->posterior()->params()[0];
+    Tensor TransitionNode::toMessage() {
+        Tensor A_bar = getLogA();
+        Tensor hat = from->posterior()->params()[0];
         return {A_bar * hat};
     }
 
-    std::vector<MatrixXd> TransitionNode::fromMessage() {
-        MatrixXd A_bar = getLogA();
-        MatrixXd hat = to->posterior()->params()[0];
-        return {A_bar.transpose() * hat};
+    Tensor TransitionNode::fromMessage() {
+        Tensor A_bar = getLogA();
+        Tensor hat = to->posterior()->params()[0];
+        return matmul(A_bar.permute({1,0}), hat);
     }
 
-    std::vector<MatrixXd> TransitionNode::aMessage() {
-        MatrixXd o =   to->posterior()->params()[0];
-        MatrixXd s = from->posterior()->params()[0];
-        return {o * s.transpose()};
+    Tensor TransitionNode::aMessage() {
+        Tensor o =   to->posterior()->params()[0];
+        Tensor s = from->posterior()->params()[0];
+        return matmul(o, s.permute({1,0}));
     }
 
     double TransitionNode::vfe() {
@@ -81,10 +81,10 @@ namespace hopi::nodes {
         auto to_p   = to->posterior()->params()[0];
         auto from_p = from->posterior()->params()[0];
         auto lp     = getLogA();
-        return VFE - (to_p.transpose() * lp * from_p)(0, 0);
+        return VFE - matmul(matmul(to_p.permute({1,0}), lp), from_p).item<double>();
     }
 
-    MatrixXd TransitionNode::getLogA() {
+    Tensor TransitionNode::getLogA() {
         if (A) {
             return Dirichlet::expectedLog(A->posterior()->params())[0];
         } else {

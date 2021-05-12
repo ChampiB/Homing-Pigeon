@@ -5,7 +5,7 @@
 #ifndef HOMING_PIGEON_2_ENVIRONMENT_H
 #define HOMING_PIGEON_2_ENVIRONMENT_H
 
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 namespace hopi::environments {
 
@@ -16,9 +16,9 @@ namespace hopi::environments {
         [[nodiscard]] virtual int actions() const = 0;
         [[nodiscard]] virtual int states() const = 0;
         [[nodiscard]] virtual int observations() const = 0;
-        virtual Eigen::MatrixXd A() = 0;
-        virtual std::vector<Eigen::MatrixXd> B() = 0;
-        virtual Eigen::MatrixXd D() = 0;
+        virtual torch::Tensor A() = 0;
+        virtual torch::Tensor B() = 0;
+        virtual torch::Tensor D() = 0;
     };
 
 }

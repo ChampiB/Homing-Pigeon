@@ -2,12 +2,12 @@
 #include "environments/MazeEnv.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 #include "graphs/FactorGraph.h"
 #include "algorithms/AlgoTree.h"
 #include "algorithms/AlgoVMP.h"
 #include "api/API.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include <iostream>
 
 using namespace hopi::environments;
@@ -17,7 +17,7 @@ using namespace hopi::graphs;
 using namespace hopi::math;
 using namespace hopi::api;
 using namespace hopi::algorithms;
-using namespace Eigen;
+using namespace torch;
 
 int main()
 {
@@ -42,26 +42,16 @@ int main()
     /**
      ** Create the model's parameters.
      **/
-    std::vector<MatrixXd> theta_Us(nb_cycles);
-    for (int i = 0; i < nb_cycles; ++i) {
-        theta_Us[i] = MatrixXd::Ones(env->actions(), 1);
-    }
-    MatrixXd theta_A = MatrixXd::Ones(env->observations(), env->states());
-    MatrixXd theta_D = MatrixXd::Ones(env->states(), 1);
-    std::vector<MatrixXd> theta_B(env->actions());
-    for (int i = 0; i < env->actions(); ++i) {
-        theta_B[i] = MatrixXd::Ones(env->states(), env->states());
-    }
+    Tensor theta_Us = torch::ones({nb_cycles, env->actions(), 1});
+    Tensor theta_A  = torch::ones({env->observations(), env->states()});
+    Tensor theta_D  = torch::ones({env->states(), 1});
+    Tensor theta_B  = torch::ones({env->actions(), env->states(), env->states()});
 
     /**
      ** Create the model's prior preferences.
      **/
-    MatrixXd D_tilde = MatrixXd::Constant(env->states(),  1, 1.0 / env->states());
-    MatrixXd E_tilde(env->observations(),  1);
-    for (int i = 0; i < env->observations(); ++i) {
-        E_tilde(i, 0) = (env->observations() - i);
-    }
-    E_tilde = Functions::softmax(E_tilde);
+    Tensor D_tilde = Ops::uniformColumnWise({env->states(),1});
+    Tensor E_tilde = torch::softmax(env->observations() - torch::arange(0, env->observations()), 0);
 
     /**
      ** Run the simulation.
@@ -107,7 +97,7 @@ int main()
             }
             int a = algoTree->actionSelection(fg->treeRoot());
             int o = env->execute(a);
-            fg->integrate(Us[j], a, Functions::oneHot(env->observations(), o), A, B);
+            fg->integrate(Us[j], a, Ops::oneHot(env->observations(), o), A, B);
             env->print();
         }
 
@@ -126,14 +116,10 @@ int main()
     }
 
     // Display the matrices of parameters.
-    for (int i = 0; i < theta_Us.size(); ++i) {
-        std::cout << "U[" << i << "]: " << theta_Us[i] << std::endl;
-    }
-    std::cout << "A: " << theta_A << std::endl;
-    for (int i = 0; i < theta_B.size(); ++i) {
-        std::cout << "B[" << i << "]: " << theta_B[i] << std::endl;
-    }
-    std::cout << "D: " << theta_D << std::endl;
+    std::cout << "Us: " << theta_Us << std::endl;
+    std::cout << "A: "  << theta_A  << std::endl;
+    std::cout << "B: "  << theta_B  << std::endl;
+    std::cout << "D: "  << theta_D  << std::endl;
 
     return EXIT_SUCCESS;
 }

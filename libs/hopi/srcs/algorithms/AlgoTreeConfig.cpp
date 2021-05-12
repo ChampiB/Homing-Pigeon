@@ -4,27 +4,27 @@
 
 #include "AlgoTreeConfig.h"
 
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::algorithms {
 
-    AlgoTreeConfig::AlgoTreeConfig(int n_acts, MatrixXd &sp, MatrixXd &op) : AlgoTreeConfig(n_acts) {
-        state_pref = sp.replicate(1, 1);
-        obs_pref   = op.replicate(1, 1);
+    AlgoTreeConfig::AlgoTreeConfig(int n_acts, const Tensor &sp, const Tensor &op) : AlgoTreeConfig(n_acts) {
+        state_pref = sp.detach().clone();
+        obs_pref   = op.detach().clone();
     }
 
-    AlgoTreeConfig::AlgoTreeConfig(int n_acts, MatrixXd &&sp, MatrixXd &&op) : AlgoTreeConfig(n_acts) {
+    AlgoTreeConfig::AlgoTreeConfig(int n_acts, const Tensor &&sp, const Tensor &&op) : AlgoTreeConfig(n_acts) {
         state_pref = sp;
         obs_pref   = op;
     }
 
-    AlgoTreeConfig::AlgoTreeConfig(int n_acts, MatrixXd &&sp, MatrixXd &op) : AlgoTreeConfig(n_acts) {
+    AlgoTreeConfig::AlgoTreeConfig(int n_acts, const Tensor &&sp, const Tensor &op) : AlgoTreeConfig(n_acts) {
         state_pref = sp;
-        obs_pref   = op.replicate(1, 1);
+        obs_pref   = op.detach().clone();
     }
 
-    AlgoTreeConfig::AlgoTreeConfig(int n_acts, MatrixXd &sp, MatrixXd &&op) : AlgoTreeConfig(n_acts) {
-        state_pref = sp.replicate(1, 1);
+    AlgoTreeConfig::AlgoTreeConfig(int n_acts, const Tensor &sp, const Tensor &&op) : AlgoTreeConfig(n_acts) {
+        state_pref = sp.detach().clone();
         obs_pref   = op;
     }
 

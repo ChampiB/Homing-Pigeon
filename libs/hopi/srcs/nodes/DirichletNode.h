@@ -23,12 +23,12 @@ namespace hopi::nodes {
         explicit DirichletNode(VarNode *node);
         VarNode *parent(int index) override;
         VarNode *child() override;
-        std::vector<Eigen::MatrixXd> message(VarNode *to) override;
+        torch::Tensor message(VarNode *to) override;
         double vfe() override;
-        static double energy(Eigen::MatrixXd prior, Eigen::MatrixXd post);
+        static double energy(const torch::Tensor &prior, const torch::Tensor &post);
 
     private:
-        std::vector<Eigen::MatrixXd> childMessage();
+        torch::Tensor childMessage();
 
     private:
         VarNode *childNode;

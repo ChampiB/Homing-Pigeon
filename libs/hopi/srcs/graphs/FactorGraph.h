@@ -7,7 +7,7 @@
 
 #include <memory>
 #include <vector>
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include "nodes/VarNodeType.h"
 #include "nodes/VarNodeAttr.h"
 
@@ -29,19 +29,19 @@ namespace hopi::graphs {
         void integrate(
                 nodes::VarNode *U,
                 int action,
-                const Eigen::MatrixXd& observation,
+                const torch::Tensor& observation,
                 nodes::VarNode *A,
                 nodes::VarNode *B
         );
         void integrate(
                 int action,
-                const Eigen::MatrixXd& observation,
-                const Eigen::MatrixXd& A,
-                const std::vector<Eigen::MatrixXd>& B
+                const torch::Tensor& observation,
+                const torch::Tensor& A,
+                const torch::Tensor& B
         );
         void integrate(
                 int action,
-                const Eigen::MatrixXd& observation,
+                const torch::Tensor& observation,
                 nodes::VarNode *A,
                 nodes::VarNode *B
         );
@@ -72,7 +72,7 @@ namespace hopi::graphs {
         template<class T1, class T2>
         void integrate(
                 nodes::VarNode *a,
-                const Eigen::MatrixXd& observation,
+                const torch::Tensor& observation,
                 T1 A, T2 B
         );
 

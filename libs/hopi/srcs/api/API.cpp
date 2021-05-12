@@ -13,25 +13,24 @@
 #include "distributions/ActiveTransition.h"
 #include "distributions/Dirichlet.h"
 #include "nodes/DirichletNode.h"
-#include "math/Functions.h"
-#include <memory>
+#include "math/Ops.h"
 
 using namespace hopi::nodes;
 using namespace hopi::graphs;
 using namespace hopi::distributions;
 using namespace hopi::math;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::api {
 
-    RV *API::Categorical(const MatrixXd &param) {
+    RV *API::Categorical(const Tensor &param) {
         auto fg = FactorGraph::current();
         VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
         FactorNode *factor = fg->addFactor(CategoricalNode::create(var));
 
         var->setParent(factor);
         var->setPrior(Categorical::create(param));
-        var->setPosterior(Categorical::create(MatrixXd::Constant(param.rows(), 1, 1.0 / (double)param.rows())));
+        var->setPosterior(Categorical::create(Ops::uniformColumnWise({param.size(0)})));
         return var;
     }
 
@@ -41,21 +40,21 @@ namespace hopi::api {
         FactorNode *factor = fg->addFactor(CategoricalNode::create(var, param));
 
         var->setParent(factor);
-        auto dim = param->prior()->params()[0].rows();
-        var->setPosterior(Categorical::create(MatrixXd::Constant(dim, 1, 1.0 / (double)dim)));
+        auto dim = param->prior()->params().size(0);
+        var->setPosterior(Categorical::create(Ops::uniformColumnWise({dim})));
 
         param->addChild(factor);
         return var;
     }
 
-    RV *API::Transition(RV *s, const MatrixXd &param) {
+    RV *API::Transition(RV *s, const Tensor &param) {
         auto fg = FactorGraph::current();
         VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
         FactorNode *factor = fg->addFactor(TransitionNode::create(s, var));
 
         var->setParent(factor);
         var->setPrior(Transition::create(param));
-        var->setPosterior(Categorical::create(Functions::uniformColumnWise((int)param.rows(), 1)));
+        var->setPosterior(Categorical::create(Ops::uniformColumnWise({param.size(0), 1})));
 
         s->addChild(factor);
         return var;
@@ -67,22 +66,22 @@ namespace hopi::api {
         FactorNode *factor = fg->addFactor(TransitionNode::create(s, var, param));
 
         var->setParent(factor);
-        auto dim = param->prior()->params()[0].rows();
-        var->setPosterior(Categorical::create(MatrixXd::Constant(dim, 1, 1.0 / (double)dim)));
+        auto dim = param->prior()->params().size(0);
+        var->setPosterior(Categorical::create(Ops::uniformColumnWise({dim, 1})));
 
         s->addChild(factor);
         param->addChild(factor);
         return var;
     }
 
-    RV *API::ActiveTransition(RV *s, RV *a, const std::vector<MatrixXd> &param) {
+    RV *API::ActiveTransition(RV *s, RV *a, const Tensor &param) {
         auto fg = FactorGraph::current();
         VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
         FactorNode *factor = fg->addFactor(ActiveTransitionNode::create(s, a, var));
 
         var->setParent(factor);
         var->setPrior(ActiveTransition::create(param));
-        var->setPosterior(Categorical::create(MatrixXd::Constant(param[0].rows(), 1, 1.0 / (double)param[0].rows())));
+        var->setPosterior(Categorical::create(Ops::uniformColumnWise({param[0].size(0), 1})));
 
         s->addChild(factor);
         a->addChild(factor);
@@ -95,8 +94,8 @@ namespace hopi::api {
         FactorNode *factor = fg->addFactor(ActiveTransitionNode::create(s, a, var, param));
 
         var->setParent(factor);
-        auto dim = param->prior()->params()[0].rows();
-        var->setPosterior(Categorical::create(MatrixXd::Constant(dim, 1, 1.0 / (double)dim)));
+        auto dim = param->prior()->params().size(0);
+        var->setPosterior(Categorical::create(Ops::uniformColumnWise({dim, 1})));
 
         s->addChild(factor);
         a->addChild(factor);
@@ -104,23 +103,14 @@ namespace hopi::api {
         return var;
     }
 
-    RV *API::Dirichlet(const MatrixXd &param) {
-        std::vector<MatrixXd> p = { param };
-        return Dirichlet(p);
-    }
-
-    RV *API::Dirichlet(const std::vector<MatrixXd> &param) {
+    RV *API::Dirichlet(const Tensor &param) {
         auto fg = FactorGraph::current();
         VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
         FactorNode *factor = fg->addFactor(DirichletNode::create(var));
-        std::vector<MatrixXd> param_copy;
 
-        for (const auto & i : param) {
-            param_copy.push_back(i);
-        }
         var->setParent(factor);
         var->setPrior(Dirichlet::create(param));
-        var->setPosterior(Dirichlet::create(param_copy));
+        var->setPosterior(Dirichlet::create(param));
         return var;
     }
 

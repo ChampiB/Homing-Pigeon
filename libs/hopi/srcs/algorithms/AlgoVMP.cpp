@@ -3,7 +3,6 @@
 //
 
 #include "AlgoVMP.h"
-#include <Eigen/Dense>
 #include <distributions/Categorical.h>
 #include "graphs/FactorGraph.h"
 #include "nodes/FactorNode.h"
@@ -15,7 +14,7 @@ using namespace hopi::graphs;
 using namespace hopi::iterators;
 using namespace hopi::distributions;
 using namespace hopi::nodes;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::algorithms {
 
@@ -48,18 +47,13 @@ namespace hopi::algorithms {
     }
 
     void AlgoVMP::inference(VarNode *var) {
-        std::vector<MatrixXd> post_param;
+        Tensor post_param;
         AdjacentFactorsIter factorIt(var);
         while (*factorIt != nullptr) {
-            if (post_param.empty()) {
-                // posterior parameters = message
+            if (post_param.numel() == 0) {
                 post_param = (*factorIt)->message(var);
             } else {
-                // posterior parameters += message
-                auto msg = (*factorIt)->message(var);
-                for (int i = 0; i < post_param.size(); ++i) {
-                    post_param[i] = post_param[i] + msg[i];
-                }
+                post_param += (*factorIt)->message(var);
             }
             ++factorIt;
         }

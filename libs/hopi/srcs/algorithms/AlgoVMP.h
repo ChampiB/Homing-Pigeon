@@ -7,7 +7,6 @@
 
 #include <memory>
 #include <vector>
-#include <Eigen/Dense>
 
 namespace hopi::nodes {
     class VarNode;

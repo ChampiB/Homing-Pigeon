@@ -4,28 +4,27 @@
 
 #include "Categorical.h"
 #include "nodes/VarNode.h"
-#include "math/Functions.h"
-#include <Eigen/Dense>
+#include "math/Ops.h"
 
 using namespace hopi::nodes;
 using namespace hopi::math;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::distributions {
 
-    std::unique_ptr<Categorical> Categorical::create(const Eigen::MatrixXd &param) {
+    std::unique_ptr<Categorical> Categorical::create(const Tensor &param) {
         return std::make_unique<Categorical>(param);
     }
 
-    std::unique_ptr<Categorical> Categorical::create(const Eigen::MatrixXd &&param) {
+    std::unique_ptr<Categorical> Categorical::create(const Tensor &&param) {
         return std::make_unique<Categorical>(param);
     }
 
-    Categorical::Categorical(const Eigen::MatrixXd &p) {
+    Categorical::Categorical(const Tensor &p) {
         param = p;
     }
 
-    Categorical::Categorical(const Eigen::MatrixXd &&p) {
+    Categorical::Categorical(const Tensor &&p) {
         param = p;
     }
 
@@ -33,42 +32,30 @@ namespace hopi::distributions {
         return DistributionType::CATEGORICAL;
     }
 
-    int Categorical::cardinality() const {
-        return (int)param.size();
+    Tensor Categorical::p(int id) const{
+        return param[id];
     }
 
-    double Categorical::p(int id) const{
-        return param(id);
+    Tensor Categorical::logParams() const {
+        return params().log();
     }
 
-    std::vector<MatrixXd> Categorical::logParams() const {
-        MatrixXd copy = param;
-        return {copy.array().log()};
+    Tensor Categorical::params() const {
+        return param.detach().clone();
     }
 
-    std::vector<MatrixXd> Categorical::params() const {
-        MatrixXd copy = param;
-        return {copy};
-    }
-
-    void Categorical::updateParams(std::vector<Eigen::MatrixXd> &p) {
-        if (p.size() != 1) {
+    void Categorical::updateParams(const Tensor &p) {
+        if (p.numel() != 1) {
             throw std::runtime_error("Categorical::updateParams argument size must be equal to one.");
         }
-        param = Functions::softmax(p[0]);
+        param = torch::softmax(p, 0);
     }
 
     double Categorical::entropy() {
-        double e = 0;
-        auto p   = params()[0];
-        auto lp  = logParams()[0];
+        Tensor p = params();
+        Tensor indexes = torch::where(p != 0, true, false);
 
-        for (int i = 0; i < p.size(); ++i) {
-            if (p(i,0) != 0) {
-                e -= p(i,0) * lp(i,0);
-            }
-        }
-        return e;
+        return -1 * (p * logParams()).index({indexes}).sum().item<double>();
     }
 
 }

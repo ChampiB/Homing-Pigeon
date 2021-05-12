@@ -7,7 +7,7 @@
 
 #include <memory>
 #include <random>
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include <map>
 #include "AlgoTreeConfig.h"
 
@@ -31,21 +31,21 @@ namespace hopi::algorithms {
     class AlgoTree {
     public:
         // Factories
-        static std::unique_ptr<AlgoTree> create(int n_acts, Eigen::MatrixXd &&state_pref, Eigen::MatrixXd &&obs_pref);
-        static std::unique_ptr<AlgoTree> create(int n_acts, Eigen::MatrixXd &state_pref, Eigen::MatrixXd &obs_pref);
+        static std::unique_ptr<AlgoTree> create(int n_acts, const torch::Tensor &&state_pref, const torch::Tensor &&obs_pref);
+        static std::unique_ptr<AlgoTree> create(int n_acts, const torch::Tensor &state_pref,  const torch::Tensor &obs_pref);
         static std::unique_ptr<AlgoTree> create(AlgoTreeConfig &config);
 
     public:
         // Constructors
-        explicit AlgoTree(int n_acts, Eigen::MatrixXd &&state_pref, Eigen::MatrixXd &&obs_pref);
-        explicit AlgoTree(int n_acts, Eigen::MatrixXd &state_pref, Eigen::MatrixXd &obs_pref);
+        explicit AlgoTree(int n_acts, const torch::Tensor &&state_pref, const torch::Tensor &&obs_pref);
+        explicit AlgoTree(int n_acts, const torch::Tensor &state_pref,  const torch::Tensor &obs_pref);
         explicit AlgoTree(AlgoTreeConfig &config);
         explicit AlgoTree(AlgoTreeConfig &&config);
 
     public:
         // Core functions
         nodes::VarNode *nodeSelection(const std::shared_ptr<graphs::FactorGraph>& fg);
-        void expansion(nodes::VarNode *p, const Eigen::MatrixXd& A, const std::vector<Eigen::MatrixXd>& B);
+        void expansion(nodes::VarNode *p, const torch::Tensor &A, const torch::Tensor &B);
         void expansion(nodes::VarNode *p, nodes::VarNode *A, nodes::VarNode *B);
         void evaluation();
         void backpropagation(nodes::VarNode *node, nodes::VarNode *root) const;
@@ -53,10 +53,10 @@ namespace hopi::algorithms {
 
     public:
         // Auxiliary functions
-        std::vector<int> unexploredActions(nodes::VarNode *node) const;
-        [[nodiscard]] std::vector<nodes::VarNode*> lastExpandedNodes() const;
-        static bool CompareQuality(VarNodePair a1, VarNodePair a2);
-        int distanceFromRoot(nodes::VarNode *n);
+        std::vector<int> unexploredActions(nodes::VarNode *node) const; // TODO make private
+        [[nodiscard]] std::vector<nodes::VarNode*> lastExpandedNodes() const; // TODO make private
+        static bool CompareQuality(VarNodePair a1, VarNodePair a2); // TODO make private
+        int distanceFromRoot(nodes::VarNode *n); // TODO make private
 
     private:
         std::default_random_engine gen; // Random number generator
@@ -76,7 +76,7 @@ namespace hopi::algorithms {
 
         // Different kind of evaluation
         static double doubleKL(nodes::VarNode *s, nodes::VarNode *o);
-        static double efe(nodes::VarNode *s, nodes::VarNode *o);
+        static double efe(nodes::VarNode *s, nodes::VarNode *o); // TODO test
 
         // Different kind of node selection
         nodes::VarNode *nodeSelectionMin();

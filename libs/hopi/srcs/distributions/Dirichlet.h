@@ -7,6 +7,7 @@
 
 #include "Distribution.h"
 #include <memory>
+#include <torch/torch.h>
 
 namespace hopi::nodes {
     class VarNode;
@@ -16,21 +17,21 @@ namespace hopi::distributions {
 
     class Dirichlet : public Distribution {
     public:
-        static std::unique_ptr<Dirichlet> create(const std::vector<Eigen::MatrixXd> &p);
+        static std::unique_ptr<Dirichlet> create(const torch::Tensor &p);
 
     public:
-        explicit Dirichlet(const std::vector<Eigen::MatrixXd> &param);
+        explicit Dirichlet(const torch::Tensor &param);
         [[nodiscard]] DistributionType type() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
-        void updateParams(std::vector<Eigen::MatrixXd> &param) override;
+        [[nodiscard]] torch::Tensor logParams() const override;
+        [[nodiscard]] torch::Tensor params() const override;
+        void updateParams(const torch::Tensor &param) override;
         double entropy() override;
-        static double entropy(Eigen::MatrixXd p);
-        static std::vector<Eigen::MatrixXd> expectedLog(std::vector<Eigen::MatrixXd> p);
+        static double entropy(const torch::Tensor &&p);
+        static torch::Tensor expectedLog(const torch::Tensor &p);
         void increaseParam(int matrixId, int rowId, int colId);
 
     private:
-        std::vector<Eigen::MatrixXd> param;
+        torch::Tensor param;
     };
 
 }

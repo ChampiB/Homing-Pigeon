@@ -4,19 +4,20 @@
 
 #include "Dirichlet.h"
 #include "nodes/VarNode.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 
 using namespace hopi::nodes;
 using namespace hopi::math;
-using namespace Eigen;
+using namespace torch;
+using namespace torch::indexing;
 
 namespace hopi::distributions {
 
-    std::unique_ptr<Dirichlet> Dirichlet::create(const std::vector<Eigen::MatrixXd> &p) {
+    std::unique_ptr<Dirichlet> Dirichlet::create(const Tensor &p) {
         return std::make_unique<Dirichlet>(p);
     }
 
-    Dirichlet::Dirichlet(const std::vector<Eigen::MatrixXd> &p) {
+    Dirichlet::Dirichlet(const Tensor &p) {
         param = p;
     }
 
@@ -24,63 +25,54 @@ namespace hopi::distributions {
         return DistributionType::DIRICHLET;
     }
 
-    [[nodiscard]] std::vector<Eigen::MatrixXd> Dirichlet::logParams() const {
-        std::vector<Eigen::MatrixXd> res;
-
-        for (const auto & i : param) {
-            res.emplace_back(i.array().log());
-        }
-        return res;
+    [[nodiscard]] Tensor Dirichlet::logParams() const {
+        return params().log();
     }
 
-    [[nodiscard]] std::vector<Eigen::MatrixXd> Dirichlet::params() const {
-        std::vector<Eigen::MatrixXd> res;
-
-        for (const auto & i : param) {
-            res.emplace_back(i);
-        }
-        return res;
+    [[nodiscard]] Tensor Dirichlet::params() const {
+        return param.detach().clone();
     }
 
-    void Dirichlet::updateParams(std::vector<Eigen::MatrixXd> &p) {
-        for (int i = 0; i < param.size(); ++i) {
-            param[i] = p[i];
-        }
+    void Dirichlet::updateParams(const Tensor &p) {
+        param = p;
     }
 
-    double Dirichlet::entropy(MatrixXd p) {
+    double Dirichlet::entropy(const Tensor &&p) {
+        if (p.dim() != 1) {
+            throw std::runtime_error("Unsupported call to Dirichlet::entropy (input) tensor's dimension must be one.");
+        }
         double e = 0;
-        auto s = p.sum();
-        auto acc = 0;
+        auto s = p.sum().item<double>();
+        auto acc = 0.0;
 
-        for (int k = 0; k < p.rows(); ++k) {
-            acc += (p(k) - 1) * Functions::digamma(p(k));
+        for (int k = 0; k < p.size(0); ++k) {
+            acc += (p[k].item<double>() - 1) * Ops::digamma(p[k].item<double>());
         }
-        e += Functions::log_beta(p) \
-          +  (s - p.rows()) * Functions::digamma(s) \
+        e += Ops::log_beta(p) \
+          +  (s - (double) p.size(0)) * Ops::digamma(s) \
           -  acc;
         return e;
     }
 
     double Dirichlet::entropy() {
-        double e = 0;
+        Tensor e = torch::zeros({1});
 
-        for (auto & i : param) {
-            for (int j = 0; j < param[0].cols(); ++j) {
-                e += entropy(i.block(0, j, param[0].rows(), 1));
+        for (int i = 0; i < param.size(0); ++i) {
+            for (int j = 0; j < param.size(2); ++j) {
+                e += entropy(param.index({i, None, j}));
             }
         }
-        return e;
+        return e.item<double>();
     }
 
-    std::vector<MatrixXd> Dirichlet::expectedLog(std::vector<MatrixXd> p) {
-        std::vector<MatrixXd> m = p;
+    Tensor Dirichlet::expectedLog(const Tensor &p) {
+        Tensor m = p;
 
-        for (int i = 0; i < p.size(); ++i) {
-            for (int k = 0; k < p[i].cols(); ++k) {
-                MatrixXd col = m[i].col(k);
-                for (int j = 0; j < p[i].rows(); ++j) {
-                    m[i](j,k) = Functions::digamma(m[i](j, k)) - Functions::digamma(col.sum());
+        for (int i = 0; i < p.size(0); ++i) {
+            for (int k = 0; k < p.size(2); ++k) {
+                auto sum = m.index({i, None, k}).sum().item<double>();
+                for (int j = 0; j < p.size(1); ++j) {
+                    m[i][j][k] = Ops::digamma(m[i][j][k].item<double>()) - Ops::digamma(sum);
                 }
             }
         }
@@ -88,7 +80,7 @@ namespace hopi::distributions {
     }
 
     void Dirichlet::increaseParam(int matrixId, int rowId, int colId) {
-        ++param[matrixId](rowId, colId);
+        param[matrixId][rowId][colId] += 1;
     }
 
 }

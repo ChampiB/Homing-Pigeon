@@ -4,13 +4,12 @@
 
 #include "CategoricalNode.h"
 #include "VarNode.h"
-#include "math/Functions.h"
-#include "distributions/Categorical.h"
+#include "math/Ops.h"
 #include "distributions/Dirichlet.h"
 
 using namespace hopi::distributions;
 using namespace hopi::math;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::nodes {
 
@@ -40,7 +39,7 @@ namespace hopi::nodes {
         return childNode;
     }
 
-    std::vector<MatrixXd> CategoricalNode::message(VarNode *t) {
+    Tensor CategoricalNode::message(VarNode *t) {
         if (t == childNode) {
             return childMessage();
         } else if (D && t == D) {
@@ -50,11 +49,11 @@ namespace hopi::nodes {
         }
     }
 
-    std::vector<MatrixXd> CategoricalNode::childMessage() {
-        return {getLogD()};
+    Tensor CategoricalNode::childMessage() {
+        return getLogD();
     }
 
-    std::vector<MatrixXd> CategoricalNode::dMessage() {
+    Tensor CategoricalNode::dMessage() {
         return child()->posterior()->params();
     }
 
@@ -66,10 +65,10 @@ namespace hopi::nodes {
         }
         auto p  = child()->posterior()->params()[0];
         auto lp = getLogD();
-        return VFE - (p.transpose() * lp)(0, 0);
+        return VFE - matmul(p.permute({1,0}), lp).item<double>();
     }
 
-    MatrixXd CategoricalNode::getLogD() {
+    Tensor CategoricalNode::getLogD() {
         if (D) {
             return Dirichlet::expectedLog(D->posterior()->params())[0];
         } else {

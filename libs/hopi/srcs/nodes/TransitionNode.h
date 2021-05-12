@@ -7,7 +7,7 @@
 
 #include "FactorNode.h"
 #include "api/Aliases.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include <memory>
 
 namespace hopi::nodes {
@@ -26,14 +26,14 @@ namespace hopi::nodes {
         TransitionNode(VarNode *from, VarNode *to);
         VarNode *parent(int index) override;
         VarNode *child() override;
-        std::vector<Eigen::MatrixXd> message(VarNode *to) override;
+        torch::Tensor message(VarNode *to) override;
         double vfe() override;
 
     private:
-        std::vector<Eigen::MatrixXd> toMessage();
-        std::vector<Eigen::MatrixXd> fromMessage();
-        std::vector<Eigen::MatrixXd> aMessage();
-        Eigen::MatrixXd getLogA();
+        torch::Tensor toMessage();
+        torch::Tensor fromMessage();
+        torch::Tensor aMessage();
+        torch::Tensor getLogA();
 
     private:
         VarNode *from;

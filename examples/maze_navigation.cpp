@@ -1,15 +1,12 @@
 #include "distributions/Transition.h"
-#include "distributions/ActiveTransition.h"
-#include "environments/Environment.h"
 #include "environments/MazeEnv.h"
 #include "nodes/VarNode.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 #include "api/API.h"
-#include "distributions/Categorical.h"
 #include "graphs/FactorGraph.h"
 #include "algorithms/AlgoTree.h"
 #include "algorithms/AlgoVMP.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include <iostream>
 
 using namespace hopi::environments;
@@ -19,7 +16,7 @@ using namespace hopi::math;
 using namespace hopi::graphs;
 using namespace hopi::algorithms;
 using namespace hopi::api;
-using namespace Eigen;
+using namespace torch;
 
 int main()
 {
@@ -31,10 +28,10 @@ int main()
     /**
      ** Create the model's parameters.
      **/
-    MatrixXd U0 = MatrixXd::Constant(env->actions(), 1, 1.0 / env->actions());
-    MatrixXd A  = env->A();
-    std::vector<MatrixXd> B = env->B();
-    MatrixXd D0 = env->D();
+    Tensor U0 = Ops::uniformColumnWise({env->actions(), 1});
+    Tensor A  = env->A();
+    Tensor B  = env->B();
+    Tensor D0 = env->D();
 
     /**
      ** Create the generative model.
@@ -55,12 +52,8 @@ int main()
     /**
      ** Create the model's prior preferences.
      **/
-    MatrixXd D_tilde = MatrixXd::Constant(env->states(),  1, 1.0 / env->states());
-    MatrixXd E_tilde(env->observations(),  1);
-    for (int i = 0; i < env->observations(); ++i) {
-        E_tilde(i, 0) = (env->observations() - i);
-    }
-    E_tilde = Functions::softmax(E_tilde);
+    Tensor D_tilde = Ops::uniformColumnWise({env->states(),  1});
+    Tensor E_tilde = torch::softmax(env->observations() - torch::arange(0,env->observations()), 0);
 
     /**
      ** Run the simulation.
@@ -78,7 +71,7 @@ int main()
         }
         int a = algoTree->actionSelection(fg->treeRoot());
         int o = env->execute(a);
-        fg->integrate(a, Functions::oneHot(env->observations(), o), A, B);
+        fg->integrate(a, Ops::oneHot(env->observations(), o), A, B);
         env->print();
     }
 

@@ -8,13 +8,15 @@
 #include "distributions/Categorical.h"
 #include "distributions/Distribution.h"
 #include "helpers/UnitTests.h"
-#include <Eigen/Dense>
+#include "math/Ops.h"
+#include <torch/torch.h>
 #include <iostream>
 
 using namespace hopi::distributions;
 using namespace hopi::nodes;
+using namespace hopi::math;
 using namespace tests;
-using namespace Eigen;
+using namespace torch;
 
 TEST_CASE( "VarNode's constructor correctly set the node's type" ) {
     UnitTests::run([](){
@@ -81,8 +83,7 @@ TEST_CASE( "VarNode's n getter/incrementer work properly" ) {
 
 TEST_CASE( "VarNode's prior getter/setter work properly" ) {
     UnitTests::run([](){
-        MatrixXd param(2,1);
-        auto d1 = Categorical::create(param);
+        auto d1 = Categorical::create(Ops::uniformColumnWise({2,1}));
         Distribution *res = d1.get();
         auto n1 = VarNode::create(VarNodeType::HIDDEN);
 
@@ -94,8 +95,7 @@ TEST_CASE( "VarNode's prior getter/setter work properly" ) {
 
 TEST_CASE( "VarNode's posterior getter/setter work properly" ) {
     UnitTests::run([](){
-        MatrixXd param(2,1);
-        auto d1 = Categorical::create(param);
+        auto d1 = Categorical::create(Ops::uniformColumnWise({2,1}));
         Distribution *res = d1.get();
         auto n1 = VarNode::create(VarNodeType::HIDDEN);
 
@@ -107,8 +107,7 @@ TEST_CASE( "VarNode's posterior getter/setter work properly" ) {
 
 TEST_CASE( "VarNode's biased getter/setter work properly" ) {
     UnitTests::run([](){
-        MatrixXd param(2,1);
-        auto d1 = Categorical::create(param);
+        auto d1 = Categorical::create(Ops::uniformColumnWise({2,1}));
         Distribution *res = d1.get();
         auto n1 = VarNode::create(VarNodeType::HIDDEN);
 

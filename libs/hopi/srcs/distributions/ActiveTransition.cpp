@@ -4,19 +4,19 @@
 
 #include "ActiveTransition.h"
 #include "nodes/VarNode.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 
 using namespace hopi::nodes;
 using namespace hopi::math;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::distributions {
 
-    std::unique_ptr<ActiveTransition> ActiveTransition::create(const std::vector<MatrixXd> &p) {
+    std::unique_ptr<ActiveTransition> ActiveTransition::create(const Tensor &p) {
         return std::make_unique<ActiveTransition>(p);
     }
 
-    ActiveTransition::ActiveTransition(const std::vector<MatrixXd> &p) {
+    ActiveTransition::ActiveTransition(const Tensor &p) {
         param = p;
     }
 
@@ -24,32 +24,19 @@ namespace hopi::distributions {
         return DistributionType::ACTIVE_TRANSITION;
     }
 
-    std::vector<MatrixXd> ActiveTransition::logParams() const {
-        std::vector<MatrixXd> res(param.size());
-
-        for (int i = 0; i < param.size(); ++i) {
-            res[i] = param[i];
-            res[i] = res[i].array().log();
-        }
-        return res;
+    Tensor ActiveTransition::logParams() const {
+        return params().log();
     }
 
-    std::vector<MatrixXd> ActiveTransition::params() const {
-        std::vector<MatrixXd> res(param.size());
-
-        for (int i = 0; i < param.size(); ++i) {
-            res[i] = param[i];
-        }
-        return res;
+    Tensor ActiveTransition::params() const {
+        return param.detach().clone();
     }
 
-    void ActiveTransition::updateParams(std::vector<Eigen::MatrixXd> &p) {
-        if (p.size() != param.size()) {
+    void ActiveTransition::updateParams(const Tensor &p) {
+        if (p.sizes() != param.sizes()) {
             throw std::runtime_error("ActiveTransition::updateParams argument size must match parameter size.");
         }
-        for (int i = 0; i < p.size(); ++i) {
-            param[i] = Functions::softmax(p[i]);
-        }
+        param = torch::softmax(p, 0);
     }
 
     double ActiveTransition::entropy() {

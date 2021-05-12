@@ -6,9 +6,8 @@
 #define HOMING_PIGEON_2_ACTIVETRANSITION_H
 
 #include "Distribution.h"
-#include <vector>
 #include <memory>
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 namespace hopi::nodes {
     class VarNode;
@@ -18,18 +17,18 @@ namespace hopi::distributions {
 
     class ActiveTransition : public Distribution {
     public:
-        static std::unique_ptr<ActiveTransition> create(const std::vector<Eigen::MatrixXd> &param);
+        static std::unique_ptr<ActiveTransition> create(const torch::Tensor &param);
 
     public:
-        explicit ActiveTransition(const std::vector<Eigen::MatrixXd> &param);
+        explicit ActiveTransition(const torch::Tensor &param);
         [[nodiscard]] DistributionType type() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
-        void updateParams(std::vector<Eigen::MatrixXd> &p) override;
+        [[nodiscard]] torch::Tensor logParams() const override;
+        [[nodiscard]] torch::Tensor params() const override;
+        void updateParams(const torch::Tensor &p) override;
         double entropy() override;
 
     private:
-        std::vector<Eigen::MatrixXd> param;
+        torch::Tensor param;
     };
 
 }

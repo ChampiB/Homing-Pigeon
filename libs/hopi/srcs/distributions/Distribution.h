@@ -6,7 +6,7 @@
 #define HOMING_PIGEON_2_DISTRIBUTION_H
 
 #include <vector>
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include "DistributionType.h"
 
 namespace hopi::distributions {
@@ -14,9 +14,9 @@ namespace hopi::distributions {
     class Distribution {
     public:
         [[nodiscard]] virtual DistributionType type() const = 0;
-        [[nodiscard]] virtual std::vector<Eigen::MatrixXd> logParams() const = 0;
-        [[nodiscard]] virtual std::vector<Eigen::MatrixXd> params() const = 0;
-        virtual void updateParams(std::vector<Eigen::MatrixXd> &param) = 0;
+        [[nodiscard]] virtual torch::Tensor logParams() const = 0;
+        [[nodiscard]] virtual torch::Tensor params() const = 0;
+        virtual void updateParams(const torch::Tensor &param) = 0;
         virtual double entropy() = 0;
     };
 

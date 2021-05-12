@@ -16,6 +16,7 @@ add_subdirectory(libs/hopi)
 
 # Examples of Homing Pigeon
 add_example(NAME maze_environment)
+add_example(NAME torch_tensors)
 add_example(NAME maze_navigation)
 add_example(NAME learning_maze_navigation)
 add_example(NAME factor_graph_visualisation)

@@ -7,7 +7,7 @@
 #include "distributions/Categorical.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 #include "api/API.h"
 #include "FactorGraph.h"
 #include "iterators/ObservedVarIter.h"
@@ -17,7 +17,7 @@ using namespace hopi::iterators;
 using namespace hopi::distributions;
 using namespace hopi::math;
 using namespace hopi::api;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::graphs {
 
@@ -58,13 +58,13 @@ namespace hopi::graphs {
     }
 
     int FactorGraph::nHiddenVar() const {
-        return std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
+        return (int) std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
             return (elem->type() == VarNodeType::HIDDEN);
         });
     }
 
     int FactorGraph::nObservedVar() const {
-        return std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
+        return (int) std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
             return (elem->type() == VarNodeType::OBSERVED);
         });
     }
@@ -74,11 +74,11 @@ namespace hopi::graphs {
     }
 
     int FactorGraph::nodes() const {
-        return _vars.size();
+        return (int) _vars.size();
     }
 
     int FactorGraph::factors() const {
-        return _factors.size();
+        return (int) _factors.size();
     }
 
     nodes::FactorNode *FactorGraph::factor(int index) {
@@ -92,7 +92,7 @@ namespace hopi::graphs {
         int obs;
 
         while (getline(input, line)) {
-            int i = line.find(' ');
+            unsigned long i = line.find(' ');
             if (i == std::string::npos) {
                 throw std::runtime_error("Invalid '.evi' file: no space between name and observation.");
             }
@@ -101,7 +101,7 @@ namespace hopi::graphs {
             ObservedVarIter it(this);
             while (*it != nullptr) {
                 if ((*it)->name() == name) {
-                    (*it)->setPosterior(Categorical::create(Functions::oneHot(nobs, obs)));
+                    (*it)->setPosterior(Categorical::create(Ops::oneHot(nobs, obs)));
                 }
                 ++it;
             }
@@ -121,27 +121,27 @@ namespace hopi::graphs {
 
     void FactorGraph::integrate(
             int action,
-            const MatrixXd& observation,
-            const MatrixXd& A,
-            const std::vector<MatrixXd>& B
+            const Tensor& observation,
+            const Tensor& A,
+            const Tensor& B
     ) {
         removeHiddenChildren(_tree_root);
-        MatrixXd action_param = MatrixXd::Constant(B.size(), 1, 0.1 / (B.size() - 1));
-        action_param(action, 0) = 0.9;
+        Tensor action_param = torch::full({B.size(0)}, 0.1 / ((double) B.size(0) - 1));
+        action_param[action] = 0.9;
         auto a = API::Categorical(action_param);
         integrate(a, observation, A, B);
     }
 
     void FactorGraph::integrate(
             int action,
-            const MatrixXd& observation,
+            const Tensor& observation,
             VarNode *A,
             VarNode *B
     ) {
         removeHiddenChildren(_tree_root);
-        int actions = B->prior()->params().size();
-        MatrixXd action_param = MatrixXd::Constant(actions, 1, 0.1 / (actions - 1));
-        action_param(action, 0) = 0.9;
+        long actions = B->prior()->params().size(0);
+        Tensor action_param = torch::full({actions}, 0.1 / ((double) actions - 1));
+        action_param[action] = 0.9;
         auto a = API::Categorical(action_param);
         integrate(a, observation, A, B);
     }
@@ -149,7 +149,7 @@ namespace hopi::graphs {
     void FactorGraph::integrate(
             VarNode *U,
             int action,
-            const MatrixXd &observation,
+            const Tensor &observation,
             VarNode *A,
             VarNode *B
     ) {
@@ -167,7 +167,7 @@ namespace hopi::graphs {
     template<class T1, class T2>
     void FactorGraph::integrate(
             VarNode *a,
-            const Eigen::MatrixXd& observation,
+            const Tensor& observation,
             T1 A, T2 B
     ) {
         // Create new slide of action/state/observation.

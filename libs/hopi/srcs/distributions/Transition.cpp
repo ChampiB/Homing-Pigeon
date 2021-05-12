@@ -4,20 +4,19 @@
 
 #include "Transition.h"
 #include "nodes/VarNode.h"
-#include "math/Functions.h"
-#include <Eigen/Dense>
+#include "math/Ops.h"
 
 using namespace hopi::nodes;
 using namespace hopi::math;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::distributions {
 
-    std::unique_ptr<Transition> Transition::create(const MatrixXd &p) {
+    std::unique_ptr<Transition> Transition::create(const Tensor &p) {
         return std::make_unique<Transition>(p);
     }
 
-    Transition::Transition(const Eigen::MatrixXd &p) {
+    Transition::Transition(const Tensor &p) {
         param = p;
     }
 
@@ -25,23 +24,19 @@ namespace hopi::distributions {
         return DistributionType::TRANSITION;
     }
 
-    std::vector<MatrixXd> Transition::logParams() const {
-        MatrixXd copy = param;
-        std::vector<MatrixXd> res{copy.array().log()};
-        return res;
+    Tensor Transition::logParams() const {
+        return params().log();
     }
 
-    std::vector<MatrixXd> Transition::params() const {
-        MatrixXd copy = param;
-        std::vector<MatrixXd> res{copy.array()};
-        return res;
+    Tensor Transition::params() const {
+        return param.detach().clone();
     }
 
-    void Transition::updateParams(std::vector<Eigen::MatrixXd> &p) {
-        if (p.size() != 1) {
+    void Transition::updateParams(const Tensor &p) {
+        if (p.dim() != 1) {
             throw std::runtime_error("Transition::updateParams argument size must be equal to one.");
         }
-        param = Functions::softmax(p[0]);
+        param = torch::softmax(p, 0);
     }
 
     double Transition::entropy() {

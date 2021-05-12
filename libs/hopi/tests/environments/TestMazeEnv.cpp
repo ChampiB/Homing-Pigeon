@@ -4,15 +4,14 @@
 
 #include <iostream>
 #include "catch.hpp"
-#include "environments/Environment.h"
 #include "environments/MazeEnv.h"
 #include "helpers/Files.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include <helpers/UnitTests.h>
 
 using namespace hopi::environments;
 using namespace tests;
-using namespace Eigen;
+using namespace torch;
 
 TEST_CASE( "EnvMaze throws exception for invalid files." ) {
     UnitTests::run([](){
@@ -69,8 +68,8 @@ TEST_CASE( "1.maze has 10 observations." ) {
 TEST_CASE( "EnvMaze loads the correct agent's initial position." ) {
     UnitTests::run([](){
         auto env = MazeEnv::create(Files::getMazePath("1.maze"));
-
         auto pos = env->agentPosition();
+
         REQUIRE( pos.first  == 5 );
         REQUIRE( pos.second == 1 );
     });
@@ -79,8 +78,8 @@ TEST_CASE( "EnvMaze loads the correct agent's initial position." ) {
 TEST_CASE( "EnvMaze loads the correct exit's position." ) {
     UnitTests::run([](){
         auto env = MazeEnv::create(Files::getMazePath("1.maze"));
-
         auto pos = env->exitPosition();
+
         REQUIRE( pos.first  == 1 );
         REQUIRE( pos.second == 6 );
     });
@@ -221,106 +220,73 @@ TEST_CASE( "EnvMaze load the correct maze value." ) {
 TEST_CASE( "EnvMaze properly generate A matrix." ) {
     UnitTests::run([](){
         auto env = MazeEnv::create(Files::getMazePath("5.maze"));
+        Tensor A_true = torch::tensor({0.025, 0.025, 0.9,   0.025, 0.025, 0.025, 0.025,
+                                       0.025, 0.9,   0.025, 0.025, 0.025, 0.025, 0.025,
+                                       0.9,   0.025, 0.025, 0.9,   0.025, 0.025, 0.9,
+                                       0.025, 0.025, 0.025, 0.025, 0.025, 0.9,   0.025,
+                                       0.025, 0.025, 0.025, 0.025, 0.9,   0.025, 0.025}).view({5,7});
+        Tensor A = env->A();
 
-        MatrixXd A_true(5, 7);
-        A_true << 0.025, 0.025, 0.9,   0.025, 0.025, 0.025, 0.025,
-                0.025, 0.9,   0.025, 0.025, 0.025, 0.025, 0.025,
-                0.9,   0.025, 0.025, 0.9,   0.025, 0.025, 0.9,
-                0.025, 0.025, 0.025, 0.025, 0.025, 0.9,   0.025,
-                0.025, 0.025, 0.025, 0.025, 0.9,   0.025, 0.025;
-
-        MatrixXd A = env->A();
-        REQUIRE( A.rows() == 5 );
-        REQUIRE( A.cols() == 7 );
-
-        for (int i = 0; i < A.rows(); ++i) {
-            for (int j = 0; j < A.cols(); ++j) {
-                REQUIRE( A(i, j) == Approx(A_true(i, j)).epsilon(1) );
-            }
-        }
+        UnitTests::require_approximately_equal(A, A_true, 1);
     });
 }
 
 TEST_CASE( "EnvMaze properly generate B matrices." ) {
     UnitTests::run([](){
         auto env = MazeEnv::create(Files::getMazePath("5.maze"));
+        Tensor B_true = torch::tensor({
+            0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.9,  0.05, 0.9,  0.05, 0.05, 0.05,
+            0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.9,  0.05,
+            0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9,
 
-        MatrixXd B_up_true(7, 7);
-        B_up_true << 0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.9,  0.05, 0.9,  0.05, 0.05, 0.05,
-                0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.9,  0.05,
-                0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9;
+            0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
+            0.05, 0.9,  0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
+            0.05, 0.05, 0.05, 0.9,  0.05, 0.9,  0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9,
 
-        MatrixXd B_down_true(7, 7);
-        B_down_true << 0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
-                0.05, 0.9,  0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
-                0.05, 0.05, 0.05, 0.9,  0.05, 0.9,  0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9;
+            0.9,  0.9,  0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.9,  0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.9,  0.9,  0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
 
-        MatrixXd B_left_true(7, 7);
-        B_left_true << 0.9,  0.9,  0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.9,  0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.9,  0.9,  0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05;
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.9,  0.9,  0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.9,  0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.9,  0.9,
 
-        MatrixXd B_right_true(7, 7);
-        B_right_true << 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.9,  0.9,  0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.9,  0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.9,  0.9;
+            0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.9,  0.05, 0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.9,  0.05, 0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.9,  0.05,
+            0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9
+        }).view({5,7,7});
+        Tensor B = env->B();
 
-        MatrixXd B_idle_true(7, 7);
-        B_idle_true << 0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.9,  0.05, 0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.9,  0.05, 0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.9,  0.05, 0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.9,  0.05, 0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.9,  0.05,
-                0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.9;
-
-        std::vector<MatrixXd> B_true{B_up_true, B_down_true, B_left_true, B_right_true, B_idle_true};
-        std::vector<MatrixXd> B = env->B();
-
-        for (auto & m : B) {
-            REQUIRE(m.rows() == 7 );
-            REQUIRE(m.cols() == 7 );
-        }
-
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 7; ++j) {
-                for (int k = 0; k < 7; ++k) {
-                    REQUIRE( B[i](j, k) == Approx(B_true[i](j, k)).epsilon(1) );
-                }
-            }
-        }
+        UnitTests::require_approximately_equal(B, B_true, 1);
     });
 }
 
 TEST_CASE( "EnvMaze properly generate D matrix." ) {
     UnitTests::run([](){
         auto env = MazeEnv::create(Files::getMazePath("5.maze"));
+        Tensor D = env->D();
+        Tensor D_true = torch::tensor({0.05,0.05,0.05,0.05,0.05,0.05,0.9});
 
-        MatrixXd D = env->D();
-        REQUIRE( D.rows() == 7 );
-        REQUIRE( D.cols() == 1 );
-        REQUIRE( D(0, 0) == Approx(0.05).epsilon(1) );
-        REQUIRE( D(1, 0) == Approx(0.05).epsilon(1) );
-        REQUIRE( D(2, 0) == Approx(0.05).epsilon(1) );
-        REQUIRE( D(3, 0) == Approx(0.05).epsilon(1) );
-        REQUIRE( D(4, 0) == Approx(0.05).epsilon(1) );
-        REQUIRE( D(5, 0) == Approx(0.05).epsilon(1) );
-        REQUIRE( D(6, 0) == 0.9 );
+        UnitTests::require_approximately_equal(D, D_true, 1);
     });
 }

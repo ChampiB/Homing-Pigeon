@@ -1,17 +1,18 @@
 #include "distributions/Transition.h"
-#include "distributions/ActiveTransition.h"
 #include "environments/MazeEnv.h"
+#include "math/Ops.h"
 #include "nodes/VarNode.h"
 #include "graphs/FactorGraph.h"
 #include "api/API.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 using namespace hopi::environments;
 using namespace hopi::distributions;
 using namespace hopi::nodes;
 using namespace hopi::graphs;
 using namespace hopi::api;
-using namespace Eigen;
+using namespace hopi::math;
+using namespace torch;
 
 int main()
 {
@@ -30,10 +31,10 @@ int main()
     /**
      ** Create the model's parameters.
      **/
-    MatrixXd U0 = MatrixXd::Constant(env->actions(), 1, 1.0 / env->actions());
-    MatrixXd A  = env->A();
-    std::vector<MatrixXd> B = env->B();
-    MatrixXd D0 = env->D();
+    Tensor U0 = Ops::uniformColumnWise({env->actions(), 1});
+    Tensor A  = env->A();
+    Tensor B  = env->B();
+    Tensor D0 = env->D();
 
     /**
      ** Create the generative model.
@@ -64,12 +65,9 @@ int main()
     /**
      ** Create the model's prior preferences.
      **/
-    MatrixXd D_tilde = MatrixXd::Constant(env->states(),  1, 1.0 / env->states());
-    MatrixXd E_tilde(env->observations(),  1);
-    double sum = env->observations() * (env->observations() + 1.0) / 2.0;
-    for (int i = 0; i < env->observations(); ++i) {
-        E_tilde(i, 0) = (env->observations() - i) / sum;
-    }
+    Tensor D_tilde = Ops::uniformColumnWise({env->states(), 1});
+    Tensor E_tilde = env->observations() - torch::arange(0, env->observations());
+    E_tilde /= E_tilde.sum();
 
     /**
      ** Print the factor graph.

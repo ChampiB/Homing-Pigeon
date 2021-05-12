@@ -5,15 +5,14 @@
 #include "AlgoTree.h"
 #include <numeric>
 #include <random>
-#include "distributions/Transition.h"
 #include "distributions/Categorical.h"
 #include "distributions/Dirichlet.h"
 #include "api/API.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
 #include "graphs/FactorGraph.h"
-#include "math/Functions.h"
-#include <Eigen/Dense>
+#include "math/Ops.h"
+#include <torch/torch.h>
 #include <limits>
 #include <chrono>
 #include <iostream>
@@ -24,7 +23,7 @@ using namespace hopi::graphs;
 using namespace hopi::math;
 using namespace hopi::api;
 using namespace hopi::distributions;
-using namespace Eigen;
+using namespace torch;
 
 using namespace std::chrono;
 
@@ -34,11 +33,11 @@ namespace hopi::algorithms {
      * Factories
      */
 
-    std::unique_ptr<AlgoTree> AlgoTree::create(int n_acts, MatrixXd &state_pref, MatrixXd &obs_pref) {
+    std::unique_ptr<AlgoTree> AlgoTree::create(int n_acts, const Tensor &state_pref, const Tensor &obs_pref) {
         return std::make_unique<AlgoTree>(n_acts, state_pref, obs_pref);
     }
 
-    std::unique_ptr<AlgoTree> AlgoTree::create(int n_acts, MatrixXd &&state_pref, MatrixXd &&obs_pref) {
+    std::unique_ptr<AlgoTree> AlgoTree::create(int n_acts, const Tensor &&state_pref, const Tensor &&obs_pref) {
         return std::make_unique<AlgoTree>(n_acts, state_pref, obs_pref);
     }
 
@@ -50,10 +49,10 @@ namespace hopi::algorithms {
      * Constructors
      */
 
-    AlgoTree::AlgoTree(int n_acts, Eigen::MatrixXd &state_pref, Eigen::MatrixXd &obs_pref) :
+    AlgoTree::AlgoTree(int n_acts, const Tensor &state_pref, const Tensor &obs_pref) :
             AlgoTree(AlgoTreeConfig(n_acts, state_pref, obs_pref)) {}
 
-    AlgoTree::AlgoTree(int n_acts, MatrixXd &&state_pref, MatrixXd &&obs_pref) :
+    AlgoTree::AlgoTree(int n_acts, const Tensor &&state_pref, const Tensor &&obs_pref) :
             AlgoTree(AlgoTreeConfig(n_acts, state_pref, obs_pref)) {}
 
     AlgoTree::AlgoTree(AlgoTreeConfig &conf) : AlgoTree(AlgoTreeConfig(conf)) {}
@@ -95,25 +94,21 @@ namespace hopi::algorithms {
 
     void AlgoTree::expansion(VarNode *node, VarNode *A, VarNode *B) {
         // Gather A and B parameters from the variable nodes
-        auto A_param = Dirichlet::expectedLog(A->posterior()->params())[0];
-        auto B_param = Dirichlet::expectedLog(B->posterior()->params());
-        A_param = A_param.array().exp();
-        for (auto & i : B_param) {
-            i = i.array().exp();
-        }
-        // Call the expansion taking matrices of parameters as arguments
+        auto A_param = Dirichlet::expectedLog(A->posterior()->params()).exp();
+        auto B_param = Dirichlet::expectedLog(B->posterior()->params()).exp();
+        // Call the expansion taking tensors of parameters as arguments
         expansion(node, A_param, B_param);
     }
 
-    void AlgoTree::expansion(VarNode *node, const MatrixXd &A, const std::vector<MatrixXd> &B) {
+    void AlgoTree::expansion(VarNode *node, const Tensor &A, const Tensor &B) {
         // Select an unexplored action to expand the tree
         std::vector<int> ua = unexploredActions(node);
         std::uniform_int_distribution<int> rand_int(0, (int)ua.size() - 1);
         int action = ua[rand_int(gen)];
 
         // Generative model expansion
-        VarNode *s = API::Transition(node, B[action].replicate(1, 1));
-        VarNode *o = API::Transition(s, A.replicate(1, 1));
+        VarNode *s = API::Transition(node, B[action]);
+        VarNode *o = API::Transition(s, A);
         s->setAction(action);
         s->setBiased(Categorical::create(config.state_pref));
         o->setBiased(Categorical::create(config.obs_pref));
@@ -203,14 +198,14 @@ namespace hopi::algorithms {
     }
 
     VarNode *AlgoTree::nodeSelectionSoftmaxSampling() {
-        MatrixXd w(us.size(), 1);
+        Tensor w = torch::empty({ (long) us.size() });
         for (int i = 0; i < us.size(); ++i) {
-            w(i, 0) = -us[i].first->g();
+            w[i] = -us[i].first->g();
         }
-        w = Functions::softmax(w);
-        std::vector<double> weight;
+        w = torch::softmax(w, 0);
+        std::vector<double> weight(us.size());
         for (int i = 0; i < us.size(); ++i) {
-            weight.push_back(w(i, 0));
+            weight[i] = w[i].item<double>();
         }
         std::discrete_distribution<int> rand_int(weight.begin(), weight.end());
         return us[rand_int(gen)].first;
@@ -221,15 +216,15 @@ namespace hopi::algorithms {
      */
 
     double AlgoTree::doubleKL(nodes::VarNode *s, nodes::VarNode *o) {
-        return Functions::KL(s->posterior(), s->biased()) + Functions::KL(o->posterior(), o->biased());
+        return Ops::KL(s->posterior(), s->biased()) + Ops::KL(o->posterior(), o->biased());
     }
 
     double AlgoTree::efe(nodes::VarNode *s, nodes::VarNode *o) {
-        auto lp = o->prior()->logParams()[0];
-        auto p = o->prior()->params()[0];
-        lp = (p.array() * lp.array()).colwise().sum(); // element wise multiplication + summation column wise
+        auto lp = o->prior()->logParams();
+        auto p = o->prior()->params();
 
-        return Functions::KL(o->posterior(), o->biased()) - (lp * s->posterior()->params()[0])(0, 0);
+        lp = (p * lp).sum(1); // element wise multiplication + summation column wise
+        return Ops::KL(o->posterior(), o->biased()) - matmul(lp, s->posterior()->params()).item<double>();
     }
 
     /**

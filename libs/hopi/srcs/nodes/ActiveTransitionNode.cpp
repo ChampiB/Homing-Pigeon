@@ -7,7 +7,7 @@
 #include "nodes/VarNode.h"
 #include "distributions/Dirichlet.h"
 
-using namespace Eigen;
+using namespace torch;
 using namespace hopi::distributions;
 
 namespace hopi::nodes {
@@ -47,7 +47,7 @@ namespace hopi::nodes {
         return to;
     }
 
-    std::vector<Eigen::MatrixXd> ActiveTransitionNode::message(VarNode *t) {
+    Tensor ActiveTransitionNode::message(VarNode *t) {
         if (t == to) {
             return toMessage();
         } else if (t == from) {
@@ -61,13 +61,13 @@ namespace hopi::nodes {
         }
     }
 
-    std::vector<MatrixXd> ActiveTransitionNode::toMessage() {
-        std::vector<MatrixXd> B_bar = getLogB();
-        MatrixXd from_hat = from->posterior()->params()[0];
-        MatrixXd action_hat = action->posterior()->params()[0];
+    Tensor ActiveTransitionNode::toMessage() {
+        Tensor B_bar = getLogB();
+        Tensor from_hat = from->posterior()->params();
+        Tensor action_hat = action->posterior()->params();
 
-        for (int i = 0; i < B_bar.size(); ++i) {
-            B_bar[i] = action_hat(i, 0) * B_bar[i] * from_hat;
+        for (int i = 0; i < B_bar.size(0); ++i) {
+            B_bar[i] = action_hat[i] * matmul(B_bar[i], from_hat);
             if (i != 0) {
                 B_bar[0] += B_bar[i];
             }
@@ -75,13 +75,13 @@ namespace hopi::nodes {
         return {B_bar[0]};
     }
 
-    std::vector<MatrixXd> ActiveTransitionNode::fromMessage() {
-        std::vector<MatrixXd> B_bar = getLogB();
-        MatrixXd to_hat = to->posterior()->params()[0];
-        MatrixXd action_hat = action->posterior()->params()[0];
+    Tensor ActiveTransitionNode::fromMessage() {
+        Tensor B_bar = getLogB();
+        Tensor to_hat = to->posterior()->params();
+        Tensor action_hat = action->posterior()->params();
 
-        for (int i = 0; i < B_bar.size(); ++i) {
-            B_bar[i] = action_hat(i, 0) * B_bar[i].transpose() * to_hat;
+        for (int i = 0; i < B_bar.size(0); ++i) {
+            B_bar[i] = action_hat[i] * matmul(B_bar[i].permute({1,0}), to_hat);
             if (i != 0) {
                 B_bar[0] += B_bar[i];
             }
@@ -89,33 +89,32 @@ namespace hopi::nodes {
         return {B_bar[0]};
     }
 
-    std::vector<MatrixXd> ActiveTransitionNode::actionMessage() {
-        std::vector<MatrixXd> B_bar = getLogB();
-        MatrixXd to_hat   =   to->posterior()->params()[0];
-        MatrixXd from_hat = from->posterior()->params()[0];
-        MatrixXd msg(B_bar.size(), 1);
+    Tensor ActiveTransitionNode::actionMessage() {
+        Tensor B_bar = getLogB();
+        Tensor to_hat   =   to->posterior()->params();
+        Tensor from_hat = from->posterior()->params();
+        Tensor msg = torch::empty({B_bar.size(0)});
 
-        for (int i = 0; i < B_bar.size(); ++i) {
-            msg(i, 0) = (to_hat.transpose() * B_bar[i] * from_hat)(0, 0);
+        for (int i = 0; i < B_bar.size(0); ++i) {
+            msg[i] = matmul(matmul(to_hat.permute({1,0}), B_bar[i]), from_hat);
         }
-        return {msg};
+        return msg;
     }
 
-    std::vector<MatrixXd> ActiveTransitionNode::bMessage() {
-        MatrixXd to_hat     =     to->posterior()->params()[0];
-        MatrixXd from_hat   =   from->posterior()->params()[0];
-        MatrixXd action_hat = action->posterior()->params()[0];
-        int actions = action_hat.rows();
-        std::vector<MatrixXd> msg(actions);
+    Tensor ActiveTransitionNode::bMessage() {
+        Tensor to_hat     =     to->posterior()->params();
+        Tensor from_hat   =   from->posterior()->params();
+        Tensor action_hat = action->posterior()->params();
+        long actions     = action_hat.size(0);
+        long to_states   = to_hat.size(0);
+        long from_states = from_hat.size(0);
+        Tensor msg = torch::zeros({actions, to_states, from_states});
 
-        msg[actions - 1] = to_hat * from_hat.transpose();
-        for (int i = 0; i < action_hat.size(); ++i) {
-            if (msg[i].rows() == 0 && msg[i].cols() == 0) {
-                msg[i] = MatrixXd::Zero(to_hat.rows(), from_hat.rows());
-            }
-            for (int j = 0; j < to_hat.size(); ++j) {
-                for (int k = 0; k < from_hat.size(); ++k) {
-                    msg[i](j,k) = action_hat(i,0) * msg[actions - 1](j,k);
+        msg[actions - 1] = matmul(to_hat, from_hat.permute({1,0}));
+        for (int i = 0; i < actions; ++i) {
+            for (int j = 0; j < to_states; ++j) {
+                for (int k = 0; k < from_states; ++k) {
+                    msg[i][j][k] = action_hat[i] * msg[actions - 1][j][k];
                 }
             }
         }
@@ -123,22 +122,22 @@ namespace hopi::nodes {
     }
 
     double ActiveTransitionNode::vfe() {
-        auto to_p     = to->posterior()->params()[0];
-        auto from_p   = from->posterior()->params()[0];
-        auto action_p = action->posterior()->params()[0];
+        auto to_p     = to->posterior()->params();
+        auto from_p   = from->posterior()->params();
+        auto action_p = action->posterior()->params();
         auto lp       = getLogB();
         double VFE    = 0;
 
         if (child()->type() == HIDDEN) {
             VFE -= child()->posterior()->entropy();
         }
-        for (int i = 0; i < lp.size(); ++i) {
-            VFE -= action_p(i, 0) * (to_p.transpose() * lp[i] * from_p)(0, 0);
+        for (int i = 0; i < lp.size(0); ++i) {
+            VFE -= (action_p[i] * matmul(matmul(to_p.permute({1,0}), lp[i]), from_p)).item<double>();
         }
         return VFE;
     }
 
-    std::vector<MatrixXd> ActiveTransitionNode::getLogB() {
+    Tensor ActiveTransitionNode::getLogB() {
         if (B) {
             return Dirichlet::expectedLog(B->posterior()->params());
         } else {

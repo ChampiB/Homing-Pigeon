@@ -5,9 +5,10 @@
 #include "DirichletNode.h"
 #include "VarNode.h"
 #include "distributions/Distribution.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 
-using namespace Eigen;
+using namespace torch;
+using namespace torch::indexing;
 using namespace hopi::math;
 
 namespace hopi::nodes {
@@ -28,7 +29,7 @@ namespace hopi::nodes {
         return childNode;
     }
 
-    std::vector<Eigen::MatrixXd> DirichletNode::message(VarNode *to) {
+    Tensor DirichletNode::message(VarNode *to) {
         if (to == childNode) {
             return childMessage();
         } else {
@@ -36,34 +37,34 @@ namespace hopi::nodes {
         }
     }
 
-    double DirichletNode::energy(MatrixXd prior, MatrixXd post) {
-        double s = post.sum();
+    double DirichletNode::energy(const Tensor &prior, const Tensor &post) {
+        auto s = post.sum().item<double>();
         double acc = 0;
 
-        for (int k = 0; k < post.rows(); ++k) {
-            acc += (prior(k) - 1) *  (Functions::digamma(post(k)) - Functions::digamma(s));
+        for (int k = 0; k < post.size(0); ++k) {
+            acc += (prior[k].item<double>() - 1) *  (Ops::digamma(post[k].item<double>()) - Ops::digamma(s));
         }
-        return acc - std::log(Functions::beta(prior));
+        return acc - std::log(Ops::beta(prior));
     }
 
 
     double DirichletNode::vfe() {
         double VFE = 0;
-        std::vector<MatrixXd> post_p = child()->posterior()->params();
-        std::vector<MatrixXd> prior_p = child()->prior()->params();
+        Tensor post_p  = child()->posterior()->params();
+        Tensor prior_p = child()->prior()->params();
 
         if (child()->type() == HIDDEN) {
             VFE -= child()->posterior()->entropy();
         }
-        for (int i = 0; i < post_p.size(); ++i) {
-            for (int j = 0; j < post_p[i].cols(); ++j) {
-                VFE -= energy(prior_p[i].col(j), post_p[i].col(j));
+        for (int i = 0; i < post_p.size(0); ++i) {
+            for (int j = 0; j < post_p[i].size(1); ++j) {
+                VFE -= energy(prior_p.index({i,None,j}), post_p.index({i,None,j}));
             }
         }
         return VFE;
     }
 
-    std::vector<Eigen::MatrixXd> DirichletNode::childMessage() {
+    Tensor DirichletNode::childMessage() {
         return childNode->prior()->params();
     }
 

@@ -7,10 +7,10 @@
 #include "graphs/FactorGraph.h"
 #include "nodes/VarNode.h"
 #include "api/API.h"
-#include "math/Functions.h"
-#include <Eigen/Dense>
+#include "math/Ops.h"
+#include <torch/torch.h>
 
-using namespace Eigen;
+using namespace torch;
 using namespace hopi::nodes;
 using namespace hopi::graphs;
 using namespace hopi::math;
@@ -22,7 +22,7 @@ namespace tests {
     std::shared_ptr<FactorGraph> FactorGraphContexts::context1() {
         FactorGraph::setCurrent(nullptr);
         auto fg = FactorGraph::current();
-        MatrixXd param = Functions::uniformColumnWise(3, 1);
+        Tensor param = Ops::uniformColumnWise({3});
 
         VarNode *c1 = API::Categorical(param);
         c1->setType(VarNodeType::OBSERVED);
@@ -49,10 +49,10 @@ namespace tests {
         /**
          ** Create the model's parameters.
          **/
-        MatrixXd U0 = Functions::uniformColumnWise(5, 1);
-        MatrixXd D0 = Functions::uniformColumnWise(3, 1);
-        MatrixXd A  = Functions::uniformColumnWise(9, 3);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(5, 3, 3);
+        Tensor U0 = Ops::uniformColumnWise({5});
+        Tensor D0 = Ops::uniformColumnWise({3});
+        Tensor A  = Ops::uniformColumnWise({9,3});
+        Tensor B  = Ops::uniformColumnWise({5,3,3});
 
         /**
          ** Create the generative model.
@@ -72,7 +72,7 @@ namespace tests {
     std::shared_ptr<hopi::graphs::FactorGraph> FactorGraphContexts::context3() {
         FactorGraph::setCurrent(nullptr);
         auto fg = FactorGraph::current();
-        MatrixXd param = Functions::uniformColumnWise(3, 1);
+        Tensor param = Ops::uniformColumnWise({3});
 
         API::Categorical(param);
         VarNode *c1 = API::Categorical(param); // First observed variable

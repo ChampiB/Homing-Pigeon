@@ -6,7 +6,7 @@
 #define HOMING_PIGEON_2_ACTIVETRANSITIONNODE_H
 
 #include "FactorNode.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include <api/Aliases.h>
 #include <memory>
 
@@ -26,15 +26,15 @@ namespace hopi::nodes {
         ActiveTransitionNode(VarNode *from, VarNode *action, VarNode *to);
         VarNode *parent(int index) override;
         VarNode *child() override;
-        std::vector<Eigen::MatrixXd> message(VarNode *to) override;
+        torch::Tensor message(VarNode *to) override;
         double vfe() override;
 
     private:
-        std::vector<Eigen::MatrixXd> toMessage();
-        std::vector<Eigen::MatrixXd> fromMessage();
-        std::vector<Eigen::MatrixXd> actionMessage();
-        std::vector<Eigen::MatrixXd> bMessage();
-        std::vector<Eigen::MatrixXd> getLogB();
+        torch::Tensor toMessage();
+        torch::Tensor fromMessage();
+        torch::Tensor actionMessage();
+        torch::Tensor bMessage();
+        torch::Tensor getLogB();
 
     private:
         VarNode *from;

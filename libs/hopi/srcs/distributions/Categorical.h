@@ -7,7 +7,7 @@
 
 #include "Distribution.h"
 #include <memory>
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 namespace hopi::nodes {
     class VarNode;
@@ -17,22 +17,21 @@ namespace hopi::distributions {
 
     class Categorical : public Distribution {
     public:
-        static std::unique_ptr<Categorical> create(const Eigen::MatrixXd &param);
-        static std::unique_ptr<Categorical> create(const Eigen::MatrixXd &&param);
+        static std::unique_ptr<Categorical> create(const torch::Tensor &param);
+        static std::unique_ptr<Categorical> create(const torch::Tensor &&param);
 
     public:
-        explicit Categorical(const Eigen::MatrixXd &param);
-        explicit Categorical(const Eigen::MatrixXd &&param);
+        explicit Categorical(const torch::Tensor &param);
+        explicit Categorical(const torch::Tensor &&param);
         [[nodiscard]] DistributionType type() const override;
-        [[nodiscard]] int cardinality() const;
-        [[nodiscard]] double p(int id) const; // Probability of X = id.
-        [[nodiscard]] std::vector<Eigen::MatrixXd> logParams() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> params() const override;
-        void updateParams(std::vector<Eigen::MatrixXd> &param) override;
+        [[nodiscard]] torch::Tensor p(int id) const; // Probability of X = id.
+        [[nodiscard]] torch::Tensor logParams() const override;
+        [[nodiscard]] torch::Tensor params() const override;
+        void updateParams(const torch::Tensor &param) override;
         double entropy() override;
 
     private:
-        Eigen::MatrixXd param;
+        torch::Tensor param;
     };
 
 }

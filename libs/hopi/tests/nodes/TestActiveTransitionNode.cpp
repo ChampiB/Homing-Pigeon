@@ -9,40 +9,37 @@
 #include "graphs/FactorGraph.h"
 #include "distributions/Dirichlet.h"
 #include "distributions/Categorical.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 #include "helpers/UnitTests.h"
 #include "api/API.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 using namespace hopi::nodes;
 using namespace hopi::graphs;
 using namespace hopi::distributions;
 using namespace hopi::api;
 using namespace hopi::math;
-using namespace Eigen;
+using namespace torch;
 using namespace tests;
 
 TEST_CASE( "ActiveTransitionNode.vfe() returns the proper vfe contribution" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
-        MatrixXd param1 = Functions::uniformColumnWise(4, 1);
-        MatrixXd param2 = Functions::uniformColumnWise(2, 1);
-        std::vector<MatrixXd> param3 = Functions::uniformColumnWise(2, 4, 4);
         auto fg = FactorGraph::current();
-        auto c1 = API::Categorical(param1);
-        auto c2 = API::Categorical(param2);
-        auto t1 = API::ActiveTransition(c1, c2, param3);
+        auto c1 = API::Categorical(Ops::uniformColumnWise({4}));
+        auto c2 = API::Categorical(Ops::uniformColumnWise({2}));
+        auto t1 = API::ActiveTransition(c1, c2, Ops::uniformColumnWise({2, 4, 4}));
 
-        auto poc1 = c1->posterior()->params()[0];
-        auto poc2 = c2->posterior()->params()[0];
-        auto pot1 = t1->posterior()->params()[0];
-        auto lpt1 = t1->posterior()->logParams()[0];
+        auto poc1 = c1->posterior()->params();
+        auto poc2 = c2->posterior()->params();
+        auto pot1 = t1->posterior()->params().permute({1,0});
+        auto lpt1 = t1->posterior()->logParams();
         auto prt1 = t1->prior()->logParams();
 
-        double neg_entropy = (pot1.transpose() * lpt1)(0, 0);
-        double energy  = poc2(0, 0) * (pot1.transpose() * prt1[0] * poc1)(0, 0);
-        energy += poc2(1, 0) * (pot1.transpose() * prt1[1] * poc1)(0, 0);
-        REQUIRE( c1->parent()->vfe() == neg_entropy - energy);
+        Tensor neg_entropy = matmul(pot1, lpt1);
+        Tensor energy = matmul(poc2[0][0], matmul(matmul(pot1, prt1[0]), poc1)) \
+                      + matmul(poc2[1][0], matmul(matmul(pot1, prt1[1]), poc1));
+        REQUIRE( c1->parent()->vfe() == (neg_entropy - energy).item<double>());
     });
 }
 
@@ -63,8 +60,8 @@ TEST_CASE( "ActiveTransitionNode returns the correct child and parents" ) {
 TEST_CASE( "ActiveTransitionNode: A run_time error is thrown if the parameter is an unknown node" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
-        MatrixXd param = Functions::uniformColumnWise(4, 1);
-        std::vector<MatrixXd> param2 = Functions::uniformColumnWise(2, 4, 4);
+        Tensor param = Ops::uniformColumnWise({4});
+        Tensor param2 = Ops::uniformColumnWise({2, 4, 4});
         auto t1 = VarNode::create(VarNodeType::HIDDEN);
         auto fg = FactorGraph::current();
         auto c1 = API::Categorical(param);
@@ -83,10 +80,10 @@ TEST_CASE( "ActiveTransitionNode: A run_time error is thrown if the parameter is
 TEST_CASE( "ActiveTransitionNode's (to, from and action) messages are correct (no Dirichlet prior)" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
-        MatrixXd U = Functions::uniformColumnWise(2, 1);
-        MatrixXd D = Functions::uniformColumnWise(4, 1);
-        MatrixXd evidence = Functions::uniformColumnWise(2, 1);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(2, 2, 4);
+        Tensor U = Ops::uniformColumnWise({2});
+        Tensor D = Ops::uniformColumnWise({4});
+        Tensor evidence = Ops::uniformColumnWise({2});
+        Tensor B = Ops::uniformColumnWise({2, 2, 4});
         auto fg = FactorGraph::current();
         auto c1 = API::Categorical(D);
         auto c2 = API::Categorical(U);
@@ -94,47 +91,37 @@ TEST_CASE( "ActiveTransitionNode's (to, from and action) messages are correct (n
         t1->setPosterior(Categorical::create(evidence));
         t1->setType(VarNodeType::OBSERVED);
 
-        MatrixXd res11 = B[0].array().log();
-        res11 = U(0 , 0) * res11 * D;
-        MatrixXd res12 = B[1].array().log();
-        res12 = U(1 , 0) * res12 * D;
-        MatrixXd res1 = res11 + res12;
+        Tensor res1 = U[0][0] * matmul(B[0].log(), D) \
+                    + U[1][0] * matmul(B[1].log(), D);
         auto m1 = t1->parent()->message(t1);
-        REQUIRE( m1[0].cols() == 1 );
-        REQUIRE( m1[0].rows() == 2 );
-        REQUIRE( m1[0](0, 0) == res1(0, 0) );
-        REQUIRE( m1[0](1, 0) == res1(1, 0) );
+        REQUIRE( m1[0].size(1) == 1 );
+        REQUIRE( m1[0].size(0) == 2 );
+        REQUIRE( torch::equal(m1[0], res1) );
 
-        MatrixXd res21 = B[0].array().log();
-        res21 = U(0 , 0) * res21.transpose() * evidence;
-        MatrixXd res22 = B[1].array().log();
-        res22 = U(1 , 0) * res22.transpose() * evidence;
-        MatrixXd res2 = res21 + res22;
+        Tensor res2 = U[0][0] * matmul(B[0].log().permute({1,0}), evidence) \
+                    + U[1][0] * matmul(B[1].log().permute({1,0}), evidence);
         auto m2 = t1->parent()->message(c1);
-        REQUIRE( m2[0].cols() == 1 );
-        REQUIRE( m2[0].rows() == 4 );
-        REQUIRE( m2[0](0, 0) == res2(0, 0) );
-        REQUIRE( m2[0](1, 0) == res2(1, 0) );
-        REQUIRE( m2[0](2, 0) == res2(2, 0) );
-        REQUIRE( m2[0](3, 0) == res2(3, 0) );
+        REQUIRE( m2[0].size(1) == 1 );
+        REQUIRE( m2[0].size(0) == 4 );
+        REQUIRE( torch::equal(m2[0], res2) );
 
-        MatrixXd res31 = B[0].array().log();
-        MatrixXd res32 = B[1].array().log();
         auto m3 = t1->parent()->message(c2);
-        REQUIRE( m3[0].cols() == 1 );
-        REQUIRE( m3[0].rows() == 2 );
-        REQUIRE( m3[0](0, 0) == (evidence.transpose() * res31 * D)(0, 0) );
-        REQUIRE( m3[0](1, 0) == (evidence.transpose() * res32 * D)(0, 0) );
+        REQUIRE( m3[0].size(1) == 1 );
+        REQUIRE( m3[0].size(0) == 2 );
+        REQUIRE( torch::equal(m2[0], res2) );
+
+        REQUIRE( torch::equal(m3[0][0][0], matmul(matmul(evidence.permute({1,0}), B[0].log()), D)[0][0]) );
+        REQUIRE( torch::equal(m3[0][1][0], matmul(matmul(evidence.permute({1,0}), B[1].log()), D)[0][0]) );
     });
 }
 
 TEST_CASE( "ActiveTransitionNode's (to, from, param and action) messages are correct (Dirichlet prior)" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
-        MatrixXd U = Functions::uniformColumnWise(2, 1);
-        MatrixXd D = Functions::uniformColumnWise(4, 1);
-        MatrixXd evidence = Functions::uniformColumnWise(2, 1);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(2, 2, 4);
+        Tensor U = Ops::uniformColumnWise({2});
+        Tensor D = Ops::uniformColumnWise({4});
+        Tensor evidence = Ops::uniformColumnWise({2});
+        Tensor B = Ops::uniformColumnWise({2, 2, 4});
         auto fg = FactorGraph::current();
         auto c1 = API::Categorical(D);
         auto c2 = API::Categorical(U);
@@ -143,54 +130,34 @@ TEST_CASE( "ActiveTransitionNode's (to, from, param and action) messages are cor
         t1->setPosterior(Categorical::create(evidence));
         t1->setType(VarNodeType::OBSERVED);
 
-        MatrixXd res11 = Dirichlet::expectedLog(B)[0];
-        res11 = U(0 , 0) * res11 * D;
-        MatrixXd res12 = Dirichlet::expectedLog(B)[1];
-        res12 = U(1 , 0) * res12 * D;
-        MatrixXd res1 = res11 + res12;
+        Tensor res1 = U[0][0] * matmul(Dirichlet::expectedLog(B)[0], D) \
+                    + U[1][0] * matmul(Dirichlet::expectedLog(B)[1],D);
         auto m1 = t1->parent()->message(t1);
-        REQUIRE( m1[0].cols() == 1 );
-        REQUIRE( m1[0].rows() == 2 );
-        REQUIRE( m1[0](0, 0) == res1(0, 0) );
-        REQUIRE( m1[0](1, 0) == res1(1, 0) );
+        REQUIRE( m1[0].size(1) == 1 );
+        REQUIRE( m1[0].size(0) == 2 );
+        REQUIRE( torch::equal(m1, res1) );
 
-        MatrixXd res21 = Dirichlet::expectedLog(B)[0];
-        res21 = U(0 , 0) * res21.transpose() * evidence;
-        MatrixXd res22 = Dirichlet::expectedLog(B)[1];
-        res22 = U(1 , 0) * res22.transpose() * evidence;
-        MatrixXd res2 = res21 + res22;
+        Tensor res2 = U[0][0] * Dirichlet::expectedLog(B)[0].permute({1,0}) * evidence \
+                    + U[1][0] * Dirichlet::expectedLog(B)[1].permute({1,0}) * evidence;
         auto m2 = t1->parent()->message(c1);
-        REQUIRE( m2[0].cols() == 1 );
-        REQUIRE( m2[0].rows() == 4 );
-        REQUIRE( m2[0](0, 0) == res2(0, 0) );
-        REQUIRE( m2[0](1, 0) == res2(1, 0) );
-        REQUIRE( m2[0](2, 0) == res2(2, 0) );
-        REQUIRE( m2[0](3, 0) == res2(3, 0) );
+        REQUIRE( m2[0].size(1) == 1 );
+        REQUIRE( m2[0].size(0) == 4 );
+        REQUIRE( torch::equal(m2[0], res2) );
 
-        MatrixXd res31 = Dirichlet::expectedLog(B)[0];
-        MatrixXd res32 = Dirichlet::expectedLog(B)[1];
         auto m3 = t1->parent()->message(c2);
-        REQUIRE( m3[0].cols() == 1 );
-        REQUIRE( m3[0].rows() == 2 );
-        REQUIRE( m3[0](0, 0) == (evidence.transpose() * res31 * D)(0, 0) );
-        REQUIRE( m3[0](1, 0) == (evidence.transpose() * res32 * D)(0, 0) );
+        REQUIRE( m3[0].size(1) == 1 );
+        REQUIRE( m3[0].size(0) == 2 );
+        REQUIRE( m3[0][0][0].item<double>() == matmul(matmul(evidence.permute({1,0}), Dirichlet::expectedLog(B)[0]), D)[0][0].item<double>() );
+        REQUIRE( m3[0][1][0].item<double>() == matmul(matmul(evidence.permute({1,0}), Dirichlet::expectedLog(B)[1]), D)[0][0].item<double>() );
 
-        std::vector<MatrixXd> res4 = Functions::constant(2, 2, 4, 0);
-        for (int i = 0; i < res4.size(); ++i) {
-            res4[i] = evidence * D.transpose() * U(i, 0);
+        Tensor res4 = torch::zeros({2, 2, 4});
+        for (int i = 0; i < res4.size(0); ++i) {
+            res4[i] = matmul(evidence, D.permute({1,0})) * U[i][0];
         }
         auto m4 = t1->parent()->message(d1);
-        REQUIRE( m4.size() == 2 );
-        REQUIRE( m4[0].cols() == 4 );
-        REQUIRE( m4[0].rows() == 2 );
-        REQUIRE( m4[1].cols() == 4 );
-        REQUIRE( m4[1].rows() == 2 );
-        for (int i = 0; i < 2; ++i) {
-            for (int j = 0; j < 2; ++j) {
-                for (int k = 0; k < 4; ++k) {
-                    REQUIRE( m4[i](j, k) == res4[i](j, k) );
-                }
-            }
-        }
+        REQUIRE( m4.size(0) == 2 );
+        REQUIRE( m4.size(2) == 4 );
+        REQUIRE( m4.size(1) == 2 );
+        REQUIRE( torch::equal(m4,res4) );
     });
 }

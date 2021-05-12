@@ -4,18 +4,14 @@
 
 #include "catch.hpp"
 #include "nodes/VarNode.h"
-#include "nodes/FactorNode.h"
 #include "nodes/CategoricalNode.h"
 #include "graphs/FactorGraph.h"
 #include "distributions/Categorical.h"
-#include "distributions/Transition.h"
-#include "distributions/Dirichlet.h"
-#include "distributions/ActiveTransition.h"
 #include "helpers/Files.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 #include "api/API.h"
 #include "contexts/FactorGraphContexts.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include "helpers/UnitTests.h"
 
 using namespace hopi::distributions;
@@ -24,13 +20,13 @@ using namespace hopi::nodes;
 using namespace hopi::math;
 using namespace hopi::api;
 using namespace tests;
-using namespace Eigen;
+using namespace torch;
 
 TEST_CASE( "FactorGraph.getNodes returns a vector containing all vars of the graph" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
         std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        MatrixXd U0 = Functions::uniformColumnWise(5, 1);
+        Tensor U0 = Ops::uniformColumnWise({5});
         VarNode *a0 = API::Categorical(U0);
         a0->setType(VarNodeType::OBSERVED);
         VarNode *a1 = API::Categorical(U0);
@@ -139,10 +135,10 @@ TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nod
         /**
          ** Create the model's parameters.
          **/
-        MatrixXd U0 = Functions::uniformColumnWise(5, 1);
-        MatrixXd D0 = Functions::uniformColumnWise(3, 1);
-        MatrixXd A  = Functions::uniformColumnWise(9, 3);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(5, 3, 3);
+        Tensor U0 = Ops::uniformColumnWise({5});
+        Tensor D0 = Ops::uniformColumnWise({3});
+        Tensor A  = Ops::uniformColumnWise({9,3});
+        Tensor B  = Ops::uniformColumnWise({5,3,3});
 
         /**
          ** Create the generative model.
@@ -190,13 +186,10 @@ TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nod
         /**
          ** Create the model's parameters.
          **/
-        MatrixXd theta_U = MatrixXd::Ones(actions, 1);
-        MatrixXd theta_A = MatrixXd::Ones(observations, states);
-        MatrixXd theta_D = MatrixXd::Ones(states, 1);
-        std::vector<MatrixXd> theta_B(actions);
-        for (int i = 0; i < actions; ++i) {
-            theta_B[i] = MatrixXd::Ones(states, states);
-        }
+        Tensor theta_U = torch::ones({actions, 1});
+        Tensor theta_A = torch::ones({observations, states});
+        Tensor theta_D = torch::ones({states, 1});
+        Tensor theta_B = torch::ones({actions,states,states});
 
         /**
          ** Create the generative model.
@@ -302,31 +295,11 @@ TEST_CASE( "FactorGraph's loadEvidence properly load evidence into observed vari
 
         REQUIRE( s2->posterior() != nullptr );
         REQUIRE( s2->posterior()->type() == DistributionType::CATEGORICAL );
-        auto c2 = dynamic_cast<Categorical*>(s2->posterior());
-        REQUIRE( c2->p(0) == 0 );
-        REQUIRE( c2->p(1) == 0 );
-        REQUIRE( c2->p(2) == 0 );
-        REQUIRE( c2->p(3) == 0 );
-        REQUIRE( c2->p(4) == 0 );
-        REQUIRE( c2->p(5) == 0 );
-        REQUIRE( c2->p(6) == 0 );
-        REQUIRE( c2->p(7) == 0 );
-        REQUIRE( c2->p(8) == 1 );
-        REQUIRE( c2->p(9) == 0 );
+        REQUIRE( torch::equal(s2->posterior()->params(), Ops::oneHot(10,8)) );
 
         REQUIRE( s3->posterior() != nullptr );
         REQUIRE( s3->posterior()->type() == DistributionType::CATEGORICAL );
-        auto c3 = dynamic_cast<Categorical*>(s3->posterior());
-        REQUIRE( c3->p(0) == 0 );
-        REQUIRE( c3->p(1) == 0 );
-        REQUIRE( c3->p(2) == 0 );
-        REQUIRE( c3->p(3) == 0 );
-        REQUIRE( c3->p(4) == 0 );
-        REQUIRE( c3->p(5) == 0 );
-        REQUIRE( c3->p(6) == 0 );
-        REQUIRE( c3->p(7) == 0 );
-        REQUIRE( c3->p(8) == 0 );
-        REQUIRE( c3->p(9) == 1 );
+        REQUIRE( torch::equal(s3->posterior()->params(), Ops::oneHot(10,9)) );
     });
 }
 
@@ -334,8 +307,8 @@ TEST_CASE( "FactorGraph.integrate properly update the factor graph" ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
 
-        MatrixXd A = Functions::uniformColumnWise(9, 3);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(2, 3, 3);
+        Tensor A = Ops::uniformColumnWise({9, 3});
+        Tensor B = Ops::uniformColumnWise({2, 3, 3});
 
         auto root = fg->treeRoot();
 
@@ -354,15 +327,14 @@ TEST_CASE( "FactorGraph.integrate properly update the factor graph" ) {
         sK->setAction(0);
         auto oK = API::Transition(sK, A);
 
-        fg->integrate(0, Functions::oneHot(9, 2), A, B);
+        fg->integrate(0, Ops::oneHot(9, 2), A, B);
         auto new_root = fg->treeRoot();
         REQUIRE( new_root != root );  // Root have been updated
         REQUIRE( new_root->prior()->type() == DistributionType::ACTIVE_TRANSITION ); // The type of prior is now an active transition
         REQUIRE( new_root->parent()->parent(0) == root ); // The first parent of new_root is the (old) root node
         auto d1 = new_root->parent()->parent(1)->prior();
         REQUIRE( d1->type() == DistributionType::CATEGORICAL); // The second parent of new_root has a categorical prior
-        auto c1 = dynamic_cast<Categorical*>(d1);
-        REQUIRE( c1->cardinality() == 2); // and its cardinality is 5
+        REQUIRE( d1->params().numel() == 2); // and its cardinality is 5
     });
 }
 
@@ -428,8 +400,8 @@ TEST_CASE( "FactorGraph.removeNullFactors properly remove null factors from the 
 TEST_CASE( "FactorGraph.removeBranch properly cut off branches of the tree" ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        MatrixXd A = Functions::uniformColumnWise(9, 3);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(2, 3, 3);
+        Tensor A = Ops::uniformColumnWise({9, 3});
+        Tensor B = Ops::uniformColumnWise({2, 3, 3});
         auto root = fg->treeRoot();
 
         REQUIRE( fg->factors() == 5 );
@@ -437,13 +409,13 @@ TEST_CASE( "FactorGraph.removeBranch properly cut off branches of the tree" ) {
         REQUIRE( root->lastChild() - root->firstChild() == 1 );
 
         auto s0   = API::Transition(root, B[0]);
-        auto s00  = API::Transition(s0, B[0]);
-        auto s000 = API::Transition(s00, B[0]);
-        auto s001 = API::Transition(s00, B[1]);
+        auto s00  = API::Transition(s0,   B[0]);
+        auto s000 = API::Transition(s00,  B[0]);
+        auto s001 = API::Transition(s00,  B[1]);
         auto s1   = API::Transition(root, B[1]);
-        auto s11  = API::Transition(s1, B[1]);
-        auto s110 = API::Transition(s11, B[0]);
-        auto s111 = API::Transition(s11, B[1]);
+        auto s11  = API::Transition(s1,   B[1]);
+        auto s110 = API::Transition(s11,  B[0]);
+        auto s111 = API::Transition(s11,  B[1]);
 
         REQUIRE( fg->factors() == 13 );
         REQUIRE( fg->nodes() == 13 );

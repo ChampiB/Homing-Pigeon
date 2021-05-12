@@ -8,7 +8,7 @@
 #include "FactorNode.h"
 #include "api/API.h"
 #include <memory>
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 namespace hopi::nodes {
     class VarNode;
@@ -26,13 +26,13 @@ namespace hopi::nodes {
         explicit CategoricalNode(VarNode *node);
         VarNode *parent(int index) override;
         VarNode *child() override;
-        std::vector<Eigen::MatrixXd> message(VarNode *to) override;
+        torch::Tensor message(VarNode *to) override;
         double vfe() override;
 
     private:
-        std::vector<Eigen::MatrixXd> childMessage();
-        std::vector<Eigen::MatrixXd> dMessage();
-        Eigen::MatrixXd getLogD();
+        torch::Tensor childMessage();
+        torch::Tensor dMessage();
+        torch::Tensor getLogD();
 
     private:
         VarNode *childNode;

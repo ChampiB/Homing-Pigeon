@@ -5,7 +5,7 @@
 #include "catch.hpp"
 #include "algorithms/AlgoVMP.h"
 #include "graphs/FactorGraph.h"
-#include "math/Functions.h"
+#include "math/Ops.h"
 #include "contexts/FactorGraphContexts.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
@@ -13,9 +13,8 @@
 #include "helpers/UnitTests.h"
 #include "api/API.h"
 #include <iostream>
-#include <Eigen/Dense>
 
-using namespace Eigen;
+using namespace torch;
 using namespace hopi::algorithms;
 using namespace hopi::distributions;
 using namespace hopi::graphs;
@@ -60,12 +59,9 @@ TEST_CASE( "AlgoVMP.vfe() returns the variational free energy of the variables s
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
         auto fg     = FactorGraph::current();
-        MatrixXd U  = Functions::uniformColumnWise(2, 1);
-        VarNode *a0 = API::Categorical(U);
-        MatrixXd D  = Functions::uniformColumnWise(5, 1);
-        VarNode *s0 = API::Categorical(D);
-        std::vector<MatrixXd> B = Functions::uniformColumnWise(2, 5, 5);
-        VarNode *s1 = API::ActiveTransition(s0, a0, B);
+        VarNode *a0 = API::Categorical(Ops::uniformColumnWise({2}));
+        VarNode *s0 = API::Categorical(Ops::uniformColumnWise({5}));
+        VarNode *s1 = API::ActiveTransition(s0, a0, Ops::uniformColumnWise({2,5,5}));
         s1->setType(OBSERVED);
 
         double F = AlgoVMP::vfe(fg->getNodes());
