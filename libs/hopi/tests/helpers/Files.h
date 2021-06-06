@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 03/12/2020.
+// Created by Theophile Champion on 03/12/2020.
 //
 
 #ifndef HOMING_PIGEON_2_FILES_H

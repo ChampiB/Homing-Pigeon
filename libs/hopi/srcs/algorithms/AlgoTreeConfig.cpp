@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/04/2021.
+// Created by Theophile Champion on 28/04/2021.
 //
 
 #include "AlgoTreeConfig.h"

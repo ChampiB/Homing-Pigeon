@@ -1,10 +1,9 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "AlgoVMP.h"
 #include <distributions/Categorical.h>
-#include "graphs/FactorGraph.h"
 #include "nodes/FactorNode.h"
 #include "nodes/VarNode.h"
 #include "iterators/HiddenVarIter.h"
@@ -49,6 +48,7 @@ namespace hopi::algorithms {
     void AlgoVMP::inference(VarNode *var) {
         Tensor post_param;
         AdjacentFactorsIter factorIt(var);
+
         while (*factorIt != nullptr) {
             if (post_param.numel() == 0) {
                 post_param = (*factorIt)->message(var);

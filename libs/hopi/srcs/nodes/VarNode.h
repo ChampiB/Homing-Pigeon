@@ -1,9 +1,9 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
-#ifndef HOMING_PIGEON_2_VARNODE_H
-#define HOMING_PIGEON_2_VARNODE_H
+#ifndef HOMING_PIGEON_2_VAR_NODE_H
+#define HOMING_PIGEON_2_VAR_NODE_H
 
 #include "VarNodeType.h"
 #include <memory>
@@ -19,12 +19,22 @@ namespace hopi::nodes {
 
 namespace hopi::nodes {
 
+    /**
+     * Class representing a variable node.
+     */
     class VarNode {
     public:
+        //
+        // Factory
+        //
         static std::unique_ptr<VarNode> create(VarNodeType type);
 
     public:
+        //
+        // Constructor
+        //
         explicit VarNode(VarNodeType type);
+
         void setPrior(std::unique_ptr<distributions::Distribution> prior);
         void setPosterior(std::unique_ptr<distributions::Distribution> posterior);
         void setBiased(std::unique_ptr<distributions::Distribution> biased);
@@ -66,4 +76,4 @@ namespace hopi::nodes {
 
 }
 
-#endif //HOMING_PIGEON_2_VARNODE_H
+#endif //HOMING_PIGEON_2_VAR_NODE_H

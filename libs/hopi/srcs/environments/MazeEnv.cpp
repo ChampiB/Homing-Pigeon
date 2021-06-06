@@ -1,11 +1,13 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "MazeEnv.h"
+#include "api/API.h"
 #include <iostream>
 
 using namespace torch;
+using namespace hopi::api;
 
 namespace hopi::environments {
 
@@ -24,7 +26,7 @@ namespace hopi::environments {
 
         input >> maze_size.first >> maze_size.second;
         getline(input, line); // return "\n"
-        maze = torch::empty({maze_size.first, maze_size.second});
+        maze = API::empty({maze_size.first, maze_size.second});
         for (int i = 0; i < maze_size.first; ++i) {
             getline(input, line);
             for (int j = 0; j < line.length() && j < maze_size.second; ++j) {
@@ -117,7 +119,7 @@ namespace hopi::environments {
     void MazeEnv::loadStatesIndexes() {
         int state_id = 0;
 
-        states_idx = torch::full(maze.sizes(), -1);
+        states_idx = API::full(maze.sizes(), -1).to(kInt);
         for (int j = 0; j < maze.size(0); ++j) {
             for (int i = 0; i < maze.size(1); ++i) {
                 if (maze[j][i].item<double>() == 0) {
@@ -129,7 +131,7 @@ namespace hopi::environments {
     }
 
     Tensor MazeEnv::A() {
-        Tensor A = torch::full({observations(), states()}, 0.1 / (observations() - 1));
+        Tensor A = API::full({observations(), states()}, 0.1 / (observations() - 1));
 
         if (states_idx.numel() == 0) {
             loadStatesIndexes();
@@ -145,7 +147,7 @@ namespace hopi::environments {
     }
 
     Tensor MazeEnv::B() {
-        Tensor B = torch::full({actions(), states(), states()}, 0.1 / (states() - 1));
+        Tensor B = API::full({states(), states(), actions()}, 0.1 / (states() - 1));
 
         if (states_idx.numel() == 0) {
             loadStatesIndexes();
@@ -156,7 +158,7 @@ namespace hopi::environments {
                     auto current_pos = std::make_pair(j, i);
                     for (int k = 0; k < actions(); ++k) {
                         auto dest_pos = execute(k, current_pos);
-                        B[k][states_idx[dest_pos.first][dest_pos.second]][states_idx[j][i]] = 0.9;
+                        B[states_idx[dest_pos.first][dest_pos.second]][states_idx[j][i]][k] = 0.9;
                     }
                 }
             }
@@ -165,7 +167,7 @@ namespace hopi::environments {
     }
 
     Tensor MazeEnv::D() {
-        Tensor D = torch::full({states()}, 0.1 / (states() - 1));
+        Tensor D = API::full({states()}, 0.1 / (states() - 1));
 
         if (states_idx.numel() == 0) {
             loadStatesIndexes();
@@ -176,28 +178,29 @@ namespace hopi::environments {
 
     std::pair<int, int> MazeEnv::execute(int action, const std::pair<int, int> &pos) const {
         std::pair res = pos;
+        auto maze_a = maze.accessor<double,2>();
 
         switch (action) {
             case UP:
-                if (res.first - 1 >= 0 && maze[res.first - 1][res.second].item<double>() == 0)
+                if (res.first - 1 >= 0 && maze_a[res.first - 1][res.second] == 0)
                     res.first -= 1;
                 break;
             case DOWN:
-                if (res.first + 1 < maze.size(0) && maze[res.first + 1][res.second].item<double>() == 0)
+                if (res.first + 1 < maze.size(0) && maze_a[res.first + 1][res.second] == 0)
                     res.first += 1;
                 break;
             case LEFT:
-                if (res.second - 1 >= 0 && maze[res.first][res.second - 1].item<double>() == 0)
+                if (res.second - 1 >= 0 && maze_a[res.first][res.second - 1] == 0)
                     res.second -= 1;
                 break;
             case RIGHT:
-                if (res.second + 1 < maze.size(1) && maze[res.first][res.second + 1].item<double>() == 0)
+                if (res.second + 1 < maze.size(1) && maze_a[res.first][res.second + 1] == 0)
                     res.second += 1;
                 break;
             case IDLE:
                 break;
             default:
-                throw std::runtime_error("Invalid action.");
+                assert(false && "MazeEnv::execute, unsupported action.");
         }
         return res;
     }

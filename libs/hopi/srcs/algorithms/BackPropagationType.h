@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 08/12/2020.
+// Created by Theophile Champion on 08/12/2020.
 //
 
 #ifndef HOMING_PIGEON_2_BACKPROPAGATIONTYPE_H

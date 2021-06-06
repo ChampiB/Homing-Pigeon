@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 04/12/2020.
+// Created by Theophile Champion on 04/12/2020.
 //
 
 #include "ObservedVarIter.h"

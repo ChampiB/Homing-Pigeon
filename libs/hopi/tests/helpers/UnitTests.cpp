@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 10/05/2021.
+// Created by Theophile Champion on 10/05/2021.
 //
 
 #include "UnitTests.h"
@@ -16,9 +16,9 @@ namespace tests{
         std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
     }
 
-    void UnitTests::require_approximately_equal(const torch::Tensor &t1, const torch::Tensor &t2, double epsilon) {
-        Tensor flat_t1 = torch::flatten(t1);
-        Tensor flat_t2 = torch::flatten(t2);
+    void UnitTests::require_approximately_equal(const Tensor &t1, const Tensor &t2, double epsilon) {
+        Tensor flat_t1 = flatten(t1);
+        Tensor flat_t2 = flatten(t2);
 
         REQUIRE(t1.dim() == t2.dim());
         REQUIRE(t1.sizes() == t2.sizes());

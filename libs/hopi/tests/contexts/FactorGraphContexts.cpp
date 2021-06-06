@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #include "FactorGraphContexts.h"
@@ -22,7 +22,7 @@ namespace tests {
     std::shared_ptr<FactorGraph> FactorGraphContexts::context1() {
         FactorGraph::setCurrent(nullptr);
         auto fg = FactorGraph::current();
-        Tensor param = Ops::uniformColumnWise({3});
+        Tensor param = Ops::uniform({3});
 
         VarNode *c1 = API::Categorical(param);
         c1->setType(VarNodeType::OBSERVED);
@@ -49,10 +49,10 @@ namespace tests {
         /**
          ** Create the model's parameters.
          **/
-        Tensor U0 = Ops::uniformColumnWise({5});
-        Tensor D0 = Ops::uniformColumnWise({3});
-        Tensor A  = Ops::uniformColumnWise({9,3});
-        Tensor B  = Ops::uniformColumnWise({5,3,3});
+        Tensor U0 = Ops::uniform({5});
+        Tensor D0 = Ops::uniform({3});
+        Tensor A  = Ops::uniform({9,3});
+        Tensor B  = Ops::uniform({3,3,5});
 
         /**
          ** Create the generative model.
@@ -72,7 +72,7 @@ namespace tests {
     std::shared_ptr<hopi::graphs::FactorGraph> FactorGraphContexts::context3() {
         FactorGraph::setCurrent(nullptr);
         auto fg = FactorGraph::current();
-        Tensor param = Ops::uniformColumnWise({3});
+        Tensor param = Ops::uniform({3});
 
         API::Categorical(param);
         VarNode *c1 = API::Categorical(param); // First observed variable

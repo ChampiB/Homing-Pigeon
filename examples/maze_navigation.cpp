@@ -28,10 +28,10 @@ int main()
     /**
      ** Create the model's parameters.
      **/
-    Tensor U0 = Ops::uniformColumnWise({env->actions(), 1});
-    Tensor A  = env->A();
-    Tensor B  = env->B();
-    Tensor D0 = env->D();
+    Tensor U0 = Ops::uniform({env->actions()}).to(kDouble);
+    Tensor A  = env->A().to(kDouble);
+    Tensor B  = env->B().to(kDouble);
+    Tensor D0 = env->D().to(kDouble);
 
     /**
      ** Create the generative model.
@@ -52,8 +52,8 @@ int main()
     /**
      ** Create the model's prior preferences.
      **/
-    Tensor D_tilde = Ops::uniformColumnWise({env->states(),  1});
-    Tensor E_tilde = torch::softmax(env->observations() - torch::arange(0,env->observations()), 0);
+    Tensor D_tilde = Ops::uniform({env->states()});
+    Tensor E_tilde = softmax(env->observations() - torch::arange(0,env->observations()).to(kDouble), 0);
 
     /**
      ** Run the simulation.
@@ -67,11 +67,11 @@ int main()
             algoTree->expansion(n, A, B);
             AlgoVMP::inference(algoTree->lastExpandedNodes());
             algoTree->evaluation();
-            algoTree->backpropagation(n, fg->treeRoot());
+            algoTree->propagation(n, fg->treeRoot());
         }
         int a = algoTree->actionSelection(fg->treeRoot());
         int o = env->execute(a);
-        fg->integrate(a, Ops::oneHot(env->observations(), o), A, B);
+        fg->integrate(a, Ops::one_hot(env->observations(), o), A, B);
         env->print();
     }
 

@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 10/05/2021.
+// Created by Theophile Champion on 10/05/2021.
 //
 
 #include "API.h"
@@ -30,7 +30,7 @@ namespace hopi::api {
 
         var->setParent(factor);
         var->setPrior(Categorical::create(param));
-        var->setPosterior(Categorical::create(Ops::uniformColumnWise({param.size(0)})));
+        var->setPosterior(Categorical::create(Ops::uniform({param.size(0)})));
         return var;
     }
 
@@ -41,7 +41,7 @@ namespace hopi::api {
 
         var->setParent(factor);
         auto dim = param->prior()->params().size(0);
-        var->setPosterior(Categorical::create(Ops::uniformColumnWise({dim})));
+        var->setPosterior(Categorical::create(Ops::uniform({dim})));
 
         param->addChild(factor);
         return var;
@@ -54,7 +54,7 @@ namespace hopi::api {
 
         var->setParent(factor);
         var->setPrior(Transition::create(param));
-        var->setPosterior(Categorical::create(Ops::uniformColumnWise({param.size(0), 1})));
+        var->setPosterior(Categorical::create(Ops::uniform({param.size(0)})));
 
         s->addChild(factor);
         return var;
@@ -67,7 +67,7 @@ namespace hopi::api {
 
         var->setParent(factor);
         auto dim = param->prior()->params().size(0);
-        var->setPosterior(Categorical::create(Ops::uniformColumnWise({dim, 1})));
+        var->setPosterior(Categorical::create(Ops::uniform({dim})));
 
         s->addChild(factor);
         param->addChild(factor);
@@ -81,7 +81,7 @@ namespace hopi::api {
 
         var->setParent(factor);
         var->setPrior(ActiveTransition::create(param));
-        var->setPosterior(Categorical::create(Ops::uniformColumnWise({param[0].size(0), 1})));
+        var->setPosterior(Categorical::create(Ops::uniform({param.size(0)})));
 
         s->addChild(factor);
         a->addChild(factor);
@@ -95,7 +95,7 @@ namespace hopi::api {
 
         var->setParent(factor);
         auto dim = param->prior()->params().size(0);
-        var->setPosterior(Categorical::create(Ops::uniformColumnWise({dim, 1})));
+        var->setPosterior(Categorical::create(Ops::uniform({dim})));
 
         s->addChild(factor);
         a->addChild(factor);
@@ -112,6 +112,28 @@ namespace hopi::api {
         var->setPrior(Dirichlet::create(param));
         var->setPosterior(Dirichlet::create(param));
         return var;
+    }
+
+    static ScalarType dType = kDouble;
+
+    void API::setDataType(const ScalarType &type) {
+        dType = type;
+    }
+
+    ScalarType API::dataType() {
+        return dType;
+    }
+
+    Tensor API::zeros(IntArrayRef sizes) {
+        return torch::zeros(sizes).to(dataType());
+    }
+
+    Tensor API::tensor(const torch::detail::TensorDataContainer &&data) {
+        return torch::tensor(data).to(dataType());
+    }
+
+    Tensor API::empty(IntArrayRef sizes) {
+        return torch::empty(sizes).to(dataType());
     }
 
 }

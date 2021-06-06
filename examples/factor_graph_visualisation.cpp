@@ -31,7 +31,7 @@ int main()
     /**
      ** Create the model's parameters.
      **/
-    Tensor U0 = Ops::uniformColumnWise({env->actions(), 1});
+    Tensor U0 = Ops::uniform({env->actions(), 1});
     Tensor A  = env->A();
     Tensor B  = env->B();
     Tensor D0 = env->D();
@@ -65,9 +65,9 @@ int main()
     /**
      ** Create the model's prior preferences.
      **/
-    Tensor D_tilde = Ops::uniformColumnWise({env->states(), 1});
-    Tensor E_tilde = env->observations() - torch::arange(0, env->observations());
-    E_tilde /= E_tilde.sum();
+    Tensor D_tilde = Ops::uniform({env->states()});
+    Tensor E_tilde = (env->observations() - torch::arange(0, env->observations())).to(kFloat32);
+    E_tilde /= E_tilde.sum().item<double>();
 
     /**
      ** Print the factor graph.

@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #include "catch.hpp"
@@ -9,7 +9,6 @@
 #include "distributions/Distribution.h"
 #include "helpers/UnitTests.h"
 #include "math/Ops.h"
-#include <torch/torch.h>
 #include <iostream>
 
 using namespace hopi::distributions;
@@ -83,7 +82,7 @@ TEST_CASE( "VarNode's n getter/incrementer work properly" ) {
 
 TEST_CASE( "VarNode's prior getter/setter work properly" ) {
     UnitTests::run([](){
-        auto d1 = Categorical::create(Ops::uniformColumnWise({2,1}));
+        auto d1 = Categorical::create(Ops::uniform({2}));
         Distribution *res = d1.get();
         auto n1 = VarNode::create(VarNodeType::HIDDEN);
 
@@ -95,7 +94,7 @@ TEST_CASE( "VarNode's prior getter/setter work properly" ) {
 
 TEST_CASE( "VarNode's posterior getter/setter work properly" ) {
     UnitTests::run([](){
-        auto d1 = Categorical::create(Ops::uniformColumnWise({2,1}));
+        auto d1 = Categorical::create(Ops::uniform({2}));
         Distribution *res = d1.get();
         auto n1 = VarNode::create(VarNodeType::HIDDEN);
 
@@ -107,7 +106,7 @@ TEST_CASE( "VarNode's posterior getter/setter work properly" ) {
 
 TEST_CASE( "VarNode's biased getter/setter work properly" ) {
     UnitTests::run([](){
-        auto d1 = Categorical::create(Ops::uniformColumnWise({2,1}));
+        auto d1 = Categorical::create(Ops::uniform({2}));
         Distribution *res = d1.get();
         auto n1 = VarNode::create(VarNodeType::HIDDEN);
 

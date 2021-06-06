@@ -1,38 +1,40 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "TransitionNode.h"
 #include <torch/torch.h>
 #include "nodes/VarNode.h"
+#include "math/Ops.h"
 #include "distributions/Dirichlet.h"
 
 using namespace hopi::nodes;
+using namespace hopi::math;
 using namespace hopi::distributions;
 using namespace torch;
 
 namespace hopi::nodes {
 
-    std::unique_ptr<TransitionNode> TransitionNode::create(RV *from, RV *to, RV *a) {
-        return std::make_unique<TransitionNode>(from, to, a);
+    std::unique_ptr<TransitionNode> TransitionNode::create(RV *from, RV *to, RV *param) {
+        return std::make_unique<TransitionNode>(from, to, param);
     }
 
     std::unique_ptr<TransitionNode> TransitionNode::create(RV *from, RV *to) {
         return std::make_unique<TransitionNode>(from, to);
     }
 
-    TransitionNode::TransitionNode(VarNode *f, VarNode *t, VarNode *a) {
+    TransitionNode::TransitionNode(VarNode *f, VarNode *t, VarNode *param) {
         from = f;
         to = t;
-        A = a;
+        A = param;
     }
 
     TransitionNode::TransitionNode(VarNode *f, VarNode *t) : TransitionNode(f, t, nullptr) {}
 
-    VarNode *TransitionNode::parent(int index) {
-        if (index == 0)
+    VarNode *TransitionNode::parent(int i) {
+        if (i == 0)
             return from;
-        else if (index == 1)
+        else if (i == 1)
             return A;
         else
             return nullptr;
@@ -50,26 +52,20 @@ namespace hopi::nodes {
         } else if (A && t == A) {
             return aMessage();
         } else {
-            throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
+            assert(false && "TransitionNode::message, invalid input node.");
         }
     }
 
     Tensor TransitionNode::toMessage() {
-        Tensor A_bar = getLogA();
-        Tensor hat = from->posterior()->params()[0];
-        return {A_bar * hat};
+        return matmul(getLogA(), from->posterior()->params());
     }
 
     Tensor TransitionNode::fromMessage() {
-        Tensor A_bar = getLogA();
-        Tensor hat = to->posterior()->params()[0];
-        return matmul(A_bar.permute({1,0}), hat);
+        return matmul(getLogA().permute({1,0}), to->posterior()->params());
     }
 
     Tensor TransitionNode::aMessage() {
-        Tensor o =   to->posterior()->params()[0];
-        Tensor s = from->posterior()->params()[0];
-        return matmul(o, s.permute({1,0}));
+        return outer(from->posterior()->params(), to->posterior()->params());
     }
 
     double TransitionNode::vfe() {
@@ -78,17 +74,15 @@ namespace hopi::nodes {
         if (child()->type() == HIDDEN) {
             VFE -= child()->posterior()->entropy();
         }
-        auto to_p   = to->posterior()->params()[0];
-        auto from_p = from->posterior()->params()[0];
-        auto lp     = getLogA();
-        return VFE - matmul(matmul(to_p.permute({1,0}), lp), from_p).item<double>();
+        auto lp = Ops::average(getLogA(), from->posterior()->params(), {1});
+        return VFE - Ops::average(lp, to->posterior()->params(), {0}).item<double>();
     }
 
     Tensor TransitionNode::getLogA() {
         if (A) {
-            return Dirichlet::expectedLog(A->posterior()->params())[0];
+            return Dirichlet::expectedLog(A->posterior()->params()).permute({1,0});
         } else {
-            return to->prior()->logParams()[0];
+            return to->prior()->logParams();
         }
     }
 

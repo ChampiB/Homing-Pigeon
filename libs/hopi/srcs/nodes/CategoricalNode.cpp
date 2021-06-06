@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "CategoricalNode.h"
@@ -13,23 +13,23 @@ using namespace torch;
 
 namespace hopi::nodes {
 
-    std::unique_ptr<CategoricalNode> CategoricalNode::create(RV *node, RV *d) {
-        return std::make_unique<CategoricalNode>(node, d);
+    std::unique_ptr<CategoricalNode> CategoricalNode::create(RV *to, RV *d) {
+        return std::make_unique<CategoricalNode>(to, d);
     }
 
     std::unique_ptr<CategoricalNode> CategoricalNode::create(RV *node) {
         return std::make_unique<CategoricalNode>(node);
     }
 
-    CategoricalNode::CategoricalNode(VarNode *node, VarNode *d) {
-        childNode = node;
-        D = d;
+    CategoricalNode::CategoricalNode(VarNode *to, VarNode *param) {
+        childNode = to;
+        D = param;
     }
 
-    CategoricalNode::CategoricalNode(VarNode *node) : CategoricalNode(node, nullptr) {}
+    CategoricalNode::CategoricalNode(VarNode *to) : CategoricalNode(to, nullptr) {}
 
-    VarNode *CategoricalNode::parent(int index) {
-        if (index == 0)
+    VarNode *CategoricalNode::parent(int i) {
+        if (i == 0)
             return D;
         else
             return nullptr;
@@ -45,7 +45,7 @@ namespace hopi::nodes {
         } else if (D && t == D) {
             return dMessage();
         } else {
-            throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
+            assert(false && "CategoricalNode::message, invalid input node.");
         }
     }
 
@@ -63,16 +63,14 @@ namespace hopi::nodes {
         if (child()->type() == HIDDEN) {
             VFE -= child()->posterior()->entropy();
         }
-        auto p  = child()->posterior()->params()[0];
-        auto lp = getLogD();
-        return VFE - matmul(p.permute({1,0}), lp).item<double>();
+        return VFE - dot(child()->posterior()->params(), getLogD()).item<double>();
     }
 
     Tensor CategoricalNode::getLogD() {
         if (D) {
-            return Dirichlet::expectedLog(D->posterior()->params())[0];
+            return Dirichlet::expectedLog(D->posterior()->params());
         } else {
-            return child()->prior()->logParams()[0];
+            return child()->prior()->logParams();
         }
     }
 

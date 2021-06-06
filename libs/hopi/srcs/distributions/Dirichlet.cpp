@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 06/01/2021.
+// Created by Theophile Champion on 06/01/2021.
 //
 
 #include "Dirichlet.h"
@@ -34,53 +34,54 @@ namespace hopi::distributions {
     }
 
     void Dirichlet::updateParams(const Tensor &p) {
+        assert(param.dim() == p.dim() && "Dirichlet::updateParams, inputs must have the same dimensions.");
+        assert(param.sizes() == p.sizes() && "Dirichlet::updateParams, inputs must have the same sizes.");
         param = p;
     }
 
     double Dirichlet::entropy(const Tensor &&p) {
-        if (p.dim() != 1) {
-            throw std::runtime_error("Unsupported call to Dirichlet::entropy (input) tensor's dimension must be one.");
-        }
-        double e = 0;
-        auto s = p.sum().item<double>();
-        auto acc = 0.0;
+        assert(p.dim() == 1 && "Dirichlet::entropy, input must have dimension one.");
+        auto p_a = p.accessor<double,1>();
+        double sum = 0;
+        double acc = 0;
 
-        for (int k = 0; k < p.size(0); ++k) {
-            acc += (p[k].item<double>() - 1) * Ops::digamma(p[k].item<double>());
+        for (int k = 0; k < p_a.size(0); ++k) {
+            acc += (p_a[k] - 1) * Ops::digamma(p_a[k]);
+            sum += p_a[k];
         }
-        e += Ops::log_beta(p) \
-          +  (s - (double) p.size(0)) * Ops::digamma(s) \
-          -  acc;
-        return e;
+        return Ops::log_beta(p) + (sum - (double) p.size(0)) * Ops::digamma(sum) - acc;
     }
 
     double Dirichlet::entropy() {
-        Tensor e = torch::zeros({1});
+        double e = 0;
 
+        Ops::unsqueeze(3 - param.dim(), {&param});
         for (int i = 0; i < param.size(0); ++i) {
-            for (int j = 0; j < param.size(2); ++j) {
-                e += entropy(param.index({i, None, j}));
+            for (int j = 0; j < param.size(1); ++j) {
+                e += entropy(param.index({i, j, Ellipsis}));
             }
         }
-        return e.item<double>();
+        param = torch::squeeze(param);
+        return e;
     }
 
     Tensor Dirichlet::expectedLog(const Tensor &p) {
-        Tensor m = p;
+        // Make sure input are valid
+        assert(p.dim() <= 3 && "Dirichlet::expectedLog does not support Dirichlet of dimension superior to three");
 
-        for (int i = 0; i < p.size(0); ++i) {
-            for (int k = 0; k < p.size(2); ++k) {
-                auto sum = m.index({i, None, k}).sum().item<double>();
-                for (int j = 0; j < p.size(1); ++j) {
+        // Compute the expected log
+        Tensor m = p.detach().clone();
+
+        Ops::unsqueeze(3 - m.dim(), {&m});
+        for (int i = 0; i < m.size(0); ++i) {
+            for (int j = 0; j < m.size(1); ++j) {
+                auto sum = m.index({i,j,Ellipsis}).sum().item<double>();
+                for (int k = 0; k < m.size(2); ++k) {
                     m[i][j][k] = Ops::digamma(m[i][j][k].item<double>()) - Ops::digamma(sum);
                 }
             }
         }
-        return m;
-    }
-
-    void Dirichlet::increaseParam(int matrixId, int rowId, int colId) {
-        param[matrixId][rowId][colId] += 1;
+        return torch::squeeze(m);
     }
 
 }

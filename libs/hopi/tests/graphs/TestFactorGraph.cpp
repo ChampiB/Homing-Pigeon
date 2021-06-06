@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #include "catch.hpp"
@@ -26,7 +26,7 @@ TEST_CASE( "FactorGraph.getNodes returns a vector containing all vars of the gra
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
         std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        Tensor U0 = Ops::uniformColumnWise({5});
+        Tensor U0 = Ops::uniform({5});
         VarNode *a0 = API::Categorical(U0);
         a0->setType(VarNodeType::OBSERVED);
         VarNode *a1 = API::Categorical(U0);
@@ -135,10 +135,10 @@ TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nod
         /**
          ** Create the model's parameters.
          **/
-        Tensor U0 = Ops::uniformColumnWise({5});
-        Tensor D0 = Ops::uniformColumnWise({3});
-        Tensor A  = Ops::uniformColumnWise({9,3});
-        Tensor B  = Ops::uniformColumnWise({5,3,3});
+        Tensor U0 = Ops::uniform({5});
+        Tensor D0 = Ops::uniform({3});
+        Tensor A  = Ops::uniform({9,3});
+        Tensor B  = Ops::uniform({3,3,5});
 
         /**
          ** Create the generative model.
@@ -186,9 +186,9 @@ TEST_CASE( "Building a FactorGraph using 'create' functions properly connect nod
         /**
          ** Create the model's parameters.
          **/
-        Tensor theta_U = torch::ones({actions, 1});
+        Tensor theta_U = torch::ones({actions});
         Tensor theta_A = torch::ones({observations, states});
-        Tensor theta_D = torch::ones({states, 1});
+        Tensor theta_D = torch::ones({states});
         Tensor theta_B = torch::ones({actions,states,states});
 
         /**
@@ -295,11 +295,11 @@ TEST_CASE( "FactorGraph's loadEvidence properly load evidence into observed vari
 
         REQUIRE( s2->posterior() != nullptr );
         REQUIRE( s2->posterior()->type() == DistributionType::CATEGORICAL );
-        REQUIRE( torch::equal(s2->posterior()->params(), Ops::oneHot(10,8)) );
+        REQUIRE( equal(s2->posterior()->params(), Ops::one_hot(10, 8)) );
 
         REQUIRE( s3->posterior() != nullptr );
         REQUIRE( s3->posterior()->type() == DistributionType::CATEGORICAL );
-        REQUIRE( torch::equal(s3->posterior()->params(), Ops::oneHot(10,9)) );
+        REQUIRE( equal(s3->posterior()->params(), Ops::one_hot(10, 9)) );
     });
 }
 
@@ -307,8 +307,8 @@ TEST_CASE( "FactorGraph.integrate properly update the factor graph" ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
 
-        Tensor A = Ops::uniformColumnWise({9, 3});
-        Tensor B = Ops::uniformColumnWise({2, 3, 3});
+        Tensor A = Ops::uniform({9,3});
+        Tensor B = Ops::uniform({3,3,2});
 
         auto root = fg->treeRoot();
 
@@ -327,81 +327,22 @@ TEST_CASE( "FactorGraph.integrate properly update the factor graph" ) {
         sK->setAction(0);
         auto oK = API::Transition(sK, A);
 
-        fg->integrate(0, Ops::oneHot(9, 2), A, B);
+        fg->integrate(0, Ops::one_hot(9, 2), A, B);
         auto new_root = fg->treeRoot();
         REQUIRE( new_root != root );  // Root have been updated
         REQUIRE( new_root->prior()->type() == DistributionType::ACTIVE_TRANSITION ); // The type of prior is now an active transition
         REQUIRE( new_root->parent()->parent(0) == root ); // The first parent of new_root is the (old) root node
         auto d1 = new_root->parent()->parent(1)->prior();
         REQUIRE( d1->type() == DistributionType::CATEGORICAL); // The second parent of new_root has a categorical prior
-        REQUIRE( d1->params().numel() == 2); // and its cardinality is 5
-    });
-}
-
-TEST_CASE( "FactorGraph.removeNullNodes properly remove null variables from the factor graph" ) {
-    UnitTests::run([](){
-        FactorGraph::setCurrent(nullptr);
-        auto fg = std::make_shared<FactorGraph>();
-
-        fg->addNode(nullptr);
-        auto v1 = VarNode::create(VarNodeType::HIDDEN);
-        auto p1 = v1.get();
-        fg->addNode(std::move(v1));
-        fg->addNode(nullptr);
-        fg->addNode(nullptr);
-        fg->addNode(nullptr);
-        auto v2 = VarNode::create(VarNodeType::HIDDEN);
-        auto p2 = v2.get();
-        fg->addNode(std::move(v2));
-        auto v3 = VarNode::create(VarNodeType::HIDDEN);
-        auto p3 = v3.get();
-        fg->addNode(std::move(v3));
-        fg->addNode(nullptr);
-        REQUIRE( fg->nodes() == 8 );
-        fg->removeNullNodes();
-        REQUIRE( fg->nodes() == 3 );
-        REQUIRE( fg->node(0) == p1 );
-        REQUIRE( fg->node(1) == p2 );
-        REQUIRE( fg->node(2) == p3 );
-    });
-}
-
-TEST_CASE( "FactorGraph.removeNullFactors properly remove null factors from the factor graph" ) {
-    UnitTests::run([](){
-        FactorGraph::setCurrent(nullptr);
-        std::shared_ptr<FactorGraph> fg = std::make_shared<FactorGraph>();
-
-        fg->addFactor(nullptr);
-        auto v1 = VarNode::create(VarNodeType::HIDDEN);
-        auto f1 = CategoricalNode::create(v1.get());
-        auto p1 = f1.get();
-        fg->addFactor(std::move(f1));
-        fg->addFactor(nullptr);
-        fg->addFactor(nullptr);
-        fg->addFactor(nullptr);
-        auto v2 = VarNode::create(VarNodeType::HIDDEN);
-        auto f2 = CategoricalNode::create(v2.get());
-        auto p2 = f2.get();
-        fg->addFactor(std::move(f2));
-        auto v3 = VarNode::create(VarNodeType::HIDDEN);
-        auto f3 = CategoricalNode::create(v3.get());
-        auto p3 = f3.get();
-        fg->addFactor(std::move(f3));
-        fg->addFactor(nullptr);
-        REQUIRE( fg->factors() == 8 );
-        fg->removeNullFactors();
-        REQUIRE( fg->factors() == 3 );
-        REQUIRE( fg->factor(0) == p1 );
-        REQUIRE( fg->factor(1) == p2 );
-        REQUIRE( fg->factor(2) == p3 );
+        REQUIRE( d1->params().numel() == 2); // and its cardinality is 2
     });
 }
 
 TEST_CASE( "FactorGraph.removeBranch properly cut off branches of the tree" ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();
-        Tensor A = Ops::uniformColumnWise({9, 3});
-        Tensor B = Ops::uniformColumnWise({2, 3, 3});
+        Tensor A = Ops::uniform({9,3});
+        Tensor B = Ops::uniform({3,3,2});
         auto root = fg->treeRoot();
 
         REQUIRE( fg->factors() == 5 );
@@ -423,8 +364,6 @@ TEST_CASE( "FactorGraph.removeBranch properly cut off branches of the tree" ) {
 
         fg->removeBranch(s0->parent());
         root->removeNullChildren();
-        fg->removeNullNodes();
-        fg->removeNullFactors();
         REQUIRE( fg->factors() == 9 );
         REQUIRE( fg->nodes() == 9 );
         REQUIRE( root->lastChild() - root->firstChild() == 2 );
@@ -435,8 +374,6 @@ TEST_CASE( "FactorGraph.removeBranch properly cut off branches of the tree" ) {
 
         fg->removeBranch(s1->parent());
         root->removeNullChildren();
-        fg->removeNullNodes();
-        fg->removeNullFactors();
         REQUIRE( fg->factors() == 5 );
         REQUIRE( fg->nodes() == 5 );
         REQUIRE( root->lastChild() - root->firstChild() == 1 );

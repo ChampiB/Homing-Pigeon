@@ -32,19 +32,19 @@ int main() {
             nn::Sigmoid());
 
     // Create the optimizer
-    torch::optim::Adam optimizer(classifier->parameters(), torch::optim::AdamOptions(5e-4));
+    optim::Adam optimizer(classifier->parameters(), optim::AdamOptions(5e-4));
 
     // Learning loop
     long kNumberOfEpochs = 30;
     for (long epoch = 1; epoch <= kNumberOfEpochs; ++epoch) {
         long batch_index = 0;
-        for (torch::data::Example<>& batch : *data_loader) {
+        for (data::Example<>& batch : *data_loader) {
             // Train the classifier
             classifier->zero_grad();
-            torch::Tensor images = batch.data;
-            torch::Tensor labels = torch::empty(batch.data.size(0)).uniform_(0.8, 1.0);
-            torch::Tensor output = classifier->forward(images);
-            torch::Tensor loss = torch::binary_cross_entropy(output, labels);
+            Tensor images = batch.data;
+            Tensor labels = torch::empty(batch.data.size(0)).uniform_(0.8, 1.0);
+            Tensor output = classifier->forward(images);
+            Tensor loss = binary_cross_entropy(output, labels);
             loss.backward();
             optimizer.step();
             std::printf("\r[%2ld/%2ld][%3ld/%3ld] loss: %.4f",

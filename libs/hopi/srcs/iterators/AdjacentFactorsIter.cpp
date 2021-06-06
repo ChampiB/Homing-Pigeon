@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 19/03/2020.
+// Created by Theophile Champion on 19/03/2020.
 //
 
 #include "AdjacentFactorsIter.h"

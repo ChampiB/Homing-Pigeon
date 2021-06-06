@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "ActiveTransition.h"
@@ -33,14 +33,11 @@ namespace hopi::distributions {
     }
 
     void ActiveTransition::updateParams(const Tensor &p) {
-        if (p.sizes() != param.sizes()) {
-            throw std::runtime_error("ActiveTransition::updateParams argument size must match parameter size.");
-        }
-        param = torch::softmax(p, 0);
+        assert(false && "ActiveTransition::updateParams, unsupported.");
     }
 
     double ActiveTransition::entropy() {
-        throw std::runtime_error("Unsupported: ActiveTransition::entropy()");
+        assert(false && "ActiveTransition::entropy, unsupported.");
     }
 
 }

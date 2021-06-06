@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 06/01/2021.
+// Created by Theophile Champion on 06/01/2021.
 //
 
 #include "DirichletNode.h"
@@ -21,7 +21,7 @@ namespace hopi::nodes {
         childNode = node;
     }
 
-    VarNode *DirichletNode::parent(int index) {
+    VarNode *DirichletNode::parent(int i) {
         return nullptr;
     }
 
@@ -33,32 +33,36 @@ namespace hopi::nodes {
         if (to == childNode) {
             return childMessage();
         } else {
-            throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
+            assert(false && "DirichletNode::message, invalid input node.");
         }
     }
 
     double DirichletNode::energy(const Tensor &prior, const Tensor &post) {
-        auto s = post.sum().item<double>();
+        auto sum = post.sum().item<double>();
         double acc = 0;
 
+        assert(prior.dim() == 1 && "DirichletNode::energy, prior must have dimension one.");
+        assert(post.dim() == 1 && "DirichletNode::energy, post must have dimension one.");
         for (int k = 0; k < post.size(0); ++k) {
-            acc += (prior[k].item<double>() - 1) *  (Ops::digamma(post[k].item<double>()) - Ops::digamma(s));
+            acc += (prior[k].item<double>() - 1) *  (Ops::digamma(post[k].item<double>()) - Ops::digamma(sum));
         }
-        return acc - std::log(Ops::beta(prior));
+        return acc - Ops::log_beta(prior);
     }
-
 
     double DirichletNode::vfe() {
         double VFE = 0;
         Tensor post_p  = child()->posterior()->params();
         Tensor prior_p = child()->prior()->params();
 
+        assert(prior_p.dim() == post_p.dim() && "DirichletNode::vfe, post and prior parameters must have the same dimension");
+        assert(prior_p.sizes() == post_p.sizes() && "DirichletNode::vfe, post and prior parameters must have the same sizes");
         if (child()->type() == HIDDEN) {
             VFE -= child()->posterior()->entropy();
         }
+        Ops::unsqueeze(3 - prior_p.dim(), {&prior_p,&post_p});
         for (int i = 0; i < post_p.size(0); ++i) {
-            for (int j = 0; j < post_p[i].size(1); ++j) {
-                VFE -= energy(prior_p.index({i,None,j}), post_p.index({i,None,j}));
+            for (int j = 0; j < post_p.size(1); ++j) {
+                VFE -= energy(prior_p.index({i,j,Ellipsis}), post_p.index({i,j,Ellipsis}));
             }
         }
         return VFE;

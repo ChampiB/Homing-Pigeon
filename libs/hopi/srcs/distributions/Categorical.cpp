@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "Categorical.h"
@@ -32,10 +32,6 @@ namespace hopi::distributions {
         return DistributionType::CATEGORICAL;
     }
 
-    Tensor Categorical::p(int id) const{
-        return param[id];
-    }
-
     Tensor Categorical::logParams() const {
         return params().log();
     }
@@ -45,15 +41,13 @@ namespace hopi::distributions {
     }
 
     void Categorical::updateParams(const Tensor &p) {
-        if (p.numel() != 1) {
-            throw std::runtime_error("Categorical::updateParams argument size must be equal to one.");
-        }
-        param = torch::softmax(p, 0);
+        assert(p.dim() == 1 && "Categorical::updateParams, input must have dimension one.");
+        param = softmax(p, 0);
     }
 
     double Categorical::entropy() {
         Tensor p = params();
-        Tensor indexes = torch::where(p != 0, true, false);
+        Tensor indexes = where(p != 0, true, false);
 
         return -1 * (p * logParams()).index({indexes}).sum().item<double>();
     }

@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 10/05/2021.
+// Created by Theophile Champion on 10/05/2021.
 //
 
 #ifndef HOMINGPIGEON_UNITTESTS_H
@@ -12,7 +12,10 @@ namespace tests {
     class UnitTests {
     public:
         static void run(void (*handler)());
-        static void require_approximately_equal(const torch::Tensor &t1, const torch::Tensor &t2, double epsilon = std::numeric_limits<float>::epsilon() * 100);
+        static void require_approximately_equal(
+            const torch::Tensor &t1, const torch::Tensor &t2,
+            double epsilon = std::numeric_limits<float>::epsilon() * 100
+        );
     };
 
 }

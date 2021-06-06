@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "AlgoTree.h"
@@ -24,7 +24,7 @@ using namespace hopi::math;
 using namespace hopi::api;
 using namespace hopi::distributions;
 using namespace torch;
-
+using namespace torch::indexing;
 using namespace std::chrono;
 
 namespace hopi::algorithms {
@@ -89,25 +89,26 @@ namespace hopi::algorithms {
     }
 
     /**
-     * Step 2: Expansion of the selected node
+     * Step 2: Expansion of the selected n
      */
 
-    void AlgoTree::expansion(VarNode *node, VarNode *A, VarNode *B) {
+    void AlgoTree::expansion(VarNode *n, VarNode *A, VarNode *B) {
         // Gather A and B parameters from the variable nodes
-        auto A_param = Dirichlet::expectedLog(A->posterior()->params()).exp();
-        auto B_param = Dirichlet::expectedLog(B->posterior()->params()).exp();
+        auto A_param = Dirichlet::expectedLog(A->posterior()->params()).permute({1,0}).exp();
+        auto B_param = Dirichlet::expectedLog(B->posterior()->params()).permute({2,0,1}).exp();
         // Call the expansion taking tensors of parameters as arguments
-        expansion(node, A_param, B_param);
+        expansion(n, A_param, B_param);
     }
 
-    void AlgoTree::expansion(VarNode *node, const Tensor &A, const Tensor &B) {
+    void AlgoTree::expansion(VarNode *n, const Tensor &A, const Tensor &B) {
         // Select an unexplored action to expand the tree
-        std::vector<int> ua = unexploredActions(node);
+        std::vector<int> ua = unexploredActions(n);
         std::uniform_int_distribution<int> rand_int(0, (int)ua.size() - 1);
         int action = ua[rand_int(gen)];
 
         // Generative model expansion
-        VarNode *s = API::Transition(node, B[action]);
+        auto B_action = squeeze(B.index_select(2, at::tensor(action)));
+        VarNode *s = API::Transition(n, B_action);
         VarNode *o = API::Transition(s, A);
         s->setAction(action);
         s->setBiased(Categorical::create(config.state_pref));
@@ -116,13 +117,25 @@ namespace hopi::algorithms {
 
         // Update list of unexplored_states
         if (ua.size() == 1) {
-            us.erase(std::find_if(us.begin(), us.end(), [node](const VarNodePair& p) {
-                return p.first == node;
+            us.erase(std::find_if(us.begin(), us.end(), [n](const VarNodePair& p) {
+                return p.first == n;
             }));
         }
         if (config.max_tree_depth == -1 || distanceFromRoot(s) < config.max_tree_depth) {
             us.emplace_back(s, o);
         }
+    }
+
+    /**
+     * Optional step: Return the last expanded nodes (i.e., the last state and observation that have been expanded) so
+     * that local inference can be performed on them.
+     */
+    std::vector<VarNode*> AlgoTree::lastExpandedNodes() const {
+        std::vector<VarNode*> vars;
+
+        vars.push_back(last_expansion.first);
+        vars.push_back(last_expansion.second);
+        return vars;
     }
 
     /**
@@ -138,7 +151,7 @@ namespace hopi::algorithms {
      * Step 4: Back-propagation of the information in the tree
      */
 
-    void AlgoTree::backpropagation(VarNode *node, VarNode *root) const {
+    void AlgoTree::propagation(VarNode *node, VarNode *root) const {
         // If type == NO_BP then do nothing
         // If type == DOWNWARD_BP then G_child = G_parent + G_child
         if (config.back_propagation_type == DOWNWARD_BP) {
@@ -185,7 +198,7 @@ namespace hopi::algorithms {
      */
 
     VarNode *AlgoTree::nodeSelectionMin() {
-        return std::min_element(us.begin(), us.end(), AlgoTree::CompareQuality)->first;
+        return std::min_element(us.begin(), us.end(), AlgoTree::CompareCost)->first;
     }
 
     VarNode *AlgoTree::nodeSelectionSampling() {
@@ -198,15 +211,13 @@ namespace hopi::algorithms {
     }
 
     VarNode *AlgoTree::nodeSelectionSoftmaxSampling() {
-        Tensor w = torch::empty({ (long) us.size() });
+        Tensor w = API::empty({ (long) us.size() });
         for (int i = 0; i < us.size(); ++i) {
             w[i] = -us[i].first->g();
         }
-        w = torch::softmax(w, 0);
-        std::vector<double> weight(us.size());
-        for (int i = 0; i < us.size(); ++i) {
-            weight[i] = w[i].item<double>();
-        }
+        w = softmax(w, 0);
+        auto r_ptr = w.data_ptr<double>();
+        std::vector<double> weight{r_ptr, r_ptr + w.size(0)};
         std::discrete_distribution<int> rand_int(weight.begin(), weight.end());
         return us[rand_int(gen)].first;
     }
@@ -216,47 +227,38 @@ namespace hopi::algorithms {
      */
 
     double AlgoTree::doubleKL(nodes::VarNode *s, nodes::VarNode *o) {
-        return Ops::KL(s->posterior(), s->biased()) + Ops::KL(o->posterior(), o->biased());
+        return Ops::kl(s->posterior(), s->biased()) + Ops::kl(o->posterior(), o->biased());
     }
 
     double AlgoTree::efe(nodes::VarNode *s, nodes::VarNode *o) {
-        auto lp = o->prior()->logParams();
-        auto p = o->prior()->params();
+        auto ambiguity = Ops::average(-o->prior()->logParams(), o->prior()->params(), {0,1}, {1});
 
-        lp = (p * lp).sum(1); // element wise multiplication + summation column wise
-        return Ops::KL(o->posterior(), o->biased()) - matmul(lp, s->posterior()->params()).item<double>();
+        ambiguity = Ops::average(ambiguity, s->posterior()->params(), {0});
+        return Ops::kl(o->posterior(), o->biased()) + ambiguity.item<double>();
     }
 
     /**
      * Auxiliary functions
      */
 
-    bool AlgoTree::CompareQuality(std::pair<VarNode*,VarNode*> a1, std::pair<VarNode*,VarNode*> a2) {
+    bool AlgoTree::CompareCost(std::pair<VarNode*,VarNode*> a1, std::pair<VarNode*,VarNode*> a2) {
         return a1.first->g() < a2.first->g();
     }
 
-    std::vector<int> AlgoTree::unexploredActions(VarNode *node) const {
+    std::vector<int> AlgoTree::unexploredActions(VarNode *n) const {
         std::vector<int> ua(config.n_actions);
         std::iota(ua.begin(), ua.end(), 0);
 
-        for (auto it = node->firstChild(); it != node->lastChild(); ++it) {
+        for (auto it = n->firstChild(); it != n->lastChild(); ++it) {
             auto i = std::find(ua.begin(), ua.end(), (*it)->child()->action());
             if (i != ua.end()) {
                 ua.erase(i);
             }
         }
         if (ua.empty()) {
-            throw std::runtime_error("No more unexplored action: this node cannot be expanded.");
+            throw std::runtime_error("AlgoTree::unexploredActions, no more unexplored actions.");
         }
         return ua;
-    }
-
-    std::vector<VarNode*> AlgoTree::lastExpandedNodes() const {
-        std::vector<VarNode*> vars;
-
-        vars.push_back(last_expansion.first);
-        vars.push_back(last_expansion.second);
-        return vars;
     }
 
     int AlgoTree::distanceFromRoot(nodes::VarNode *n) {
@@ -269,6 +271,10 @@ namespace hopi::algorithms {
         return d;
     }
 
+    /**
+     * Configuration functions
+     */
+
     NodeSelectionFn AlgoTree::nodeSelectionFn(NodeSelectionType type) {
         static std::map<NodeSelectionType, NodeSelectionFn> map {
                 {MIN,              &AlgoTree::nodeSelectionMin},
@@ -276,11 +282,8 @@ namespace hopi::algorithms {
                 {SOFTMAX_SAMPLING, &AlgoTree::nodeSelectionSoftmaxSampling},
         };
 
-        if ( map.find(type) == map.end() ) {
-            throw std::runtime_error("Unsupported node selection type.");
-        } else {
-            return map[type];
-        }
+        assert(map.find(type) != map.end() && "AlgoTree::nodeSelectionFn, unsupported node selection type.");
+        return map[type];
     }
 
     EvaluationFn AlgoTree::evaluationFn(EvaluationType type) {
@@ -289,11 +292,8 @@ namespace hopi::algorithms {
                 {EFE,       &AlgoTree::efe},
         };
 
-        if ( map.find(type) == map.end() ) {
-            throw std::runtime_error("Unsupported evaluation type.");
-        } else {
-            return map[type];
-        }
+        assert(map.find(type) != map.end() && "AlgoTree::evaluationFn, unsupported evaluation type.");
+        return map[type];
     }
 
 }

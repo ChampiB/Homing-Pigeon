@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #include <iostream>
@@ -26,19 +26,20 @@ TEST_CASE( "ActiveTransitionNode.vfe() returns the proper vfe contribution" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
         auto fg = FactorGraph::current();
-        auto c1 = API::Categorical(Ops::uniformColumnWise({4}));
-        auto c2 = API::Categorical(Ops::uniformColumnWise({2}));
-        auto t1 = API::ActiveTransition(c1, c2, Ops::uniformColumnWise({2, 4, 4}));
+        auto c1 = API::Categorical(Ops::uniform({4}));
+        auto c2 = API::Categorical(Ops::uniform({2}));
+        auto t1 = API::ActiveTransition(c1, c2, Ops::uniform({4,4,2}));
 
         auto poc1 = c1->posterior()->params();
         auto poc2 = c2->posterior()->params();
-        auto pot1 = t1->posterior()->params().permute({1,0});
+        auto pot1 = t1->posterior()->params();
         auto lpt1 = t1->posterior()->logParams();
         auto prt1 = t1->prior()->logParams();
 
         Tensor neg_entropy = matmul(pot1, lpt1);
-        Tensor energy = matmul(poc2[0][0], matmul(matmul(pot1, prt1[0]), poc1)) \
-                      + matmul(poc2[1][0], matmul(matmul(pot1, prt1[1]), poc1));
+        Tensor energy = Ops::average(prt1, poc2, {2});
+        energy = Ops::average(energy, poc1, {1});
+        energy = Ops::average(energy, pot1, {0});
         REQUIRE( c1->parent()->vfe() == (neg_entropy - energy).item<double>());
     });
 }
@@ -57,33 +58,13 @@ TEST_CASE( "ActiveTransitionNode returns the correct child and parents" ) {
     });
 }
 
-TEST_CASE( "ActiveTransitionNode: A run_time error is thrown if the parameter is an unknown node" ) {
-    UnitTests::run([](){
-        FactorGraph::setCurrent(nullptr);
-        Tensor param = Ops::uniformColumnWise({4});
-        Tensor param2 = Ops::uniformColumnWise({2, 4, 4});
-        auto t1 = VarNode::create(VarNodeType::HIDDEN);
-        auto fg = FactorGraph::current();
-        auto c1 = API::Categorical(param);
-        auto c2 = API::Categorical(param);
-        auto t2 = API::ActiveTransition(c1, c2, param2);
-
-        try {
-            t2->parent()->message(t1.get());
-            REQUIRE( false );
-        } catch (const std::runtime_error& error) {
-            // Correct
-        }
-    });
-}
-
 TEST_CASE( "ActiveTransitionNode's (to, from and action) messages are correct (no Dirichlet prior)" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
-        Tensor U = Ops::uniformColumnWise({2});
-        Tensor D = Ops::uniformColumnWise({4});
-        Tensor evidence = Ops::uniformColumnWise({2});
-        Tensor B = Ops::uniformColumnWise({2, 2, 4});
+        Tensor U = Ops::uniform({4});
+        Tensor D = Ops::uniform({2});
+        Tensor evidence = Ops::uniform({2});
+        Tensor B = Ops::uniform({2,2,4});
         auto fg = FactorGraph::current();
         auto c1 = API::Categorical(D);
         auto c2 = API::Categorical(U);
@@ -91,37 +72,30 @@ TEST_CASE( "ActiveTransitionNode's (to, from and action) messages are correct (n
         t1->setPosterior(Categorical::create(evidence));
         t1->setType(VarNodeType::OBSERVED);
 
-        Tensor res1 = U[0][0] * matmul(B[0].log(), D) \
-                    + U[1][0] * matmul(B[1].log(), D);
+        Tensor res1 = Ops::average(B.log(), U, {2});
+        res1 = Ops::average(res1, D, {1});
         auto m1 = t1->parent()->message(t1);
-        REQUIRE( m1[0].size(1) == 1 );
-        REQUIRE( m1[0].size(0) == 2 );
-        REQUIRE( torch::equal(m1[0], res1) );
+        REQUIRE( equal(m1, res1) );
 
-        Tensor res2 = U[0][0] * matmul(B[0].log().permute({1,0}), evidence) \
-                    + U[1][0] * matmul(B[1].log().permute({1,0}), evidence);
+        Tensor res2 = Ops::average(B.log(), U, {2});
+        res2 = Ops::average(res2, evidence, {0});
         auto m2 = t1->parent()->message(c1);
-        REQUIRE( m2[0].size(1) == 1 );
-        REQUIRE( m2[0].size(0) == 4 );
-        REQUIRE( torch::equal(m2[0], res2) );
+        REQUIRE( equal(m2, res2) );
 
+        Tensor res3 = Ops::average(B.log(), D, {1});
+        res3 = Ops::average(res3, evidence, {0});
         auto m3 = t1->parent()->message(c2);
-        REQUIRE( m3[0].size(1) == 1 );
-        REQUIRE( m3[0].size(0) == 2 );
-        REQUIRE( torch::equal(m2[0], res2) );
-
-        REQUIRE( torch::equal(m3[0][0][0], matmul(matmul(evidence.permute({1,0}), B[0].log()), D)[0][0]) );
-        REQUIRE( torch::equal(m3[0][1][0], matmul(matmul(evidence.permute({1,0}), B[1].log()), D)[0][0]) );
+        REQUIRE( equal(m3, res3) );
     });
 }
 
 TEST_CASE( "ActiveTransitionNode's (to, from, param and action) messages are correct (Dirichlet prior)" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
-        Tensor U = Ops::uniformColumnWise({2});
-        Tensor D = Ops::uniformColumnWise({4});
-        Tensor evidence = Ops::uniformColumnWise({2});
-        Tensor B = Ops::uniformColumnWise({2, 2, 4});
+        Tensor U = Ops::uniform({4});
+        Tensor D = Ops::uniform({2});
+        Tensor evidence = Ops::uniform({2});
+        Tensor B = Ops::uniform({2,4,2});
         auto fg = FactorGraph::current();
         auto c1 = API::Categorical(D);
         auto c2 = API::Categorical(U);
@@ -130,34 +104,27 @@ TEST_CASE( "ActiveTransitionNode's (to, from, param and action) messages are cor
         t1->setPosterior(Categorical::create(evidence));
         t1->setType(VarNodeType::OBSERVED);
 
-        Tensor res1 = U[0][0] * matmul(Dirichlet::expectedLog(B)[0], D) \
-                    + U[1][0] * matmul(Dirichlet::expectedLog(B)[1],D);
+        Tensor res1 = Ops::average(Dirichlet::expectedLog(B), U, {1});
+        res1 = Ops::average(res1, D, {0});
         auto m1 = t1->parent()->message(t1);
-        REQUIRE( m1[0].size(1) == 1 );
-        REQUIRE( m1[0].size(0) == 2 );
-        REQUIRE( torch::equal(m1, res1) );
+        REQUIRE( equal(m1, res1) );
 
-        Tensor res2 = U[0][0] * Dirichlet::expectedLog(B)[0].permute({1,0}) * evidence \
-                    + U[1][0] * Dirichlet::expectedLog(B)[1].permute({1,0}) * evidence;
+        Tensor res2 = Ops::average(Dirichlet::expectedLog(B), evidence, {2});
+        res2 = Ops::average(res2, U, {1});
         auto m2 = t1->parent()->message(c1);
-        REQUIRE( m2[0].size(1) == 1 );
-        REQUIRE( m2[0].size(0) == 4 );
-        REQUIRE( torch::equal(m2[0], res2) );
+        REQUIRE( equal(m2, res2) );
 
+        Tensor res3 = Ops::average(Dirichlet::expectedLog(B), evidence, {2});
+        res3 = Ops::average(res3, D, {0});
         auto m3 = t1->parent()->message(c2);
-        REQUIRE( m3[0].size(1) == 1 );
-        REQUIRE( m3[0].size(0) == 2 );
-        REQUIRE( m3[0][0][0].item<double>() == matmul(matmul(evidence.permute({1,0}), Dirichlet::expectedLog(B)[0]), D)[0][0].item<double>() );
-        REQUIRE( m3[0][1][0].item<double>() == matmul(matmul(evidence.permute({1,0}), Dirichlet::expectedLog(B)[1]), D)[0][0].item<double>() );
+        REQUIRE( equal(m3, res3) );
 
-        Tensor res4 = torch::zeros({2, 2, 4});
-        for (int i = 0; i < res4.size(0); ++i) {
-            res4[i] = matmul(evidence, D.permute({1,0})) * U[i][0];
-        }
+        Tensor D_hat = API::tensor({0.1,0.5,0.4});
+        Tensor U_hat = API::tensor({0.1,0.7,0.2});
+        c1->setPosterior(Categorical::create(D_hat));
+        c2->setPosterior(Categorical::create(U_hat));
+        Tensor res4 = Ops::outer_tensor_product({&D_hat,&U_hat,&evidence});
         auto m4 = t1->parent()->message(d1);
-        REQUIRE( m4.size(0) == 2 );
-        REQUIRE( m4.size(2) == 4 );
-        REQUIRE( m4.size(1) == 2 );
-        REQUIRE( torch::equal(m4,res4) );
+        REQUIRE( equal(m4, res4) );
     });
 }

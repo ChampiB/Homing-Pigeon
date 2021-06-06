@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include <fstream>
@@ -18,6 +18,7 @@ using namespace hopi::distributions;
 using namespace hopi::math;
 using namespace hopi::api;
 using namespace torch;
+using namespace torch::detail;
 
 namespace hopi::graphs {
 
@@ -44,8 +45,8 @@ namespace hopi::graphs {
         return _vars[_vars.size() - 1].get();
     }
 
-    FactorNode *FactorGraph::addFactor(std::unique_ptr<FactorNode> node) {
-        _factors.push_back(std::move(node));
+    FactorNode *FactorGraph::addFactor(std::unique_ptr<FactorNode> factor) {
+        _factors.push_back(std::move(factor));
         return _factors[_factors.size() - 1].get();
     }
 
@@ -69,8 +70,8 @@ namespace hopi::graphs {
         });
     }
 
-    VarNode *FactorGraph::node(int index) {
-        return _vars[index].get();
+    VarNode *FactorGraph::node(int i) {
+        return _vars[i].get();
     }
 
     int FactorGraph::nodes() const {
@@ -81,8 +82,8 @@ namespace hopi::graphs {
         return (int) _factors.size();
     }
 
-    nodes::FactorNode *FactorGraph::factor(int index) {
-        return _factors[index].get();
+    nodes::FactorNode *FactorGraph::factor(int i) {
+        return _factors[i].get();
     }
 
     void FactorGraph::loadEvidence(int nobs, const std::string& file_name) {
@@ -94,14 +95,14 @@ namespace hopi::graphs {
         while (getline(input, line)) {
             unsigned long i = line.find(' ');
             if (i == std::string::npos) {
-                throw std::runtime_error("Invalid '.evi' file: no space between name and observation.");
+                throw std::runtime_error("Invalid file format: '" + file_name + "'");
             }
             name = line.substr(0, i);
             obs = std::stoi(line.substr(i + 1));
             ObservedVarIter it(this);
             while (*it != nullptr) {
                 if ((*it)->name() == name) {
-                    (*it)->setPosterior(Categorical::create(Ops::oneHot(nobs, obs)));
+                    (*it)->setPosterior(Categorical::create(Ops::one_hot(nobs, obs)));
                 }
                 ++it;
             }
@@ -126,7 +127,8 @@ namespace hopi::graphs {
             const Tensor& B
     ) {
         removeHiddenChildren(_tree_root);
-        Tensor action_param = torch::full({B.size(0)}, 0.1 / ((double) B.size(0) - 1));
+        auto n_actions = B.size(B.dim() - 1);
+        Tensor action_param = API::full({n_actions}, 0.1 / ((double) n_actions - 1));
         action_param[action] = 0.9;
         auto a = API::Categorical(action_param);
         integrate(a, observation, A, B);
@@ -139,8 +141,9 @@ namespace hopi::graphs {
             VarNode *B
     ) {
         removeHiddenChildren(_tree_root);
-        long actions = B->prior()->params().size(0);
-        Tensor action_param = torch::full({actions}, 0.1 / ((double) actions - 1));
+        auto B_param = B->prior()->params();
+        long actions = B_param.size(B_param.dim() - 1);
+        Tensor action_param = API::full({actions}, 0.1 / ((double) actions - 1));
         action_param[action] = 0.9;
         auto a = API::Categorical(action_param);
         integrate(a, observation, A, B);
@@ -153,13 +156,15 @@ namespace hopi::graphs {
             VarNode *A,
             VarNode *B
     ) {
-        // Check that U is a Dirichlet node.
-        if (U->prior()->type() != DIRICHLET) {
-            throw std::runtime_error("Integrate(U, action, observation, A, B) assumes U is a Dirichlet.");
-        }
-        // Create new slide of action/state/observation.
-        auto d = dynamic_cast<Dirichlet*>(U->prior());
-        d->increaseParam(0, action, 0);
+        assert(U->prior()->type() == DIRICHLET && "FactorGraph::integrate, U must be distributed according to a Dirichlet.");
+
+        // Increase Dirichlet parameters
+        auto p = U->prior()->params();
+        auto p_a = p.accessor<double,1>();
+        p_a[action] += 1;
+        U->prior()->updateParams(p);
+
+        // Call generic integrate function
         auto a = API::Categorical(U);
         integrate(a, observation, A, B);
     }
@@ -177,8 +182,6 @@ namespace hopi::graphs {
         o->setType(VarNodeType::OBSERVED);
         // Clean up the factor graph
         _tree_root->removeNullChildren();
-        removeNullNodes();
-        removeNullFactors();
         setTreeRoot(new_root);
     }
 
@@ -196,22 +199,18 @@ namespace hopi::graphs {
         }
         itf->reset();
         itv->reset();
+        removeNullNodes();
+        removeNullFactors();
     }
 
     void FactorGraph::removeNullNodes() {
-        std::vector<std::unique_ptr<VarNode>>::iterator it;
-
-        while ((it = std::find(_vars.begin(), _vars.end(), nullptr)) != _vars.end()) {
-            _vars.erase(it);
-        }
+        _vars.erase(std::remove_if(_vars.begin(), _vars.end(),
+                                   [](std::unique_ptr<VarNode> &x){return x == nullptr;}), _vars.end());
     }
 
     void FactorGraph::removeNullFactors() {
-        std::vector<std::unique_ptr<FactorNode>>::iterator it;
-
-        while ((it = std::find(_factors.begin(), _factors.end(), nullptr)) != _factors.end()) {
-            _factors.erase(it);
-        }
+        _factors.erase(std::remove_if(_factors.begin(), _factors.end(),
+                                      [](std::unique_ptr<FactorNode> &x){return x == nullptr;}), _factors.end());
     }
 
     std::vector<VarNode*> FactorGraph::getNodes() {

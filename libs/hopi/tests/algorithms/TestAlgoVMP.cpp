@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #include "catch.hpp"
@@ -59,9 +59,9 @@ TEST_CASE( "AlgoVMP.vfe() returns the variational free energy of the variables s
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
         auto fg     = FactorGraph::current();
-        VarNode *a0 = API::Categorical(Ops::uniformColumnWise({2}));
-        VarNode *s0 = API::Categorical(Ops::uniformColumnWise({5}));
-        VarNode *s1 = API::ActiveTransition(s0, a0, Ops::uniformColumnWise({2,5,5}));
+        VarNode *a0 = API::Categorical(Ops::uniform({2}));
+        VarNode *s0 = API::Categorical(Ops::uniform({5}));
+        VarNode *s1 = API::ActiveTransition(s0, a0, Ops::uniform({5,5,2}));
         s1->setType(OBSERVED);
 
         double F = AlgoVMP::vfe(fg->getNodes());

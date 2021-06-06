@@ -30,8 +30,8 @@ set(HOPI_SRCS
         srcs/iterators/ObservedVarIter.h srcs/iterators/ObservedVarIter.cpp
         srcs/nodes/DirichletNode.cpp srcs/nodes/DirichletNode.h
         srcs/distributions/Dirichlet.cpp srcs/distributions/Dirichlet.h
-        srcs/math/Ops.cpp srcs/math/Ops.h
         srcs/algorithms/AlgoTreeConfig.cpp srcs/algorithms/AlgoTreeConfig.h
+        srcs/math/Ops.cpp srcs/math/Ops.h
         srcs/api/API.cpp srcs/api/API.h
         srcs/api/Aliases.h)
 
@@ -76,7 +76,7 @@ set (TEST_HOPI_SRCS
         tests/nodes/TestDirichletNode.cpp
         tests/nodes/TestTransitionNode.cpp
         tests/nodes/TestVarNode.cpp
-        tests/math/FunctionsTest.cpp
+        tests/math/OpsTest.cpp
         # Helpers and contexts only useful for the unit tests
         tests/contexts/FactorGraphContexts.cpp tests/contexts/FactorGraphContexts.h
         tests/helpers/Files.cpp tests/helpers/Files.h

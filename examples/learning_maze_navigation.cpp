@@ -42,16 +42,16 @@ int main()
     /**
      ** Create the model's parameters.
      **/
-    Tensor theta_Us = torch::ones({nb_cycles, env->actions(), 1});
-    Tensor theta_A  = torch::ones({env->observations(), env->states()});
-    Tensor theta_D  = torch::ones({env->states(), 1});
-    Tensor theta_B  = torch::ones({env->actions(), env->states(), env->states()});
+    Tensor theta_Us = torch::ones({nb_cycles, env->actions()});
+    Tensor theta_A  = torch::ones({env->states(), env->observations()});
+    Tensor theta_D  = torch::ones({env->states()});
+    Tensor theta_B  = torch::ones({env->states(), env->actions(), env->states()});
 
     /**
      ** Create the model's prior preferences.
      **/
-    Tensor D_tilde = Ops::uniformColumnWise({env->states(),1});
-    Tensor E_tilde = torch::softmax(env->observations() - torch::arange(0, env->observations()), 0);
+    Tensor D_tilde = Ops::uniform({env->states()});
+    Tensor E_tilde = softmax(env->observations() - torch::arange(0, env->observations()).to(kDouble), 0);
 
     /**
      ** Run the simulation.
@@ -93,21 +93,21 @@ int main()
                 algoTree->expansion(n, A, B);
                 AlgoVMP::inference(algoTree->lastExpandedNodes());
                 algoTree->evaluation();
-                algoTree->backpropagation(n, fg->treeRoot());
+                algoTree->propagation(n, fg->treeRoot());
             }
             int a = algoTree->actionSelection(fg->treeRoot());
             int o = env->execute(a);
-            fg->integrate(Us[j], a, Ops::oneHot(env->observations(), o), A, B);
+            fg->integrate(Us[j], a, Ops::one_hot(env->observations(), o), A, B);
             env->print();
         }
 
         // Performs empirical prior:
         // i.e. posterior parameters become prior parameters for the next time point
         for (int ii = 0; ii < nb_cycles; ++ii) {
-            theta_Us[ii] = Us[ii]->posterior()->params()[0];
+            theta_Us[ii] = Us[ii]->posterior()->params();
         }
-        theta_A = A->posterior()->params()[0];
-        theta_D = D->posterior()->params()[0];
+        theta_A = A->posterior()->params();
+        theta_D = D->posterior()->params();
         for (int ii = 0; ii < env->actions(); ++ii) {
             theta_B[ii] = B->posterior()->params()[ii];
         }

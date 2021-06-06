@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "Transition.h"
@@ -33,14 +33,11 @@ namespace hopi::distributions {
     }
 
     void Transition::updateParams(const Tensor &p) {
-        if (p.dim() != 1) {
-            throw std::runtime_error("Transition::updateParams argument size must be equal to one.");
-        }
-        param = torch::softmax(p, 0);
+        assert(false && "Transition::updateParams, unsupported.");
     }
 
     double Transition::entropy() {
-        throw std::runtime_error("Unsupported: Transition::entropy()");
+        assert(false && "Transition::entropy, unsupported.");
     }
 
 }

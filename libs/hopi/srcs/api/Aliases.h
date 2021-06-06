@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 10/05/2021.
+// Created by Theophile Champion on 10/05/2021.
 //
 
 #ifndef HOMINGPIGEON_ALIASES_H

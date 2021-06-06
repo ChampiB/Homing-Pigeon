@@ -1,14 +1,15 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "ActiveTransitionNode.h"
-#include "distributions/Distribution.h"
-#include "nodes/VarNode.h"
 #include "distributions/Dirichlet.h"
+#include "nodes/VarNode.h"
+#include "math/Ops.h"
 
 using namespace torch;
 using namespace hopi::distributions;
+using namespace hopi::math;
 
 namespace hopi::nodes {
 
@@ -30,8 +31,8 @@ namespace hopi::nodes {
     ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t)
       : ActiveTransitionNode(f, a, t, nullptr) {}
 
-    VarNode *ActiveTransitionNode::parent(int index) {
-        switch (index) {
+    VarNode *ActiveTransitionNode::parent(int i) {
+        switch (i) {
             case 0:
                 return from;
             case 1:
@@ -57,89 +58,50 @@ namespace hopi::nodes {
         } else if (B && t == B) {
             return bMessage();
         } else {
-            throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
+            assert(false && "ActiveTransitionNode::message, invalid input node.");
         }
     }
 
     Tensor ActiveTransitionNode::toMessage() {
-        Tensor B_bar = getLogB();
-        Tensor from_hat = from->posterior()->params();
-        Tensor action_hat = action->posterior()->params();
-
-        for (int i = 0; i < B_bar.size(0); ++i) {
-            B_bar[i] = action_hat[i] * matmul(B_bar[i], from_hat);
-            if (i != 0) {
-                B_bar[0] += B_bar[i];
-            }
-        }
-        return {B_bar[0]};
+        Tensor B_bar = Ops::average(getLogB(), action->posterior()->params(), {2});
+        return Ops::average(B_bar, from->posterior()->params(), {1});
     }
 
     Tensor ActiveTransitionNode::fromMessage() {
-        Tensor B_bar = getLogB();
-        Tensor to_hat = to->posterior()->params();
-        Tensor action_hat = action->posterior()->params();
-
-        for (int i = 0; i < B_bar.size(0); ++i) {
-            B_bar[i] = action_hat[i] * matmul(B_bar[i].permute({1,0}), to_hat);
-            if (i != 0) {
-                B_bar[0] += B_bar[i];
-            }
-        }
-        return {B_bar[0]};
+        Tensor B_bar = Ops::average(getLogB(), action->posterior()->params(), {2});
+        return Ops::average(B_bar, to->posterior()->params(), {0});
     }
 
     Tensor ActiveTransitionNode::actionMessage() {
-        Tensor B_bar = getLogB();
-        Tensor to_hat   =   to->posterior()->params();
-        Tensor from_hat = from->posterior()->params();
-        Tensor msg = torch::empty({B_bar.size(0)});
-
-        for (int i = 0; i < B_bar.size(0); ++i) {
-            msg[i] = matmul(matmul(to_hat.permute({1,0}), B_bar[i]), from_hat);
-        }
-        return msg;
+        Tensor B_bar = Ops::average(getLogB(), from->posterior()->params(), {1});
+        return Ops::average(B_bar, to->posterior()->params(), {0});
     }
 
     Tensor ActiveTransitionNode::bMessage() {
         Tensor to_hat     =     to->posterior()->params();
         Tensor from_hat   =   from->posterior()->params();
         Tensor action_hat = action->posterior()->params();
-        long actions     = action_hat.size(0);
-        long to_states   = to_hat.size(0);
-        long from_states = from_hat.size(0);
-        Tensor msg = torch::zeros({actions, to_states, from_states});
 
-        msg[actions - 1] = matmul(to_hat, from_hat.permute({1,0}));
-        for (int i = 0; i < actions; ++i) {
-            for (int j = 0; j < to_states; ++j) {
-                for (int k = 0; k < from_states; ++k) {
-                    msg[i][j][k] = action_hat[i] * msg[actions - 1][j][k];
-                }
-            }
-        }
-        return msg;
+        return Ops::outer_tensor_product({&from_hat,&action_hat,&to_hat});
     }
 
     double ActiveTransitionNode::vfe() {
-        auto to_p     = to->posterior()->params();
-        auto from_p   = from->posterior()->params();
-        auto action_p = action->posterior()->params();
-        auto lp       = getLogB();
+        // TODO check that the change in Dirichlet parameter storage does not impact code, i.e., maths still valid
+        auto lp       = Ops::average(getLogB(), action->posterior()->params(), {2});
         double VFE    = 0;
 
         if (child()->type() == HIDDEN) {
             VFE -= child()->posterior()->entropy();
         }
-        for (int i = 0; i < lp.size(0); ++i) {
-            VFE -= (action_p[i] * matmul(matmul(to_p.permute({1,0}), lp[i]), from_p)).item<double>();
-        }
+        lp = Ops::average(lp, from->posterior()->params(), {1});
+        lp = Ops::average(lp, to->posterior()->params(), {0});
+        VFE -= lp.item<double>();
         return VFE;
     }
 
     Tensor ActiveTransitionNode::getLogB() {
         if (B) {
-            return Dirichlet::expectedLog(B->posterior()->params());
+            return Dirichlet::expectedLog(B->posterior()->params()).permute({2,0,1});
         } else {
             return to->prior()->logParams();
         }
