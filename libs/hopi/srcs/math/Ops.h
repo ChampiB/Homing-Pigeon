@@ -171,9 +171,6 @@ namespace hopi::math {
          */
         static torch::Tensor outer_tensor_product(std::initializer_list<torch::Tensor *> ts);
 
-        // TODO add comments to explain the code and comments that can be used to generate a documentation
-        // TODO apply the above ops to the message passing algorithm
-
     private:
         //
         // Functions that the final user should never call directly

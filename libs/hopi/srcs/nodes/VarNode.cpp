@@ -111,11 +111,8 @@ namespace hopi::nodes {
     }
 
     void VarNode::removeNullChildren() {
-        std::vector<FactorNode*>::iterator it;
-
-        while ((it = std::find(_children.begin(), _children.end(), nullptr)) != _children.end()) {
-            _children.erase(it);
-        }
+        _children.erase(std::remove_if(_children.begin(), _children.end(),
+                                       [](FactorNode * &x){return x == nullptr;}), _children.end());
     }
 
     void VarNode::disconnectChild(nodes::FactorNode *node) {

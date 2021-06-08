@@ -51,10 +51,10 @@ TEST_CASE( "DirichletNode.vfe() returns the proper vfe contribution" ) {
     UnitTests::run([](){
         FactorGraph::setCurrent(nullptr);
         auto c1 = API::Dirichlet(Ops::uniform({2,4}));
-        REQUIRE( c1->parent()->vfe() == Approx(0.0) ); // TODO check that
+        REQUIRE( c1->parent()->vfe() == Approx(0.0) );
 
         FactorGraph::setCurrent(nullptr);
         auto c2 = API::Dirichlet(API::tensor({1.0,10.0,20.0,5.0}));
-        REQUIRE( c2->parent()->vfe() == Approx(-7.10543e-15) ); // TODO check that
+        REQUIRE( c2->parent()->vfe() == Approx(-7.10543e-15) );
     });
 }

@@ -86,7 +86,6 @@ namespace hopi::nodes {
     }
 
     double ActiveTransitionNode::vfe() {
-        // TODO check that the change in Dirichlet parameter storage does not impact code, i.e., maths still valid
         auto lp       = Ops::average(getLogB(), action->posterior()->params(), {2});
         double VFE    = 0;
 

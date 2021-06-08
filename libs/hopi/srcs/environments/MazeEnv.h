@@ -103,7 +103,6 @@ namespace hopi::environments {
         torch::Tensor D() override;
 
     public:
-        //TODO make private?
         /**
          * Getter.
          * @return the agent position
@@ -124,6 +123,7 @@ namespace hopi::environments {
          */
         double operator()(int row, int col);
 
+    private:
         /**
          * Compute the Manhattan distance between the agent and the maze's exit.
          * @param agent the agent position
@@ -139,7 +139,6 @@ namespace hopi::environments {
          */
         static int manhattan_distance(const std::pair<int,int>& agent, const std::pair<int,int> &exit);
 
-    private:
         /**
          * Simulate the execution of an action in the environment but does not modify the environment state.
          * @param action the action to perform

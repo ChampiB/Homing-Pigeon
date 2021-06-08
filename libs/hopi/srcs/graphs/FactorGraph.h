@@ -195,7 +195,7 @@ namespace hopi::graphs {
          * Cut-off the branch corresponding to the input node
          * @param node the node at the top of the branch to be deleted
          */
-        void removeBranch(nodes::FactorNode *node); // TODO private?
+        void removeBranch(nodes::FactorNode *node);
 
     private:
         /**
