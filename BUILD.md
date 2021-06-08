@@ -10,7 +10,7 @@ Homing-Pigeon is using cmake for the build. First you need to install Pytorch C+
 - `rm libtorch-shared-with-deps-latest.zip`
 - `cd ..`
 
-Then, cmake can be use to build the project as follows:
+Then, use cmake to build the project as follows:
 - `mkdir build`
 - `cd build`
 - `cmake ..`
