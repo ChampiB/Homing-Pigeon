@@ -26,7 +26,9 @@ Please refer to the following file to build Homing-Pigeon: `BUILD.md`.
 
 ----------------------
 
-The Homing Pigeon documentation is available on the [github wiki](https://github.com/ChampiB/Homing-Pigeon/wiki).
+A tutorial to Homing Pigeon is available on the [github wiki](https://github.com/ChampiB/Homing-Pigeon/wiki), and
+a more detailed documentation is available [here](https://champib.github.io/Homing-Pigeon/html/index.html).
+
 
 ## Issues for reporting bugs
 
