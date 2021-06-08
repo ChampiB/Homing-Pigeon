@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "VarNode.h"
@@ -11,7 +11,12 @@ using namespace hopi::distributions;
 
 namespace hopi::nodes {
 
-    VarNode::VarNode(VarNodeType type) : N(0), G(-1), _type(type), A(-1), _parent(nullptr) {}
+    std::unique_ptr<VarNode> VarNode::create(VarNodeType type) {
+        return std::make_unique<VarNode>(type);
+    }
+
+    VarNode::VarNode(VarNodeType type) : N(0), G(-1), _type(type), A(-1),
+        _parent(nullptr), _prior(nullptr), _posterior(nullptr), _biased(nullptr) {}
 
     void VarNode::setPrior(std::unique_ptr<Distribution> p) {
         _prior = std::move(p);
@@ -93,8 +98,12 @@ namespace hopi::nodes {
         _children.push_back(c);
     }
 
-    void VarNode::setName(std::string name) {
-        _name = std::move(name);
+    void VarNode::setName(std::string &name) {
+        _name = name;
+    }
+
+    void VarNode::setName(std::string &&name) {
+        _name = name;
     }
 
     std::string VarNode::name() const {
@@ -102,11 +111,8 @@ namespace hopi::nodes {
     }
 
     void VarNode::removeNullChildren() {
-        std::vector<FactorNode*>::iterator it;
-
-        while ((it = std::find(_children.begin(), _children.end(), nullptr)) != _children.end()) {
-            _children.erase(it);
-        }
+        _children.erase(std::remove_if(_children.begin(), _children.end(),
+                                       [](FactorNode * &x){return x == nullptr;}), _children.end());
     }
 
     void VarNode::disconnectChild(nodes::FactorNode *node) {

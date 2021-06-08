@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 29/11/2020.
+// Created by Theophile Champion on 29/11/2020.
 //
 
 #ifndef HOMING_PIGEON_2_VARNODETYPE_H
@@ -8,8 +8,8 @@
 namespace hopi::nodes {
 
     enum VarNodeType : int {
-        OBSERVED,
-        HIDDEN
+        OBSERVED, // Observed variable
+        HIDDEN    // Hidden variable
     };
 
 }

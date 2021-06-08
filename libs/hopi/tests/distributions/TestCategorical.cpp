@@ -1,79 +1,81 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #include "catch.hpp"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include <iostream>
+#include <helpers/UnitTests.h>
 #include "distributions/Categorical.h"
+#include "math/Ops.h"
+#include "api/API.h"
 
-using namespace Eigen;
+using namespace torch;
 using namespace hopi::distributions;
-
-TEST_CASE( "Categorical distribution returns correct cardinality" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    MatrixXd param1(3, 1);
-    Categorical c1 = Categorical(param1);
-    REQUIRE( c1.cardinality() == 3 );
-
-    MatrixXd param2(5, 1);
-    Categorical c2 = Categorical(param2);
-    REQUIRE( c2.cardinality() == 5 );
-
-    MatrixXd param3(10, 1);
-    Categorical c3 = Categorical(param3);
-    REQUIRE( c3.cardinality() == 10 );
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-}
+using namespace hopi::math;
+using namespace hopi::api;
+using namespace tests;
 
 TEST_CASE( "Categorical distribution returns the proper type" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    MatrixXd param(3, 1);
-    Categorical c = Categorical(param);
-    REQUIRE( c.type() == DistributionType::CATEGORICAL );
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+    UnitTests::run([](){
+        Categorical c = Categorical(Ops::uniform({3}));
+        REQUIRE( c.type() == DistributionType::CATEGORICAL );
+    });
 }
 
-TEST_CASE( "Categorical distribution returns the correct probability" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    MatrixXd param1(3, 1);
-    param1(0, 0) = 0.1;
-    param1(1, 0) = 0.7;
-    param1(2, 0) = 0.2;
-    Categorical c1 = Categorical(param1);
-    REQUIRE( c1.p(0) == 0.1 );
-    REQUIRE( c1.p(1) == 0.7 );
-    REQUIRE( c1.p(2) == 0.2 );
+TEST_CASE( "Categorical distribution returns the correct params" ) {
+    UnitTests::run([](){
+        Tensor param1 = API::tensor({0.1,0.7,0.2});
+        Categorical c1 = Categorical(param1);
+        REQUIRE(equal(c1.params(), param1));
 
-    MatrixXd param2(2, 1);
-    param2(0, 0) = 0.5;
-    param2(1, 0) = 0.5;
-    Categorical c2 = Categorical(param2);
-    REQUIRE( c2.p(0) == 0.5 );
-    REQUIRE( c2.p(1) == 0.5 );
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+        Tensor param2 = Ops::uniform({2});
+        Categorical c2 = Categorical(param2);
+        REQUIRE(equal(c2.params(), param2));
+    });
 }
 
-TEST_CASE( "Categorical distribution returns the correct log probability" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    MatrixXd param1(3, 1);
-    param1(0, 0) = 0.1;
-    param1(1, 0) = 0.7;
-    param1(2, 0) = 0.2;
-    Categorical c1 = Categorical(param1);
-    auto lp1 = c1.logProbability();
-    REQUIRE( lp1.size() == 1 );
-    REQUIRE( lp1[0](0, 0) == std::log(0.1) );
-    REQUIRE( lp1[0](1, 0) == std::log(0.7) );
-    REQUIRE( lp1[0](2, 0) == std::log(0.2) );
+TEST_CASE( "Categorical distribution returns the correct log params" ) {
+    UnitTests::run([](){
+        Tensor param1 = API::tensor({0.1,0.7,0.2});
+        Categorical c1 = Categorical(param1);
+        REQUIRE(equal(c1.logParams(), param1.log()));
 
-    MatrixXd param2(2, 1);
-    param2(0, 0) = 0.5;
-    param2(1, 0) = 0.5;
-    Categorical c2 = Categorical(param2);
-    auto lp2 = c2.logProbability();
-    REQUIRE( lp2.size() == 1 );
-    REQUIRE( lp2[0](0, 0) == std::log(0.5) );
-    REQUIRE( lp2[0](1, 0) == std::log(0.5) );
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+        Tensor param2 = Ops::uniform({2});
+        Categorical c2 = Categorical(param2);
+        REQUIRE(equal(c2.logParams(), param2.log()));
+    });
+}
+
+TEST_CASE( "Categorical::entropy() of [0 0 0 1 0] is zero" ) {
+    UnitTests::run([](){
+        Categorical c = Categorical(Ops::one_hot(3, 1));
+
+        REQUIRE( c.entropy() == 0 );
+    });
+}
+
+TEST_CASE( "Categorical::entropy() returns the proper results" ) {
+    UnitTests::run([](){
+        Categorical c = Categorical(API::tensor({0.7,0.2,0.1}));
+        REQUIRE( c.entropy() == Approx(0.801819) );
+
+        Categorical c1 = Categorical(API::tensor({0.5,0.2,0.3}));
+        REQUIRE( c1.entropy() == Approx(1.029653) );
+
+        Categorical c2 = Categorical(API::tensor({0.3,0.3,0.4}));
+        REQUIRE( c2.entropy() == Approx(1.0889) );
+    });
+}
+
+TEST_CASE( "Categorical parameters update and getter work properly" ) {
+    UnitTests::run([](){
+        Tensor param1 = API::tensor({0.2,0.8});
+        Categorical d = Categorical(param1);
+        REQUIRE(equal(d.params(), param1));
+
+        Tensor param2 = API::tensor({0.3,0.7});
+        d.updateParams(param2);
+        REQUIRE(equal(d.params(), softmax(param2, 0)));
+    });
 }

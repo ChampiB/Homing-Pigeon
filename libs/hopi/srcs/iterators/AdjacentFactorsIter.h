@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 19/03/2020.
+// Created by Theophile Champion on 19/03/2020.
 //
 
 #ifndef AIF_ADJACENT_FACTORS_ITER_H
@@ -15,19 +15,57 @@ namespace hopi::nodes {
 
 namespace hopi::iterators {
 
-    class AdjacentFactorsIter : public std::iterator<std::forward_iterator_tag,hopi::nodes::FactorNode*> {
+    /**
+     * An iterator over the adjacent factors of a random variable.
+     */
+    class AdjacentFactorsIter : public std::iterator<std::forward_iterator_tag,nodes::FactorNode*> {
     public:
-        explicit AdjacentFactorsIter(hopi::nodes::VarNode *var);
+        //
+        // Constructor
+        //
+
+        /**
+         * Construct an iterator over the adjacent factors of a random variable.
+         * @param var the variable whose adjacent factors will be iterated
+         */
+        explicit AdjacentFactorsIter(nodes::VarNode *var);
 
     public:
-        hopi::nodes::FactorNode *operator*();
+        /**
+         * Getter.
+         * @return the current factor.
+         */
+        nodes::FactorNode *operator*();
+
+        /**
+         * Go to the next adjacent factor.
+         * @return this
+         */
         AdjacentFactorsIter &operator++();
+
+        /**
+         * Copy constructor.
+         * @param other another iterator over adjacent factors
+         * @return this
+         */
         AdjacentFactorsIter &operator=(const AdjacentFactorsIter &other);
+
+        /**
+         * Check whether this and other are currently pointing to same adjacent factor.
+         * @param other another iterator
+         * @return true if the two iterators point to the same factor and false otherwise
+         */
         bool operator==(const AdjacentFactorsIter &other) const;
+
+        /**
+         * Check whether this and other are currently pointing to different adjacent factor.
+         * @param other another iterator
+         * @return false if the two iterators point to the same factor and true otherwise
+         */
         bool operator!=(const AdjacentFactorsIter &other) const;
 
     private:
-        hopi::nodes::VarNode *_var;
+        nodes::VarNode *_var;
         int _currentIndex;
     };
 

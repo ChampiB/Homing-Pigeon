@@ -1,58 +1,55 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "Categorical.h"
 #include "nodes/VarNode.h"
-#include "nodes/CategoricalNode.h"
-#include "graphs/FactorGraph.h"
-#include <Eigen/Dense>
+#include "math/Ops.h"
 
 using namespace hopi::nodes;
-using namespace hopi::graphs;
-using namespace Eigen;
+using namespace hopi::math;
+using namespace torch;
 
 namespace hopi::distributions {
 
-    VarNode *Categorical::create(const Eigen::MatrixXd& param) {
-        std::shared_ptr<FactorGraph> fg = FactorGraph::current();
-        VarNode *var = fg->addNode(std::make_unique<VarNode>(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(std::make_unique<CategoricalNode>(var));
-
-        var->setParent(factor);
-        var->setPrior(std::make_unique<Categorical>(param));
-        var->setPosterior(std::make_unique<Categorical>(
-            Eigen::MatrixXd::Constant(param.rows(), 1, 1.0 / param.rows())
-        ));
-        return var;
+    std::unique_ptr<Categorical> Categorical::create(const Tensor &param) {
+        return std::make_unique<Categorical>(param);
     }
 
-    Categorical::Categorical(Eigen::MatrixXd p) {
-        param = std::move(p);
+    std::unique_ptr<Categorical> Categorical::create(const Tensor &&param) {
+        return std::make_unique<Categorical>(param);
+    }
+
+    Categorical::Categorical(const Tensor &p) {
+        param = p;
+    }
+
+    Categorical::Categorical(const Tensor &&p) {
+        param = p;
     }
 
     DistributionType Categorical::type() const {
         return DistributionType::CATEGORICAL;
     }
 
-    int Categorical::cardinality() const {
-        return param.rows();
+    Tensor Categorical::logParams() const {
+        return params().log();
     }
 
-    double Categorical::p(int id) const{
-        return param(id);
+    Tensor Categorical::params() const {
+        return param.detach().clone();
     }
 
-    std::vector<MatrixXd> Categorical::logProbability() const {
-        MatrixXd copy = param;
-        std::vector<MatrixXd> res {copy.array().log()};
-        return res;
+    void Categorical::updateParams(const Tensor &p) {
+        assert(p.dim() == 1 && "Categorical::updateParams, input must have dimension one.");
+        param = softmax(p, 0);
     }
 
-    std::vector<MatrixXd> Categorical::probability() const {
-        MatrixXd copy = param;
-        std::vector<MatrixXd> res {copy.array()};
-        return res;
+    double Categorical::entropy() {
+        Tensor p = params();
+        Tensor indexes = where(p != 0, true, false);
+
+        return -1 * (p * logParams()).index({indexes}).sum().item<double>();
     }
 
 }

@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #ifndef HOMING_PIGEON_2_FACTORGRAPHCONTEXTS_H

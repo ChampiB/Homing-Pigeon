@@ -1,103 +1,117 @@
 //
-// Created by tmac3 on 02/12/2020.
+// Created by Theophile Champion on 02/12/2020.
 //
 
 #include <iostream>
 #include "catch.hpp"
 #include "nodes/VarNode.h"
+#include "math/Ops.h"
 #include "nodes/CategoricalNode.h"
-#include "distributions/Categorical.h"
+#include "distributions/Dirichlet.h"
 #include "graphs/FactorGraph.h"
-#include "distributions/Distribution.h"
-#include <Eigen/Dense>
+#include "api/API.h"
+#include "helpers/UnitTests.h"
+#include <torch/torch.h>
 
+using namespace hopi::math;
+using namespace hopi::api;
 using namespace hopi::nodes;
 using namespace hopi::graphs;
 using namespace hopi::distributions;
-using namespace Eigen;
+using namespace torch;
+using namespace tests;
 
 TEST_CASE( "CategoricalNode.vfe() returns the proper vfe contribution" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    FactorGraph::setCurrent(nullptr);
-    MatrixXd param = MatrixXd::Constant(4, 1, 0.25);
-    MatrixXd param2 = MatrixXd::Constant(2, 4, 0.5);
-    auto fg = FactorGraph::current();
-    auto c1 = Categorical::create(param);
+    UnitTests::run([](){
+        FactorGraph::setCurrent(nullptr);
+        auto c1 = API::Categorical(Ops::uniform({4}));
 
-    auto poc1 = c1->posterior()->probability()[0];
-    auto prt1 = c1->prior()->logProbability()[0];
-    REQUIRE( c1->parent()->vfe() == (poc1.transpose() * prt1)(0, 0));
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+        auto poc1 = c1->posterior()->params();
+        auto lpc1 = c1->posterior()->logParams();
+        auto prc1 = c1->prior()->logParams();
+
+        auto neg_entropy = dot(poc1, lpc1);
+        auto energy = dot(poc1, prc1);
+        REQUIRE( c1->parent()->vfe() == (neg_entropy - energy).item<double>() );
+    });
 }
 
 TEST_CASE( "CategoricalNode.name getter and setter works properly" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    auto to     = std::make_unique<VarNode>(VarNodeType::HIDDEN);
-    auto factor = std::make_unique<CategoricalNode>(to.get());
+    UnitTests::run([](){
+        auto to     = VarNode::create(VarNodeType::HIDDEN);
+        auto factor = CategoricalNode::create(to.get());
 
-    REQUIRE( factor->name().empty() );
-    factor->setName("test");
-    REQUIRE( factor->name() == "test" );
-    factor->setName("abc");
-    REQUIRE( factor->name() == "abc" );
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+        REQUIRE( factor->name().empty() );
+        factor->setName("test");
+        REQUIRE( factor->name() == "test" );
+        factor->setName("abc");
+        REQUIRE( factor->name() == "abc" );
+    });
 }
 
 TEST_CASE( "CategoricalNode returns the correct child and parents" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    auto to     = std::make_unique<VarNode>(VarNodeType::HIDDEN);
-    auto factor = std::make_unique<CategoricalNode>(to.get());
+    UnitTests::run([](){
+        auto to     = VarNode::create(VarNodeType::HIDDEN);
+        auto factor = CategoricalNode::create(to.get());
 
-    REQUIRE( factor->child() == to.get() );
-    REQUIRE( factor->parent(0) == nullptr );
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+        REQUIRE( factor->child() == to.get() );
+        REQUIRE( factor->parent(0) == nullptr );
+    });
 }
 
-TEST_CASE( "CategoricalNode: A run_time error is thrown if the parameter is not the generated node" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    FactorGraph::setCurrent(nullptr);
-    MatrixXd param = MatrixXd::Constant(4, 1, 0.25);
-    auto c1 = std::make_unique<VarNode>(VarNodeType::HIDDEN);
-    auto fg = FactorGraph::current();
-    auto c2 = Categorical::create(param);
+TEST_CASE( "CategoricalNode's (child) message is correct (no Dirichlet prior)" ) {
+    UnitTests::run([](){
+        FactorGraph::setCurrent(nullptr);
+        auto fg = FactorGraph::current();
+        Tensor  param1 = Ops::uniform({4});
+        auto c1 = API::Categorical(param1);
+        auto m1 = c1->parent()->message(c1);
+        REQUIRE( equal(m1, param1.log()) );
 
-    try {
-        c2->parent()->message(c1.get());
-        REQUIRE( false );
-    } catch (const std::runtime_error& error) {
-        // Correct
-    }
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+        FactorGraph::setCurrent(nullptr);
+        Tensor param2 = API::tensor({0.25,0.1,0.4,0.25});
+        auto c2 = API::Categorical(param2);
+        auto m2 = c2->parent()->message(c2);
+        REQUIRE( equal(m2, param2.log()) );
+    });
 }
 
-TEST_CASE( "CategoricalNode's message is correct" ) {
-    std::cout << "Start: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
-    FactorGraph::setCurrent(nullptr);
-    auto fg = FactorGraph::current();
-    MatrixXd param1 = MatrixXd::Constant(4, 1, 0.25);
-    auto c1 = Categorical::create(param1);
-    auto m1 = c1->parent()->message(c1);
+TEST_CASE( "CategoricalNode's (child) message is correct (Dirichlet prior)" ) {
+    UnitTests::run([](){
+        FactorGraph::setCurrent(nullptr);
+        auto fg = FactorGraph::current();
+        auto d1 = API::Dirichlet(Ops::uniform({4}));
+        auto c1 = API::Categorical(d1);
+        auto m1 = c1->parent()->message(c1);
+        auto res = Dirichlet::expectedLog(d1->posterior()->params());
+        REQUIRE( equal(m1, res) );
 
-    REQUIRE( m1.cols() == 1 );
-    REQUIRE( m1.rows() == 4 );
-    REQUIRE( m1(0, 0) == std::log(0.25) );
-    REQUIRE( m1(1, 0) == std::log(0.25) );
-    REQUIRE( m1(2, 0) == std::log(0.25) );
-    REQUIRE( m1(3, 0) == std::log(0.25) );
+        FactorGraph::setCurrent(nullptr);
+        auto d2 = API::Dirichlet(API::tensor({0.25,0.1,0.4,0.25}));
+        auto c2 = API::Categorical(d2);
+        auto m2 = c2->parent()->message(c2);
+        res = Dirichlet::expectedLog(d2->posterior()->params());
+        REQUIRE( equal(m2, res) );
+    });
+}
 
-    FactorGraph::setCurrent(nullptr);
-    fg = FactorGraph::current();
-    MatrixXd param2 = MatrixXd::Constant(4, 1, 0.25);
-    param2(1, 0) = 0.1;
-    param2(2, 0) = 0.4;
-    auto c2 = Categorical::create(param2);
-    auto m2 = c2->parent()->message(c2);
+TEST_CASE( "CategoricalNode's (parent) message is correct (Dirichlet prior)" ) {
+    UnitTests::run([](){
+        FactorGraph::setCurrent(nullptr);
+        auto fg = FactorGraph::current();
+        Tensor param1 = Ops::uniform({4});
+        auto d1 = API::Dirichlet(param1);
+        auto c1 = API::Categorical(d1);
+        auto m1 = c1->parent()->message(d1);
+        REQUIRE( equal(m1, API::tensor({0.25,0.25,0.25,0.25})) );
 
-    REQUIRE( m2.cols() == 1 );
-    REQUIRE( m2.rows() == 4 );
-    REQUIRE( m2(0, 0) == std::log(0.25) );
-    REQUIRE( m2(1, 0) == std::log(0.1) );
-    REQUIRE( m2(2, 0) == std::log(0.4) );
-    REQUIRE( m2(3, 0) == std::log(0.25) );
-    std::cout << "End: "  << Catch::getResultCapture().getCurrentTestName() << std::endl;
+        FactorGraph::setCurrent(nullptr);
+        auto d2 = API::Dirichlet(API::tensor({0.25,0.1,0.4,0.25}));
+        auto c2 = API::Categorical(d2);
+        Tensor param2 = API::tensor({0.7, 0.01, 0.01, 0.28});
+        c2->posterior()->updateParams(param2.view({4}));
+        auto m2 = c2->parent()->message(d2);
+        auto res = softmax(param2, 0);
+        REQUIRE( equal(m2, res) );
+    });
 }

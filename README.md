@@ -15,6 +15,12 @@ current version also allows planning using tree search, where three search here 
 generative model. The tree expansion is driven by a heuristic (expected free energy) and the action selection is driven 
 by the number of times each root's child has been expanded (ties are broken based on the heuristic).
 
+## Build
+
+----------------------
+
+Please refer to the following file to build Homing-Pigeon: `BUILD.md`.
+
 ## Documentation
 
 ----------------------

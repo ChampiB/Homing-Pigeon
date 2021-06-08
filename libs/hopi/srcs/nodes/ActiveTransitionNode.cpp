@@ -1,28 +1,44 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "ActiveTransitionNode.h"
-#include "distributions/Distribution.h"
-#include <Eigen/Dense>
-#include "VarNode.h"
+#include "distributions/Dirichlet.h"
+#include "nodes/VarNode.h"
+#include "math/Ops.h"
 
-using namespace Eigen;
+using namespace torch;
+using namespace hopi::distributions;
+using namespace hopi::math;
 
 namespace hopi::nodes {
 
-    ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t) {
+    std::unique_ptr<ActiveTransitionNode> ActiveTransitionNode::create(RV *f, RV *a, RV *t, RV *b) {
+        return std::make_unique<ActiveTransitionNode>(f, a, t, b);
+    }
+
+    std::unique_ptr<ActiveTransitionNode> ActiveTransitionNode::create(RV *f, RV *a, RV *t) {
+        return std::make_unique<ActiveTransitionNode>(f, a, t);
+    }
+
+    ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t, VarNode *b) {
         from = f;
         action = a;
         to = t;
+        B = b;
     }
 
-    VarNode *ActiveTransitionNode::parent(int index) {
-        switch (index) {
+    ActiveTransitionNode::ActiveTransitionNode(VarNode *f, VarNode *a, VarNode *t)
+      : ActiveTransitionNode(f, a, t, nullptr) {}
+
+    VarNode *ActiveTransitionNode::parent(int i) {
+        switch (i) {
             case 0:
                 return from;
             case 1:
                 return action;
+            case 2:
+                return B;
             default:
                 return nullptr;
         }
@@ -32,69 +48,62 @@ namespace hopi::nodes {
         return to;
     }
 
-    MatrixXd ActiveTransitionNode::message(VarNode *t) {
+    Tensor ActiveTransitionNode::message(VarNode *t) {
         if (t == to) {
             return toMessage();
         } else if (t == from) {
             return fromMessage();
         } else if (t == action) {
             return actionMessage();
+        } else if (B && t == B) {
+            return bMessage();
         } else {
-            throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
+            assert(false && "ActiveTransitionNode::message, invalid input node.");
         }
     }
 
-    Eigen::MatrixXd ActiveTransitionNode::toMessage() {
-        std::vector<MatrixXd> B = to->prior()->logProbability();
-        MatrixXd from_hat = from->posterior()->probability()[0];
-        MatrixXd action_hat = action->posterior()->probability()[0];
-
-        for (int i = 0; i < B.size(); ++i) {
-            B[i] = action_hat(i, 0) * B[i] * from_hat;
-            if (i != 0) {
-                B[0] += B[i];
-            }
-        }
-        return B[0];
+    Tensor ActiveTransitionNode::toMessage() {
+        Tensor B_bar = Ops::average(getLogB(), action->posterior()->params(), {2});
+        return Ops::average(B_bar, from->posterior()->params(), {1});
     }
 
-    Eigen::MatrixXd ActiveTransitionNode::fromMessage() {
-        std::vector<MatrixXd> B = to->prior()->logProbability();
-        MatrixXd to_hat = to->posterior()->probability()[0];
-        MatrixXd action_hat = action->posterior()->probability()[0];
-
-        for (int i = 0; i < B.size(); ++i) {
-            B[i] = action_hat(i, 0) * B[i].transpose() * to_hat;
-            if (i != 0) {
-                B[0] += B[i];
-            }
-        }
-        return B[0];
+    Tensor ActiveTransitionNode::fromMessage() {
+        Tensor B_bar = Ops::average(getLogB(), action->posterior()->params(), {2});
+        return Ops::average(B_bar, to->posterior()->params(), {0});
     }
 
-    Eigen::MatrixXd ActiveTransitionNode::actionMessage() {
-        std::vector<MatrixXd> B = to->prior()->logProbability();
-        MatrixXd to_hat = to->posterior()->probability()[0];
-        MatrixXd from_hat = from->posterior()->probability()[0];
-        MatrixXd msg(B.size(), 1);
+    Tensor ActiveTransitionNode::actionMessage() {
+        Tensor B_bar = Ops::average(getLogB(), from->posterior()->params(), {1});
+        return Ops::average(B_bar, to->posterior()->params(), {0});
+    }
 
-        for (int i = 0; i < B.size(); ++i) {
-            msg(i, 0) = (to_hat.transpose() * B[i] * from_hat)(0, 0);
-        }
-        return msg;
+    Tensor ActiveTransitionNode::bMessage() {
+        Tensor to_hat     =     to->posterior()->params();
+        Tensor from_hat   =   from->posterior()->params();
+        Tensor action_hat = action->posterior()->params();
+
+        return Ops::outer_tensor_product({&from_hat,&action_hat,&to_hat});
     }
 
     double ActiveTransitionNode::vfe() {
-        auto to_p     = to->posterior()->probability()[0];
-        auto from_p   = from->posterior()->probability()[0];
-        auto action_p = action->posterior()->probability()[0];
-        auto lp       = to->prior()->logProbability();
+        auto lp       = Ops::average(getLogB(), action->posterior()->params(), {2});
         double VFE    = 0;
 
-        for (int i = 0; i < lp.size(); ++i) {
-            VFE += action_p(i, 0) * (to_p.transpose() * lp[i] * from_p)(0, 0);
+        if (child()->type() == HIDDEN) {
+            VFE -= child()->posterior()->entropy();
         }
+        lp = Ops::average(lp, from->posterior()->params(), {1});
+        lp = Ops::average(lp, to->posterior()->params(), {0});
+        VFE -= lp.item<double>();
         return VFE;
+    }
+
+    Tensor ActiveTransitionNode::getLogB() {
+        if (B) {
+            return Dirichlet::expectedLog(B->posterior()->params()).permute({2,0,1});
+        } else {
+            return to->prior()->logParams();
+        }
     }
 
 }

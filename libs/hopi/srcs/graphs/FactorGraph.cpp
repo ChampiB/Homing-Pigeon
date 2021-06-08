@@ -1,21 +1,24 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include <fstream>
-#include <distributions/Transition.h>
-#include "distributions/Distribution.h"
+#include <distributions/Dirichlet.h>
 #include "distributions/Categorical.h"
-#include "distributions/ActiveTransition.h"
 #include "nodes/VarNode.h"
 #include "nodes/FactorNode.h"
+#include "math/Ops.h"
+#include "api/API.h"
 #include "FactorGraph.h"
 #include "iterators/ObservedVarIter.h"
 
 using namespace hopi::nodes;
 using namespace hopi::iterators;
 using namespace hopi::distributions;
-using namespace Eigen;
+using namespace hopi::math;
+using namespace hopi::api;
+using namespace torch;
+using namespace torch::detail;
 
 namespace hopi::graphs {
 
@@ -27,8 +30,12 @@ namespace hopi::graphs {
         return currentFactorGraph;
     }
 
-    void FactorGraph::setCurrent(std::shared_ptr<FactorGraph> ptr) {
-        currentFactorGraph = std::move(ptr);
+    void FactorGraph::setCurrent(std::shared_ptr<FactorGraph> &ptr) {
+        currentFactorGraph = ptr;
+    }
+
+    void FactorGraph::setCurrent(std::shared_ptr<FactorGraph> &&ptr) {
+        currentFactorGraph = ptr;
     }
 
     FactorGraph::FactorGraph() : _tree_root(nullptr) {}
@@ -38,8 +45,8 @@ namespace hopi::graphs {
         return _vars[_vars.size() - 1].get();
     }
 
-    FactorNode *FactorGraph::addFactor(std::unique_ptr<FactorNode> node) {
-        _factors.push_back(std::move(node));
+    FactorNode *FactorGraph::addFactor(std::unique_ptr<FactorNode> factor) {
+        _factors.push_back(std::move(factor));
         return _factors[_factors.size() - 1].get();
     }
 
@@ -52,31 +59,31 @@ namespace hopi::graphs {
     }
 
     int FactorGraph::nHiddenVar() const {
-        return std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
+        return (int) std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
             return (elem->type() == VarNodeType::HIDDEN);
         });
     }
 
     int FactorGraph::nObservedVar() const {
-        return std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
+        return (int) std::count_if(_vars.begin(), _vars.end(), [](const std::unique_ptr<VarNode> & elem) {
             return (elem->type() == VarNodeType::OBSERVED);
         });
     }
 
-    VarNode *FactorGraph::node(int index) {
-        return _vars[index].get();
+    VarNode *FactorGraph::node(int i) {
+        return _vars[i].get();
     }
 
     int FactorGraph::nodes() const {
-        return _vars.size();
+        return (int) _vars.size();
     }
 
     int FactorGraph::factors() const {
-        return _factors.size();
+        return (int) _factors.size();
     }
 
-    nodes::FactorNode *FactorGraph::factor(int index) {
-        return _factors[index].get();
+    nodes::FactorNode *FactorGraph::factor(int i) {
+        return _factors[i].get();
     }
 
     void FactorGraph::loadEvidence(int nobs, const std::string& file_name) {
@@ -86,38 +93,24 @@ namespace hopi::graphs {
         int obs;
 
         while (getline(input, line)) {
-            int i = line.find(' ');
+            unsigned long i = line.find(' ');
             if (i == std::string::npos) {
-                throw std::runtime_error("Invalid '.evi' file: no space between name and observation.");
+                throw std::runtime_error("Invalid file format: '" + file_name + "'");
             }
             name = line.substr(0, i);
             obs = std::stoi(line.substr(i + 1));
             ObservedVarIter it(this);
             while (*it != nullptr) {
                 if ((*it)->name() == name) {
-                    (*it)->setPosterior(std::make_unique<Categorical>(oneHot(nobs, obs)));
+                    (*it)->setPosterior(Categorical::create(Ops::one_hot(nobs, obs)));
                 }
                 ++it;
             }
         }
     }
 
-    MatrixXd FactorGraph::oneHot(int size, int index) {
-        MatrixXd vec = MatrixXd::Constant(size, 1, 0);
-        vec(index, 0) = 1;
-        return vec;
-    }
-
-    void FactorGraph::integrate(
-            int action,
-            const MatrixXd& observation,
-            const MatrixXd& A,
-            const std::vector<MatrixXd>& B
-    ) {
-        VarNode *new_root = nullptr;
-
-        // Cut off useless branches
-        for (auto it = _tree_root->firstChild(); it != _tree_root->lastChild() ; ++it) {
+    void FactorGraph::removeHiddenChildren(VarNode *node) {
+        for (auto it = node->firstChild(); it != node->lastChild() ; ++it) {
             auto child = (*it)->child();
             if (child->type() == VarNodeType::OBSERVED) {
                 continue;
@@ -125,18 +118,70 @@ namespace hopi::graphs {
                 removeBranch(*it);
             }
         }
+    }
+
+    void FactorGraph::integrate(
+            int action,
+            const Tensor& observation,
+            const Tensor& A,
+            const Tensor& B
+    ) {
+        removeHiddenChildren(_tree_root);
+        auto n_actions = B.size(B.dim() - 1);
+        Tensor action_param = API::full({n_actions}, 0.1 / ((double) n_actions - 1));
+        action_param[action] = 0.9;
+        auto a = API::Categorical(action_param);
+        integrate(a, observation, A, B);
+    }
+
+    void FactorGraph::integrate(
+            int action,
+            const Tensor& observation,
+            VarNode *A,
+            VarNode *B
+    ) {
+        removeHiddenChildren(_tree_root);
+        auto B_param = B->prior()->params();
+        long actions = B_param.size(B_param.dim() - 1);
+        Tensor action_param = API::full({actions}, 0.1 / ((double) actions - 1));
+        action_param[action] = 0.9;
+        auto a = API::Categorical(action_param);
+        integrate(a, observation, A, B);
+    }
+
+    void FactorGraph::integrate(
+            VarNode *U,
+            int action,
+            const Tensor &observation,
+            VarNode *A,
+            VarNode *B
+    ) {
+        assert(U->prior()->type() == DIRICHLET && "FactorGraph::integrate, U must be distributed according to a Dirichlet.");
+
+        // Increase Dirichlet parameters
+        auto p = U->prior()->params();
+        auto p_a = p.accessor<double,1>();
+        p_a[action] += 1;
+        U->prior()->updateParams(p);
+
+        // Call generic integrate function
+        auto a = API::Categorical(U);
+        integrate(a, observation, A, B);
+    }
+
+    template<class T1, class T2>
+    void FactorGraph::integrate(
+            VarNode *a,
+            const Tensor& observation,
+            T1 A, T2 B
+    ) {
         // Create new slide of action/state/observation.
-        MatrixXd action_param = MatrixXd::Constant(B.size(), 1, 0.1 / (B.size() - 1));
-        action_param(action, 0) = 0.9;
-        auto a   = Categorical::create(action_param);
-        new_root = ActiveTransition::create(_tree_root, a, B);
-        auto o   = Transition::create(new_root, A);
-        o->setPosterior(std::make_unique<Categorical>(observation));
+        auto *new_root = API::ActiveTransition(_tree_root, a, B);
+        auto o         = API::Transition(new_root, A);
+        o->setPosterior(Categorical::create(observation));
         o->setType(VarNodeType::OBSERVED);
         // Clean up the factor graph
         _tree_root->removeNullChildren();
-        removeNullNodes();
-        removeNullFactors();
         setTreeRoot(new_root);
     }
 
@@ -154,22 +199,18 @@ namespace hopi::graphs {
         }
         itf->reset();
         itv->reset();
+        removeNullNodes();
+        removeNullFactors();
     }
 
     void FactorGraph::removeNullNodes() {
-        std::vector<std::unique_ptr<VarNode>>::iterator it;
-
-        while ((it = std::find(_vars.begin(), _vars.end(), nullptr)) != _vars.end()) {
-            _vars.erase(it);
-        }
+        _vars.erase(std::remove_if(_vars.begin(), _vars.end(),
+                                   [](std::unique_ptr<VarNode> &x){return x == nullptr;}), _vars.end());
     }
 
     void FactorGraph::removeNullFactors() {
-        std::vector<std::unique_ptr<FactorNode>>::iterator it;
-
-        while ((it = std::find(_factors.begin(), _factors.end(), nullptr)) != _factors.end()) {
-            _factors.erase(it);
-        }
+        _factors.erase(std::remove_if(_factors.begin(), _factors.end(),
+                                      [](std::unique_ptr<FactorNode> &x){return x == nullptr;}), _factors.end());
     }
 
     std::vector<VarNode*> FactorGraph::getNodes() {

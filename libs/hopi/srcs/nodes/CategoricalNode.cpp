@@ -1,45 +1,77 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "CategoricalNode.h"
 #include "VarNode.h"
-#include "distributions/Categorical.h"
-#include "distributions/Distribution.h"
+#include "math/Ops.h"
+#include "distributions/Dirichlet.h"
 
 using namespace hopi::distributions;
-using namespace Eigen;
+using namespace hopi::math;
+using namespace torch;
 
 namespace hopi::nodes {
 
-    CategoricalNode::CategoricalNode(VarNode *node) {
-        childNode = node;
+    std::unique_ptr<CategoricalNode> CategoricalNode::create(RV *to, RV *d) {
+        return std::make_unique<CategoricalNode>(to, d);
     }
 
-    VarNode *CategoricalNode::parent(int index) {
-        return nullptr;
+    std::unique_ptr<CategoricalNode> CategoricalNode::create(RV *node) {
+        return std::make_unique<CategoricalNode>(node);
+    }
+
+    CategoricalNode::CategoricalNode(VarNode *to, VarNode *param) {
+        childNode = to;
+        D = param;
+    }
+
+    CategoricalNode::CategoricalNode(VarNode *to) : CategoricalNode(to, nullptr) {}
+
+    VarNode *CategoricalNode::parent(int i) {
+        if (i == 0)
+            return D;
+        else
+            return nullptr;
     }
 
     VarNode *CategoricalNode::child() {
         return childNode;
     }
 
-    Eigen::MatrixXd CategoricalNode::message(VarNode *t) {
+    Tensor CategoricalNode::message(VarNode *t) {
         if (t == childNode) {
             return childMessage();
+        } else if (D && t == D) {
+            return dMessage();
         } else {
-            throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
+            assert(false && "CategoricalNode::message, invalid input node.");
         }
     }
 
-    Eigen::MatrixXd CategoricalNode::childMessage() {
-        return child()->prior()->logProbability()[0];
+    Tensor CategoricalNode::childMessage() {
+        return getLogD();
+    }
+
+    Tensor CategoricalNode::dMessage() {
+        return child()->posterior()->params();
     }
 
     double CategoricalNode::vfe() {
-        auto p  = child()->posterior()->probability()[0];
-        auto lp = child()->prior()->logProbability()[0];
-        return (p.transpose() * lp)(0, 0);
+        double VFE = 0;
+
+        if (child()->type() == HIDDEN) {
+            VFE -= child()->posterior()->entropy();
+        }
+        return VFE - dot(child()->posterior()->params(), getLogD()).item<double>();
+    }
+
+    Tensor CategoricalNode::getLogD() {
+        if (D) {
+            return Dirichlet::expectedLog(D->posterior()->params());
+        } else {
+            return child()->prior()->logParams();
+        }
     }
 
 }

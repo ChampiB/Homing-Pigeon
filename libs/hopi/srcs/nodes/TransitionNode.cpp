@@ -1,26 +1,41 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #include "TransitionNode.h"
-#include <Eigen/Dense>
+#include <torch/torch.h>
 #include "nodes/VarNode.h"
-#include "distributions/Distribution.h"
+#include "math/Ops.h"
+#include "distributions/Dirichlet.h"
 
 using namespace hopi::nodes;
+using namespace hopi::math;
 using namespace hopi::distributions;
-using namespace Eigen;
+using namespace torch;
 
 namespace hopi::nodes {
 
-    TransitionNode::TransitionNode(VarNode *f, VarNode *t) {
-        from = f;
-        to = t;
+    std::unique_ptr<TransitionNode> TransitionNode::create(RV *from, RV *to, RV *param) {
+        return std::make_unique<TransitionNode>(from, to, param);
     }
 
-    VarNode *TransitionNode::parent(int index) {
-        if (index == 0)
+    std::unique_ptr<TransitionNode> TransitionNode::create(RV *from, RV *to) {
+        return std::make_unique<TransitionNode>(from, to);
+    }
+
+    TransitionNode::TransitionNode(VarNode *f, VarNode *t, VarNode *param) {
+        from = f;
+        to = t;
+        A = param;
+    }
+
+    TransitionNode::TransitionNode(VarNode *f, VarNode *t) : TransitionNode(f, t, nullptr) {}
+
+    VarNode *TransitionNode::parent(int i) {
+        if (i == 0)
             return from;
+        else if (i == 1)
+            return A;
         else
             return nullptr;
     }
@@ -29,33 +44,46 @@ namespace hopi::nodes {
         return to;
     }
 
-    MatrixXd TransitionNode::message(VarNode *t) {
+    Tensor TransitionNode::message(VarNode *t) {
         if (t == to) {
             return toMessage();
         } else if (t == from) {
             return fromMessage();
+        } else if (A && t == A) {
+            return aMessage();
         } else {
-            throw std::runtime_error("Unsupported: Message towards non-adjacent node.");
+            assert(false && "TransitionNode::message, invalid input node.");
         }
     }
 
-    Eigen::MatrixXd TransitionNode::toMessage() {
-        MatrixXd A = to->prior()->logProbability()[0];
-        MatrixXd hat = from->posterior()->probability()[0];
-        return A * hat;
+    Tensor TransitionNode::toMessage() {
+        return matmul(getLogA(), from->posterior()->params());
     }
 
-    Eigen::MatrixXd TransitionNode::fromMessage() {
-        MatrixXd A = to->prior()->logProbability()[0];
-        MatrixXd hat = to->posterior()->probability()[0];
-        return A.transpose() * hat;
+    Tensor TransitionNode::fromMessage() {
+        return matmul(getLogA().permute({1,0}), to->posterior()->params());
+    }
+
+    Tensor TransitionNode::aMessage() {
+        return outer(from->posterior()->params(), to->posterior()->params());
     }
 
     double TransitionNode::vfe() {
-        auto to_p   = to->posterior()->probability()[0];
-        auto from_p = from->posterior()->probability()[0];
-        auto lp     = to->prior()->logProbability()[0];
-        return (to_p.transpose() * lp * from_p)(0, 0);
+        double VFE = 0;
+
+        if (child()->type() == HIDDEN) {
+            VFE -= child()->posterior()->entropy();
+        }
+        auto lp = Ops::average(getLogA(), from->posterior()->params(), {1});
+        return VFE - Ops::average(lp, to->posterior()->params(), {0}).item<double>();
+    }
+
+    Tensor TransitionNode::getLogA() {
+        if (A) {
+            return Dirichlet::expectedLog(A->posterior()->params()).permute({1,0});
+        } else {
+            return to->prior()->logParams();
+        }
     }
 
 }

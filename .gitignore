@@ -2,6 +2,17 @@
 !examples/graphs/graph_format.md
 !examples/graphs/example.graph
 examples/graphs/*
+examples/data
+examples/cats_and_dogs/*
+examples/images/*
+libs/torch
+build
+libs/tensorflow
+
+.vs/*
+out/*
+cmake-build-relwithdebinfo/*
+cmake-build-release/*
 
 # Prerequisites
 *.d

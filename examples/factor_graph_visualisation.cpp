@@ -1,77 +1,79 @@
 #include "distributions/Transition.h"
-#include "distributions/ActiveTransition.h"
-#include "environments/Environment.h"
 #include "environments/MazeEnv.h"
+#include "math/Ops.h"
 #include "nodes/VarNode.h"
-#include "distributions/Categorical.h"
 #include "graphs/FactorGraph.h"
-#include "algorithms/AlgoTree.h"
-#include "algorithms/AlgoVMP.h"
-#include <Eigen/Dense>
+#include "api/API.h"
+#include <torch/torch.h>
 
 using namespace hopi::environments;
 using namespace hopi::distributions;
 using namespace hopi::nodes;
 using namespace hopi::graphs;
-using namespace hopi::algorithms;
-using namespace Eigen;
+using namespace hopi::api;
+using namespace hopi::math;
+using namespace torch;
 
 int main()
 {
     /**
+     ** The files' name.
+     **/
+    std::string evidence_file = "../examples/evidences/1.evi";
+    std::string maze_file     = "../examples/mazes/1.maze";
+    std::string graph_file    = "../examples/graphs/1.graph";
+
+    /**
      ** Create the environment and matrix generator.
      **/
-    auto env = std::make_unique<MazeEnv>("../examples/mazes/1.maze");
+    auto env = MazeEnv::create(maze_file);
 
     /**
      ** Create the model's parameters.
      **/
-    MatrixXd U0 = MatrixXd::Constant(env->actions(), 1, 1.0 / env->actions());
-    MatrixXd A  = env->A();
-    std::vector<MatrixXd> B = env->B();
-    MatrixXd D0 = env->D();
+    Tensor U0 = Ops::uniform({env->actions(), 1});
+    Tensor A  = env->A();
+    Tensor B  = env->B();
+    Tensor D0 = env->D();
 
     /**
      ** Create the generative model.
      **/
-    VarNode *a0 = Categorical::create(U0);
+    VarNode *a0 = API::Categorical(U0);
     a0->setName("a0");
-    VarNode *s0 = Categorical::create(D0);
+    VarNode *s0 = API::Categorical(D0);
     s0->setName("s0");
-    VarNode *o0 = Transition::create(s0, A);
+    VarNode *o0 = API::Transition(s0, A);
     o0->setName("o0");
     o0->setType(VarNodeType::OBSERVED);
-    VarNode *s1 = ActiveTransition::create(s0, a0, B);
+    VarNode *s1 = API::ActiveTransition(s0, a0, B);
     s1->setName("s1");
-    VarNode *o1 = Transition::create(s1, A);
+    VarNode *o1 = API::Transition(s1, A);
     o1->setName("o1");
     o1->setType(VarNodeType::OBSERVED);
-    VarNode *a1 = Categorical::create(U0);
+    VarNode *a1 = API::Categorical(U0);
     a1->setName("a1");
-    VarNode *s2 = ActiveTransition::create(s1, a1, B);
+    VarNode *s2 = API::ActiveTransition(s1, a1, B);
     s2->setName("s2");
-    VarNode *o2 = Transition::create(s2, A);
+    VarNode *o2 = API::Transition(s2, A);
     o2->setName("o2");
     o2->setType(VarNodeType::OBSERVED);
-    std::shared_ptr<FactorGraph> fg = FactorGraph::current();
+    auto fg = FactorGraph::current();
     fg->setTreeRoot(s1);
-    fg->loadEvidence(env->observations(), "../examples/evidences/1.evi");
+    fg->loadEvidence(env->observations(), evidence_file);
 
     /**
      ** Create the model's prior preferences.
      **/
-    MatrixXd D_tilde = MatrixXd::Constant(env->states(),  1, 1.0 / env->states());
-    MatrixXd E_tilde(env->observations(),  1);
-    double sum = env->observations() * (env->observations() + 1.0) / 2.0;
-    for (int i = 0; i < env->observations(); ++i) {
-        E_tilde(i, 0) = (env->observations() - i) / sum;
-    }
+    Tensor D_tilde = Ops::uniform({env->states()});
+    Tensor E_tilde = (env->observations() - torch::arange(0, env->observations())).to(kFloat32);
+    E_tilde /= E_tilde.sum().item<double>();
 
     /**
      ** Print the factor graph.
      **/
-    std::vector<VarNodeAttr> attrs{VarNodeAttr::G,VarNodeAttr::A,VarNodeAttr::N};
-    fg->writeGraphviz("../examples/graphs/1.graph", attrs);
+    std::vector<VarNodeAttr> attrs{VarNodeAttr::G, VarNodeAttr::A, VarNodeAttr::N};
+    fg->writeGraphviz(graph_file, attrs);
 
     return EXIT_SUCCESS;
 }

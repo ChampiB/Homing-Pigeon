@@ -1,5 +1,5 @@
 //
-// Created by tmac3 on 28/11/2020.
+// Created by Theophile Champion on 28/11/2020.
 //
 
 #ifndef HOMING_PIGEON_2_TRANSITION_H
@@ -7,7 +7,7 @@
 
 #include "Distribution.h"
 #include <memory>
-#include <Eigen/Dense>
+#include <torch/torch.h>
 
 namespace hopi::nodes {
     class VarNode;
@@ -15,18 +15,69 @@ namespace hopi::nodes {
 
 namespace hopi::distributions {
 
+    /**
+     * Class representing a Transition distribution.
+     */
     class Transition : public Distribution {
     public:
-        static nodes::VarNode *create(nodes::VarNode *s, const Eigen::MatrixXd& param);
+        //
+        // Factory
+        //
+
+        /**
+         * Create a Transition distribution.
+         * @param p the parameters of the distribution
+         * @return the created distribution
+         */
+        static std::unique_ptr<Transition> create(const torch::Tensor &p);
 
     public:
-        explicit Transition(Eigen::MatrixXd param);
+        //
+        // Constructor
+        //
+
+        /**
+         * Construct a Transition distribution.
+         * @param param the parameters of the distribution
+         */
+        explicit Transition(const torch::Tensor &param);
+
+        //
+        // Implementation of the methods of the Distribution class
+        //
+
+        /**
+         * Getter.
+         * @return the distribution's type
+         */
         [[nodiscard]] DistributionType type() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> logProbability() const override;
-        [[nodiscard]] std::vector<Eigen::MatrixXd> probability() const override;
+
+        /**
+         * Getter.
+         * @return the logarithm of the distribution's parameters
+         */
+        [[nodiscard]] torch::Tensor logParams() const override;
+
+        /**
+         * Getter.
+         * @return the distribution's parameters
+         */
+        [[nodiscard]] torch::Tensor params() const override;
+
+        /**
+         * Update the distribution's parameters.
+         * @param param the new parameters
+         */
+        void updateParams(const torch::Tensor &param) override;
+
+        /**
+         * Compute the entropy of the distribution.
+         * @return the entropy
+         */
+        double entropy() override;
 
     private:
-        Eigen::MatrixXd param;
+        torch::Tensor param;
     };
 
 }
