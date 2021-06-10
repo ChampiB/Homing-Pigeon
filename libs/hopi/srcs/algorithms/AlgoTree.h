@@ -128,6 +128,20 @@ namespace hopi::algorithms {
         void expansion(nodes::VarNode *n, const torch::Tensor &A, const torch::Tensor &B);
 
         /**
+         * Perform an expansion of tree from node "n" using the matrices "A" and "B" as prior parameters for the
+         * distributions P(O|S) and P(S|S_prev,U), where S_prev is the parent node of S, i.e., the previous state
+         * of the system.
+         * @param n the node to be expanded
+         * @param A the likelihood matrix to use for the expansion
+         * @param B the transition matrix to use for the expansion
+         */
+        void expansion(
+                nodes::VarNode *n,
+                const std::shared_ptr<torch::Tensor> &A,
+                const std::shared_ptr<torch::Tensor> &B
+        );
+
+        /**
          * Perform an expansion of tree from node "n" using "A" and "B" that are assumed to be distributed according
          * to Dirichlet distributions.
          * @param n the node to be expanded
@@ -149,10 +163,9 @@ namespace hopi::algorithms {
 
         /**
          * Propagate the cost through the tree.
-         * @param node the last hidden state that have been expanded
          * @param root the root of the tree
          */
-        void propagation(nodes::VarNode *node, nodes::VarNode *root) const;
+        void propagation(nodes::VarNode *root) const;
 
         /**
          * Select the action to be executed in the environment.
@@ -196,6 +209,33 @@ namespace hopi::algorithms {
          * @return the distance
          */
         int distanceFromRoot(nodes::VarNode *n);
+
+        /**
+         * Getter.
+         * @param B a 3-tensor containing the parameters of an active transition
+         * @param action the action whose transition matrix must be returned
+         * @return the transition matrix corresponding to action "action"
+         */
+        static torch::Tensor transitionOfAction(const torch::Tensor &B, int action);
+
+        /**
+         * Getter.
+         * @param B a 3-tensor containing the parameters of an active transition
+         * @param action the action whose transition matrix must be returned
+         * @return the transition matrix corresponding to action "action"
+         */
+        static torch::Tensor transitionOfAction(const std::shared_ptr<torch::Tensor> &B, int action);
+
+        /**
+         * Implement the hard logic of the tree expansion
+         * @tparam T1 the type of likelihood mapping
+         * @tparam T2 the type of transition mapping
+         * @param n the node from which the expansion should be made
+         * @param A the likelihood mapping
+         * @param B the transition mapping
+         */
+        template<class T1, class T2>
+        void expansion_impl(nodes::VarNode *n, const T1 &A, const T2 &B);
 
     private:
         //

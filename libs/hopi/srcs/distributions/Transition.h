@@ -21,7 +21,7 @@ namespace hopi::distributions {
     class Transition : public Distribution {
     public:
         //
-        // Factory
+        // Factories
         //
 
         /**
@@ -31,9 +31,16 @@ namespace hopi::distributions {
          */
         static std::unique_ptr<Transition> create(const torch::Tensor &p);
 
+        /**
+         * Create a Transition distribution.
+         * @param p the parameters of the distribution
+         * @return the created distribution
+         */
+        static std::unique_ptr<Transition> create(const std::shared_ptr<torch::Tensor> &p);
+
     public:
         //
-        // Constructor
+        // Constructors
         //
 
         /**
@@ -41,6 +48,12 @@ namespace hopi::distributions {
          * @param param the parameters of the distribution
          */
         explicit Transition(const torch::Tensor &param);
+
+        /**
+         * Construct a Transition distribution.
+         * @param param the parameters of the distribution
+         */
+        explicit Transition(const std::shared_ptr<torch::Tensor> &param);
 
         //
         // Implementation of the methods of the Distribution class
@@ -77,7 +90,7 @@ namespace hopi::distributions {
         double entropy() override;
 
     private:
-        torch::Tensor param;
+        std::shared_ptr<torch::Tensor> param;
     };
 
 }

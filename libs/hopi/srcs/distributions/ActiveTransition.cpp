@@ -16,8 +16,16 @@ namespace hopi::distributions {
         return std::make_unique<ActiveTransition>(p);
     }
 
-    ActiveTransition::ActiveTransition(const Tensor &p) {
+    std::unique_ptr<ActiveTransition> ActiveTransition::create(const std::shared_ptr<Tensor> &param) {
+        return std::make_unique<ActiveTransition>(param);
+    }
+
+     ActiveTransition::ActiveTransition(const std::shared_ptr<Tensor> &p) {
         param = p;
+    }
+
+    ActiveTransition::ActiveTransition(const Tensor &p) {
+        param = std::make_shared<Tensor>(p);
     }
 
     [[nodiscard]] DistributionType ActiveTransition::type() const {
@@ -29,7 +37,7 @@ namespace hopi::distributions {
     }
 
     Tensor ActiveTransition::params() const {
-        return param.detach().clone();
+        return param->detach().clone();
     }
 
     void ActiveTransition::updateParams(const Tensor &p) {

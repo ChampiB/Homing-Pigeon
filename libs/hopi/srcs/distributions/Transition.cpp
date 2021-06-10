@@ -16,8 +16,16 @@ namespace hopi::distributions {
         return std::make_unique<Transition>(p);
     }
 
-    Transition::Transition(const Tensor &p) {
+    std::unique_ptr<Transition> Transition::create(const std::shared_ptr<torch::Tensor> &p) {
+        return std::make_unique<Transition>(p);
+    }
+
+    Transition::Transition(const std::shared_ptr<Tensor> &p) {
         param = p;
+    }
+
+    Transition::Transition(const Tensor &p) {
+        param = std::make_shared<Tensor>(p);
     }
 
     [[nodiscard]] DistributionType Transition::type() const {
@@ -29,7 +37,7 @@ namespace hopi::distributions {
     }
 
     Tensor Transition::params() const {
-        return param.detach().clone();
+        return param->detach().clone();
     }
 
     void Transition::updateParams(const Tensor &p) {

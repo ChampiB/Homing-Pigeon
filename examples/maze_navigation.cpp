@@ -66,7 +66,7 @@ int main() {
             algoTree->expansion(n, A, B);
             AlgoVMP::inference(algoTree->lastExpandedNodes());
             algoTree->evaluation();
-            algoTree->propagation(n, fg->treeRoot());
+            algoTree->propagation(fg->treeRoot());
         }
         int a = algoTree->actionSelection(fg->treeRoot());
         int o = env->execute(a);

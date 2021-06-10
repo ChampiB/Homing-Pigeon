@@ -17,8 +17,16 @@ namespace hopi::distributions {
         return std::make_unique<Dirichlet>(p);
     }
 
-    Dirichlet::Dirichlet(const Tensor &p) {
+    std::unique_ptr<Dirichlet> Dirichlet::create(const std::shared_ptr<torch::Tensor> &p) {
+        return std::make_unique<Dirichlet>(p);
+    }
+
+    Dirichlet::Dirichlet(const std::shared_ptr<torch::Tensor> &p) {
         param = p;
+    }
+
+    Dirichlet::Dirichlet(const Tensor &p) {
+        param = std::make_shared<Tensor>(p);
     }
 
     DistributionType Dirichlet::type() const {
@@ -30,13 +38,13 @@ namespace hopi::distributions {
     }
 
     [[nodiscard]] Tensor Dirichlet::params() const {
-        return param.detach().clone();
+        return param->detach().clone();
     }
 
     void Dirichlet::updateParams(const Tensor &p) {
-        assert(param.dim() == p.dim() && "Dirichlet::updateParams, inputs must have the same dimensions.");
-        assert(param.sizes() == p.sizes() && "Dirichlet::updateParams, inputs must have the same sizes.");
-        param = p;
+        assert(param->dim() == p.dim() && "Dirichlet::updateParams, inputs must have the same dimensions.");
+        assert(param->sizes() == p.sizes() && "Dirichlet::updateParams, inputs must have the same sizes.");
+        *param = p;
     }
 
     double Dirichlet::entropy(const Tensor &&p) {
@@ -55,13 +63,13 @@ namespace hopi::distributions {
     double Dirichlet::entropy() {
         double e = 0;
 
-        Ops::unsqueeze(3 - param.dim(), {&param});
-        for (int i = 0; i < param.size(0); ++i) {
-            for (int j = 0; j < param.size(1); ++j) {
-                e += entropy(param.index({i, j, Ellipsis}));
+        Ops::unsqueeze(3 - param->dim(), {param.get()});
+        for (int i = 0; i < param->size(0); ++i) {
+            for (int j = 0; j < param->size(1); ++j) {
+                e += entropy(param->index({i, j, Ellipsis}));
             }
         }
-        param = torch::squeeze(param);
+        *param = torch::squeeze(*param);
         return e;
     }
 

@@ -75,4 +75,13 @@ int main() {
     std::cout << v8.index({0,0,1}) << std::endl; // Display:  1
     std::cout << v8.index({0,1}) << std::endl; // Display:  4 5 6 7
     std::cout << v8.index({0,Ellipsis,1}) << std::endl; // Display:  1 5 9
+
+    std::cout << torch::narrow(v8, 0, 0, 1) << std::endl;
+    // Display:  0   1   2   3
+    //           4   5   6   7
+    //           8   9  10  11
+    std::cout << torch::narrow(v8, 2, 1, 1) << std::endl;
+    // Display:  1  13
+    //           5  17
+    //           9  21
 }

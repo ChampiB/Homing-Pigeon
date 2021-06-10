@@ -31,6 +31,13 @@ namespace hopi::distributions {
          */
         static std::unique_ptr<Dirichlet> create(const torch::Tensor &p);
 
+        /**
+         * Create a Dirichlet distribution.
+         * @param p the parameters of the distribution
+         * @return the created distribution
+         */
+        static std::unique_ptr<Dirichlet> create(const std::shared_ptr<torch::Tensor> &p);
+
     public:
         //
         // Constructors
@@ -41,6 +48,12 @@ namespace hopi::distributions {
          * @param p the parameters of the distribution
          */
         explicit Dirichlet(const torch::Tensor &param);
+
+        /**
+         * Construct a Dirichlet distribution.
+         * @param p the parameters of the distribution
+         */
+        explicit Dirichlet(const std::shared_ptr<torch::Tensor> &param);
 
         //
         // Implementation of the methods of the Distribution class
@@ -93,7 +106,7 @@ namespace hopi::distributions {
         static double entropy(const torch::Tensor &&p);
 
     private:
-        torch::Tensor param;
+        std::shared_ptr<torch::Tensor> param;
     };
 
 }

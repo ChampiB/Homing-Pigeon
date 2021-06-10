@@ -309,61 +309,44 @@ TEST_CASE( "Back-propagation increases N and G on all ancestors (UPWARD_BP)." ) 
         auto fg = FactorGraphContexts::context2();
         auto algo = AlgoTree(3, Ops::uniform({2}), Ops::uniform({2}));
         auto root = fg->treeRoot();
-        auto B = Ops::uniform({2,2,3});
-        auto c0 = API::Transition(root, B);
-        auto c1 = API::Transition(root, B);
-        auto c2 = API::Transition(root, B);
-
         root->setG(1);
-        c0->setG(2);
-        c1->setG(3);
-        c2->setG(4);
+        auto A = Ops::uniform({4,2});
+        auto B = Ops::uniform({2,2,3});
 
+        algo.expansion(root, A, B);
+        auto c0 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c0->setG(2);
         REQUIRE( root->n() == 0 );
         REQUIRE( c0->n() == 0 );
-        REQUIRE( c1->n() == 0 );
-        REQUIRE( c2->n() == 0 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c0, root);
+        algo.propagation(root);
         REQUIRE( root->n() == 1 );
         REQUIRE( c0->n() == 1 );
-        REQUIRE( c1->n() == 0 );
-        REQUIRE( c2->n() == 0 );
-        REQUIRE( root->g() == 3 );
+        REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c1, root);
+        algo.expansion(root, A, B);
+        auto c1 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c1->setG(3);
+        algo.propagation(root);
         REQUIRE( root->n() == 2 );
         REQUIRE( c0->n() == 1 );
         REQUIRE( c1->n() == 1 );
-        REQUIRE( c2->n() == 0 );
-        REQUIRE( root->g() == 6 );
+        REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
         REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c2, root);
+        algo.expansion(root, A, B);
+        auto c2 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c2->setG(4);
+        algo.propagation(root);
         REQUIRE( root->n() == 3 );
         REQUIRE( c0->n() == 1 );
         REQUIRE( c1->n() == 1 );
         REQUIRE( c2->n() == 1 );
-        REQUIRE( root->g() == 10 );
-        REQUIRE( c0->g() == 2 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
-
-        algo.propagation(c1, root);
-        REQUIRE( root->n() == 4 );
-        REQUIRE( c0->n() == 1 );
-        REQUIRE( c1->n() == 2 );
-        REQUIRE( c2->n() == 1 );
-        REQUIRE( root->g() == 13 );
+        REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
         REQUIRE( c1->g() == 3 );
         REQUIRE( c2->g() == 4 );
@@ -377,59 +360,42 @@ TEST_CASE( "Back-propagation increases N on all ancestors (NO_BP)." ) {
         conf.back_propagation_type = NO_BP;
         auto algo = AlgoTree(conf);
         auto root = fg->treeRoot();
-        auto B = Ops::uniform({2,2,3});
-        auto c0 = API::Transition(root, B);
-        auto c1 = API::Transition(root, B);
-        auto c2 = API::Transition(root, B);
-
         root->setG(1);
-        c0->setG(2);
-        c1->setG(3);
-        c2->setG(4);
+        auto A  = Ops::uniform({4,2});
+        auto B  = Ops::uniform({2,2,3});
 
+        algo.expansion(root, A, B);
+        auto c0 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c0->setG(2);
         REQUIRE( root->n() == 0 );
         REQUIRE( c0->n() == 0 );
-        REQUIRE( c1->n() == 0 );
-        REQUIRE( c2->n() == 0 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c0, root);
+        algo.propagation(root);
         REQUIRE( root->n() == 1 );
         REQUIRE( c0->n() == 1 );
-        REQUIRE( c1->n() == 0 );
-        REQUIRE( c2->n() == 0 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c1, root);
+        algo.expansion(root, A, B);
+        auto c1 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c1->setG(3);
+        algo.propagation(root);
         REQUIRE( root->n() == 2 );
         REQUIRE( c0->n() == 1 );
         REQUIRE( c1->n() == 1 );
-        REQUIRE( c2->n() == 0 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
         REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c2, root);
+        algo.expansion(root, A, B);
+        auto c2 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c2->setG(4);
+        algo.propagation(root);
         REQUIRE( root->n() == 3 );
         REQUIRE( c0->n() == 1 );
         REQUIRE( c1->n() == 1 );
-        REQUIRE( c2->n() == 1 );
-        REQUIRE( root->g() == 1 );
-        REQUIRE( c0->g() == 2 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
-
-        algo.propagation(c1, root);
-        REQUIRE( root->n() == 4 );
-        REQUIRE( c0->n() == 1 );
-        REQUIRE( c1->n() == 2 );
         REQUIRE( c2->n() == 1 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
@@ -445,64 +411,45 @@ TEST_CASE( "Back-propagation increases N on all ancestors (DOWNWARD_BP)." ) {
         conf.back_propagation_type = DOWNWARD_BP;
         auto algo = AlgoTree(conf);
         auto root = fg->treeRoot();
-        auto B  = Ops::uniform({2,2});
-        auto c0 = API::Transition(root, B);
-        auto c1 = API::Transition(root, B);
-        auto c2 = API::Transition(root, B);
-
         root->setG(1);
-        c0->setG(2);
-        c1->setG(3);
-        c2->setG(4);
+        auto A  = Ops::uniform({4,2});
+        auto B  = Ops::uniform({2,2,3});
 
+        algo.expansion(root, A, B);
+        auto c0 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c0->setG(2);
         REQUIRE( root->n() == 0 );
         REQUIRE( c0->n() == 0 );
-        REQUIRE( c1->n() == 0 );
-        REQUIRE( c2->n() == 0 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 2 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c0, root);
+        algo.propagation(root);
         REQUIRE( root->n() == 1 );
         REQUIRE( c0->n() == 1 );
-        REQUIRE( c1->n() == 0 );
-        REQUIRE( c2->n() == 0 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 3 );
-        REQUIRE( c1->g() == 3 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c1, root);
+        algo.expansion(root, A, B);
+        auto c1 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c1->setG(3);
+        algo.propagation(root);
         REQUIRE( root->n() == 2 );
         REQUIRE( c0->n() == 1 );
         REQUIRE( c1->n() == 1 );
-        REQUIRE( c2->n() == 0 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 3 );
         REQUIRE( c1->g() == 4 );
-        REQUIRE( c2->g() == 4 );
 
-        algo.propagation(c2, root);
+        algo.expansion(root, A, B);
+        auto c2 = algo.lastExpandedNodes()[0]; // Last expanded hidden state
+        c2->setG(4);
+        algo.propagation(root);
         REQUIRE( root->n() == 3 );
         REQUIRE( c0->n() == 1 );
         REQUIRE( c1->n() == 1 );
-        REQUIRE( c2->n() == 1 );
         REQUIRE( root->g() == 1 );
         REQUIRE( c0->g() == 3 );
         REQUIRE( c1->g() == 4 );
-        REQUIRE( c2->g() == 5 );
-
-        algo.propagation(c1, root);
-        REQUIRE( root->n() == 4 );
-        REQUIRE( c0->n() == 1 );
-        REQUIRE( c1->n() == 2 );
-        REQUIRE( c2->n() == 1 );
-        REQUIRE( root->g() == 1 );
-        REQUIRE( c0->g() == 3 );
-        REQUIRE( c1->g() == 5 );
-        REQUIRE( c2->g() == 5 );
     });
 }
 
@@ -511,7 +458,7 @@ TEST_CASE( "Action selection returns the child variable with the highest N." ) {
         auto fg = FactorGraphContexts::context2();
         auto algo = AlgoTree(3, Ops::uniform({2}), Ops::uniform({2}));
         auto root = fg->treeRoot();
-        auto B = Ops::uniform({2, 2});
+        auto B = Ops::uniform({2,2,3});
         auto c0 = API::Transition(root, B);
         c0->setAction(0);
         auto c1 = API::Transition(root, B);

@@ -36,6 +36,13 @@ namespace hopi::distributions {
          * @param param the parameters of the distribution
          * @return the created distribution
          */
+        static std::unique_ptr<Categorical> create(const std::shared_ptr<torch::Tensor> &param);
+
+        /**
+         * Create a Categorical distribution.
+         * @param param the parameters of the distribution
+         * @return the created distribution
+         */
         static std::unique_ptr<Categorical> create(const torch::Tensor &&param);
 
     public:
@@ -48,6 +55,12 @@ namespace hopi::distributions {
          * @param param the parameters of the distribution
          */
         explicit Categorical(const torch::Tensor &param);
+
+        /**
+         * Construct a Categorical distribution.
+         * @param param the parameters of the distribution
+         */
+        explicit Categorical(const std::shared_ptr<torch::Tensor> &param);
 
         /**
          * Construct a Categorical distribution.
@@ -90,7 +103,7 @@ namespace hopi::distributions {
         double entropy() override;
 
     private:
-        torch::Tensor param;
+        std::shared_ptr<torch::Tensor> param;
     };
 
 }

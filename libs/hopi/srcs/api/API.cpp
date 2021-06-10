@@ -23,15 +23,12 @@ using namespace torch;
 
 namespace hopi::api {
 
-    RV *API::Categorical(const Tensor &param) {
-        auto fg = FactorGraph::current();
-        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(CategoricalNode::create(var));
+    RV *API::Categorical(const std::shared_ptr<Tensor> &param) {
+        return API::Categorical(Categorical::create(param));
+    }
 
-        var->setParent(factor);
-        var->setPrior(Categorical::create(param));
-        var->setPosterior(Categorical::create(Ops::uniform({param.size(0)})));
-        return var;
+    RV *API::Categorical(const Tensor &param) {
+        return API::Categorical(Categorical::create(param));
     }
 
     RV *API::Categorical(RV *param) {
@@ -47,17 +44,12 @@ namespace hopi::api {
         return var;
     }
 
+    RV *API::Transition(RV *s, const std::shared_ptr<Tensor> &param) {
+        return API::Transition(s, Transition::create(param));
+    }
+
     RV *API::Transition(RV *s, const Tensor &param) {
-        auto fg = FactorGraph::current();
-        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(TransitionNode::create(s, var));
-
-        var->setParent(factor);
-        var->setPrior(Transition::create(param));
-        var->setPosterior(Categorical::create(Ops::uniform({param.size(0)})));
-
-        s->addChild(factor);
-        return var;
+        return API::Transition(s, Transition::create(param));
     }
 
     RV *API::Transition(RV *s, RV *param) {
@@ -75,17 +67,11 @@ namespace hopi::api {
     }
 
     RV *API::ActiveTransition(RV *s, RV *a, const Tensor &param) {
-        auto fg = FactorGraph::current();
-        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(ActiveTransitionNode::create(s, a, var));
+        return API::ActiveTransition(s, a, ActiveTransition::create(param));
+    }
 
-        var->setParent(factor);
-        var->setPrior(ActiveTransition::create(param));
-        var->setPosterior(Categorical::create(Ops::uniform({param.size(0)})));
-
-        s->addChild(factor);
-        a->addChild(factor);
-        return var;
+    RV *API::ActiveTransition(RV *s, RV *a, const std::shared_ptr<Tensor> &param) {
+        return API::ActiveTransition(s, a, ActiveTransition::create(param));
     }
 
     RV *API::ActiveTransition(RV *s, RV *a, RV *param) {
@@ -104,14 +90,11 @@ namespace hopi::api {
     }
 
     RV *API::Dirichlet(const Tensor &param) {
-        auto fg = FactorGraph::current();
-        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
-        FactorNode *factor = fg->addFactor(DirichletNode::create(var));
+        return API::Dirichlet(Dirichlet::create(param), Dirichlet::create(param));
+    }
 
-        var->setParent(factor);
-        var->setPrior(Dirichlet::create(param));
-        var->setPosterior(Dirichlet::create(param));
-        return var;
+    RV *API::Dirichlet(const std::shared_ptr<torch::Tensor> &param) {
+        return API::Dirichlet(Dirichlet::create(param), Dirichlet::create(*param));
     }
 
     static ScalarType dType = kDouble;
@@ -142,6 +125,67 @@ namespace hopi::api {
 
     torch::Tensor API::ones(at::IntArrayRef sizes) {
         return torch::ones(sizes).to(dataType());
+    }
+
+    std::shared_ptr<torch::Tensor> API::toPtr(const Tensor &tensor) {
+        return std::make_shared<torch::Tensor>(tensor);
+    }
+
+    std::shared_ptr<torch::Tensor> API::to_ptr(const Tensor &&tensor) {
+        return std::make_shared<torch::Tensor>(tensor);
+    }
+
+    RV *API::Categorical(std::unique_ptr<Distribution> prior) {
+        auto fg = FactorGraph::current();
+        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
+        FactorNode *factor = fg->addFactor(CategoricalNode::create(var));
+        long nb_params = prior->params().size(0);
+
+        var->setParent(factor);
+        var->setPrior(std::move(prior));
+        var->setPosterior(Categorical::create(Ops::uniform({nb_params})));
+        return var;
+    }
+
+    RV *API::Transition(RV *s, std::unique_ptr<Distribution> prior) {
+        auto fg = FactorGraph::current();
+        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
+        FactorNode *factor = fg->addFactor(TransitionNode::create(s, var));
+        long nb_params = prior->params().size(0);
+
+        var->setParent(factor);
+        var->setPrior(std::move(prior));
+        var->setPosterior(Categorical::create(Ops::uniform({nb_params})));
+
+        s->addChild(factor);
+        return var;
+    }
+
+    RV *API::ActiveTransition(RV *s, RV *a, std::unique_ptr<Distribution> prior) {
+        auto fg = FactorGraph::current();
+        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
+        FactorNode *factor = fg->addFactor(ActiveTransitionNode::create(s, a, var));
+        long nb_params = prior->params().size(0);
+
+        var->setParent(factor);
+        var->setPrior(std::move(prior));
+        var->setPosterior(Categorical::create(Ops::uniform({nb_params})));
+
+        s->addChild(factor);
+        a->addChild(factor);
+        return var;
+    }
+
+    RV *API::Dirichlet(std::unique_ptr<distributions::Distribution> prior,
+                       std::unique_ptr<distributions::Distribution> posterior) {
+        auto fg = FactorGraph::current();
+        VarNode *var = fg->addNode(VarNode::create(VarNodeType::HIDDEN));
+        FactorNode *factor = fg->addFactor(DirichletNode::create(var));
+
+        var->setParent(factor);
+        var->setPrior(std::move(prior));
+        var->setPosterior(std::move(posterior));
+        return var;
     }
 
 }

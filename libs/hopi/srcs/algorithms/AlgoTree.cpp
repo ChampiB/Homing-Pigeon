@@ -96,34 +96,17 @@ namespace hopi::algorithms {
         // Gather A and B parameters from the variable nodes
         auto A_param = Dirichlet::expectedLog(A->posterior()->params()).permute({1,0}).exp();
         auto B_param = Dirichlet::expectedLog(B->posterior()->params()).permute({2,0,1}).exp();
+
         // Call the expansion taking tensors of parameters as arguments
-        expansion(n, A_param, B_param);
+        expansion_impl(n, A_param, B_param);
+    }
+
+    void AlgoTree::expansion(nodes::VarNode *n, const std::shared_ptr<Tensor> &A, const std::shared_ptr<Tensor> &B) {
+        expansion_impl(n, A, B);
     }
 
     void AlgoTree::expansion(VarNode *n, const Tensor &A, const Tensor &B) {
-        // Select an unexplored action to expand the tree
-        std::vector<int> ua = unexploredActions(n);
-        std::uniform_int_distribution<int> rand_int(0, (int)ua.size() - 1);
-        int action = ua[rand_int(gen)];
-
-        // Generative model expansion
-        auto B_action = squeeze(B.index_select(2, at::tensor(action)));
-        VarNode *s = API::Transition(n, B_action);
-        VarNode *o = API::Transition(s, A);
-        s->setAction(action);
-        s->setBiased(Categorical::create(config.state_pref));
-        o->setBiased(Categorical::create(config.obs_pref));
-        last_expansion = {s, o};
-
-        // Update list of unexplored_states
-        if (ua.size() == 1) {
-            us.erase(std::find_if(us.begin(), us.end(), [n](const VarNodePair& p) {
-                return p.first == n;
-            }));
-        }
-        if (config.max_tree_depth == -1 || distanceFromRoot(s) < config.max_tree_depth) {
-            us.emplace_back(s, o);
-        }
+        expansion_impl(n, A, B);
     }
 
     /**
@@ -151,7 +134,8 @@ namespace hopi::algorithms {
      * Step 4: Back-propagation of the information in the tree
      */
 
-    void AlgoTree::propagation(VarNode *node, VarNode *root) const {
+    void AlgoTree::propagation(VarNode *root) const {
+        VarNode *node = last_expansion.first;
         // If type == NO_BP then do nothing
         // If type == DOWNWARD_BP then G_child = G_parent + G_child
         if (config.back_propagation_type == DOWNWARD_BP) {
@@ -161,7 +145,7 @@ namespace hopi::algorithms {
             node->incrementN(); // N_ancestors++
             auto parent = node->parent()->parent(0);
             // If type == UPWARD_BP then G_parent = G_parent + G_child
-            if (config.back_propagation_type == UPWARD_BP) {
+            if (config.back_propagation_type == UPWARD_BP && parent != root) {
                 parent->setG(parent->g() + node->g());
             }
             node = parent;
@@ -269,6 +253,40 @@ namespace hopi::algorithms {
             ++d;
         }
         return d;
+    }
+
+    torch::Tensor AlgoTree::transitionOfAction(const Tensor &B, int action) {
+        return squeeze(torch::narrow(B, 2, action, 1));
+    }
+
+    torch::Tensor AlgoTree::transitionOfAction(const std::shared_ptr<torch::Tensor> &B, int action) {
+        return squeeze(torch::narrow(*B, 2, action, 1));
+    }
+
+    template<class T1, class T2>
+    void AlgoTree::expansion_impl(nodes::VarNode *n, const T1 &A, const T2 &B) {
+        // Select an unexplored action to expand the tree
+        std::vector<int> ua = unexploredActions(n);
+        std::uniform_int_distribution<int> rand_int(0, (int)ua.size() - 1);
+        int action = ua[rand_int(gen)];
+
+        // Generative model expansion
+        VarNode *s = API::Transition(n, transitionOfAction(B, action));
+        VarNode *o = API::Transition(s, A);
+        s->setAction(action);
+        s->setBiased(Categorical::create(config.state_pref));
+        o->setBiased(Categorical::create(config.obs_pref));
+        last_expansion = {s, o};
+
+        // Update list of unexplored_states
+        if (ua.size() == 1) {
+            us.erase(std::find_if(us.begin(), us.end(), [n](const VarNodePair& p) {
+                return p.first == n;
+            }));
+        }
+        if (config.max_tree_depth == -1 || distanceFromRoot(s) < config.max_tree_depth) {
+            us.emplace_back(s, o);
+        }
     }
 
     /**

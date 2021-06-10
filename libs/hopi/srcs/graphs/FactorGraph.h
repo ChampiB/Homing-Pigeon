@@ -103,6 +103,21 @@ namespace hopi::graphs {
         void integrate(
                 int action,
                 const torch::Tensor& observation,
+                const std::shared_ptr<torch::Tensor>& A,
+                const std::shared_ptr<torch::Tensor>& B
+        );
+
+        /**
+         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the POMDP by
+         * assuming that the action "action" has been taken and that the observation "observation" has been made.
+         * @param action the action performed
+         * @param observation the observation made
+         * @param A the likelihood mapping to use when adding the slice
+         * @param B the transition mapping to use when adding the slice
+         */
+        void integrate(
+                int action,
+                const torch::Tensor& observation,
                 nodes::VarNode *A,
                 nodes::VarNode *B
         );

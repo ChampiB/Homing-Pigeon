@@ -16,16 +16,24 @@ namespace hopi::distributions {
         return std::make_unique<Categorical>(param);
     }
 
+    std::unique_ptr<Categorical> Categorical::create(const std::shared_ptr<Tensor> &param) {
+        return std::make_unique<Categorical>(param);
+    }
+
     std::unique_ptr<Categorical> Categorical::create(const Tensor &&param) {
         return std::make_unique<Categorical>(param);
     }
 
-    Categorical::Categorical(const Tensor &p) {
+    Categorical::Categorical(const std::shared_ptr<Tensor> &p) {
         param = p;
     }
 
+    Categorical::Categorical(const Tensor &p) {
+        param = std::make_unique<Tensor>(p);
+    }
+
     Categorical::Categorical(const Tensor &&p) {
-        param = p;
+        param = std::make_unique<Tensor>(p);
     }
 
     DistributionType Categorical::type() const {
@@ -37,12 +45,12 @@ namespace hopi::distributions {
     }
 
     Tensor Categorical::params() const {
-        return param.detach().clone();
+        return param->detach().clone();
     }
 
     void Categorical::updateParams(const Tensor &p) {
         assert(p.dim() == 1 && "Categorical::updateParams, input must have dimension one.");
-        param = softmax(p, 0);
+        *param = softmax(p, 0);
     }
 
     double Categorical::entropy() {

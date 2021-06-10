@@ -126,11 +126,15 @@ namespace hopi::graphs {
             const Tensor& A,
             const Tensor& B
     ) {
-        removeHiddenChildren(_tree_root);
-        auto n_actions = B.size(B.dim() - 1);
+        assert(B.dim() == 3 && "FactorGraph::integrate, B must be 3-tensor.");
+
+        // Create a categorical distribution over action
+        auto n_actions = B.size(2);
         Tensor action_param = API::full({n_actions}, 0.1 / ((double) n_actions - 1));
         action_param[action] = 0.9;
         auto a = API::Categorical(action_param);
+
+        // Call generic integrate function
         integrate(a, observation, A, B);
     }
 
@@ -140,12 +144,34 @@ namespace hopi::graphs {
             VarNode *A,
             VarNode *B
     ) {
-        removeHiddenChildren(_tree_root);
+        assert(B->prior()->params().dim() == 3 && "FactorGraph::integrate, B must be 3-random-tensor.");
+
+        // Create a categorical distribution over action
         auto B_param = B->prior()->params();
         long actions = B_param.size(B_param.dim() - 1);
         Tensor action_param = API::full({actions}, 0.1 / ((double) actions - 1));
         action_param[action] = 0.9;
         auto a = API::Categorical(action_param);
+
+        // Call generic integrate function
+        integrate(a, observation, A, B);
+    }
+
+    void FactorGraph::integrate(
+            int action,
+            const Tensor &observation,
+            const std::shared_ptr<Tensor> &A,
+            const std::shared_ptr<Tensor> &B
+    ) {
+        assert(B->dim() == 3 && "FactorGraph::integrate, B must be 3-tensor.");
+
+        // Create a categorical distribution over action
+        auto n_actions = B->size(2);
+        Tensor action_param = API::full({n_actions}, 0.1 / ((double) n_actions - 1));
+        action_param[action] = 0.9;
+        auto a = API::Categorical(action_param);
+
+        // Call generic integrate function
         integrate(a, observation, A, B);
     }
 
@@ -157,6 +183,7 @@ namespace hopi::graphs {
             VarNode *B
     ) {
         assert(U->prior()->type() == DIRICHLET && "FactorGraph::integrate, U must be distributed according to a Dirichlet.");
+        assert(B->prior()->params().dim() == 3 && "FactorGraph::integrate, B must be 3-random-tensor.");
 
         // Increase Dirichlet parameters
         auto p = U->prior()->params();
@@ -164,8 +191,10 @@ namespace hopi::graphs {
         p_a[action] += 1;
         U->prior()->updateParams(p);
 
-        // Call generic integrate function
+        // Create a categorical distribution over action
         auto a = API::Categorical(U);
+
+        // Call generic integrate function
         integrate(a, observation, A, B);
     }
 
@@ -175,11 +204,15 @@ namespace hopi::graphs {
             const Tensor& observation,
             T1 A, T2 B
     ) {
+        // Cut-off child branches
+        removeHiddenChildren(_tree_root);
+
         // Create new slide of action/state/observation.
         auto *new_root = API::ActiveTransition(_tree_root, a, B);
         auto o         = API::Transition(new_root, A);
         o->setPosterior(Categorical::create(observation));
         o->setType(VarNodeType::OBSERVED);
+
         // Clean up the factor graph
         _tree_root->removeNullChildren();
         setTreeRoot(new_root);

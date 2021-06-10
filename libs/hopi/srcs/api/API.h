@@ -8,6 +8,10 @@
 #include <torch/torch.h>
 #include "Aliases.h"
 
+namespace hopi::distributions {
+    class Distribution;
+}
+
 namespace hopi::api {
 
     /**
@@ -19,6 +23,17 @@ namespace hopi::api {
         // The following functions create random variables distributed according to various distributions.
         // It also handle the creation of the underlying factor graph that will be used to perform inference.
         //
+
+        /**
+         * Create a categorical random variable whose distribution is defined by the parameters "param".
+         *
+         * WARNING: this function does not create a copy of the parameters. Thus, if those parameters are sent to
+         * another distribution the parameters will be shared by the teo distributions.
+         *
+         * @param param the parameters of the distribution
+         * @return the random variable
+         */
+        static RV *Categorical(const std::shared_ptr<torch::Tensor>& param);
 
         /**
          * Create a categorical random variable whose distribution is defined by the parameters "param".
@@ -34,6 +49,20 @@ namespace hopi::api {
          * @return the (Categorical) random variable
          */
         static RV *Categorical(RV *param);
+
+        /**
+         * Create a transition random variable whose distribution is defined by the parameters "param".
+         * This (Transition) random variable is condition on another random variable "s", i.e., P(o|s) where the
+         * created random variable is called "o".
+         *
+         * WARNING: this function does not create a copy of the parameters. Thus, if those parameters are sent to
+         * another distribution the parameters will be shared by the teo distributions.
+         *
+         * @param s the random variable on which the created random variable is conditioned
+         * @param param the parameters of the transition distribution
+         * @return the (Transition) random variable
+         */
+        static RV *Transition(RV *s, const std::shared_ptr<torch::Tensor>& param);
 
         /**
          * Create a transition random variable whose distribution is defined by the parameters "param".
@@ -68,6 +97,21 @@ namespace hopi::api {
         static RV *ActiveTransition(RV *s, RV *a, const torch::Tensor& param);
 
         /**
+         * Create a random variable distributed according to an active transition distribution,
+         * i.e., P(s_next|s,a) where "s_next" is the returned random variable, "a" is the action upon which the
+         * transition is conditioned and "s" is the state upon which the transition is conditioned.
+         *
+         * WARNING: this function does not create a copy of the parameters. Thus, if those parameters are sent to
+         * another distribution the parameters will be shared by the teo distributions.
+         *
+         * @param s the state upon which the transition is conditioned
+         * @param a the action upon which the transition is conditioned
+         * @param param the parameters of the ActiveTransition distribution
+         * @return the created ransom variable
+         */
+        static RV *ActiveTransition(RV *s, RV *a, const std::shared_ptr<torch::Tensor>& param);
+
+        /**
          * Create a random variable distributed according to an active transition, i.e., P(s_next|s,a,B) where "s_next"
          * is the returned random variable, "a" the action upon which the transition is conditioned and "s" is the
          * state upon which the transition is conditioned and "B" is a 3d tensor containing the parameters of the
@@ -78,6 +122,17 @@ namespace hopi::api {
          * @return the created ransom variable
          */
         static RV *ActiveTransition(RV *s, RV *a, RV *param);
+
+        /**
+         * Create a random variable distributed according to a Dirichlet distribution with parameters "param".
+         *
+         * WARNING: this function does not create a copy of the parameters. Thus, if those parameters are sent to
+         * another distribution the parameters will be shared by the teo distributions.
+         *
+         * @param param the parameters of the Dirichlet distribution
+         * @return the created random variable
+         */
+        static RV *Dirichlet(const std::shared_ptr<torch::Tensor>& param);
 
         /**
          * Create a random variable distributed according to a Dirichlet distribution with parameters "param".
@@ -148,6 +203,60 @@ namespace hopi::api {
          * @return the create tensor
          */
         static torch::Tensor range(at::Scalar start, at::Scalar end);
+
+        /**
+         * Return a pointer pointing to the input tensor.
+         * @param tensor the input tensor
+         * @return the shared pointer
+         */
+        static std::shared_ptr<torch::Tensor> toPtr(const torch::Tensor &tensor);
+
+        /**
+         * Return a pointer pointing to the input tensor.
+         * @param tensor the input tensor
+         * @return the shared pointer
+         */
+        static std::shared_ptr<torch::Tensor> to_ptr(const torch::Tensor &&tensor);
+
+    private:
+        //
+        // The following function should not be called directly by the user.
+        //
+
+        /**
+         * Create a categorical random variable whose prior distribution is sent as parameters.
+         * @param prior the prior distribution of the random variable
+         * @return the random variable
+         */
+        static RV *Categorical(std::unique_ptr<distributions::Distribution> prior);
+
+        /**
+         * Create a transition random variable whose prior distribution is sent as parameters.
+         * @param s the state on which the transition is conditioned
+         * @param prior the prior distribution of the random variable
+         * @return the random variable
+         */
+        static RV *Transition(RV *s, std::unique_ptr<distributions::Distribution> prior);
+
+        /**
+         * Create a active transition random variable whose prior distribution is sent as parameters.
+         * @param s the state on which the transition is conditioned
+         * @param a the action on which the transition is conditioned
+         * @param prior the prior distribution of the random variable
+         * @return the random variable
+         */
+        static RV *ActiveTransition(RV *s, RV *a, std::unique_ptr<distributions::Distribution> prior);
+
+        /**
+         * Create a Dirichlet random variable whose prior distribution is sent as parameters.
+         * @param prior the prior distribution of the random variable
+         * @param posterior the posterior distribution of the random variable
+         * @return the random variable
+         */
+        static RV *Dirichlet(
+                std::unique_ptr<distributions::Distribution> prior,
+                std::unique_ptr<distributions::Distribution> posterior
+        );
 
     };
 
