@@ -93,6 +93,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a2384b690d89436f24b97c6005aa61e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d73e345255e3d63ca0c90ee797de1c9"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1math_1_1Ops.html#a7d73e345255e3d63ca0c90ee797de1c9">digamma</a> (double x)</td></tr>
 <tr class="separator:a7d73e345255e3d63ca0c90ee797de1c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bc396f243fd128f4d8bf7219dd65866"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1math_1_1Ops.html#a4bc396f243fd128f4d8bf7219dd65866">randomInt</a> (const torch::Tensor &amp;w)</td></tr>
+<tr class="separator:a4bc396f243fd128f4d8bf7219dd65866"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54ded19f4540bc43d595c650c99f416b"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1math_1_1Ops.html#a54ded19f4540bc43d595c650c99f416b">randomInt</a> (int max)</td></tr>
+<tr class="separator:a54ded19f4540bc43d595c650c99f416b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6d2f9cd2ca79e693c691e610d99be4e"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1math_1_1Ops.html#ad6d2f9cd2ca79e693c691e610d99be4e">randomInt</a> (const std::vector&lt; double &gt; &amp;weights)</td></tr>
+<tr class="separator:ad6d2f9cd2ca79e693c691e610d99be4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5855f2d59338b8b84581cff7be312ac"><td class="memItemLeft" align="right" valign="top">static torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1math_1_1Ops.html#ae5855f2d59338b8b84581cff7be312ac">one_hot</a> (int size, int index)</td></tr>
 <tr class="separator:ae5855f2d59338b8b84581cff7be312ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a800d365ad2c44f7d382e0eaac193a340"><td class="memItemLeft" align="right" valign="top">static torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1math_1_1Ops.html#a800d365ad2c44f7d382e0eaac193a340">uniform</a> (const torch::IntArrayRef &amp;sizes, int dim=0)</td></tr>
@@ -615,6 +621,105 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the outer tensor product </dd></dl>
+
+</div>
+</div>
+<a id="ad6d2f9cd2ca79e693c691e610d99be4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6d2f9cd2ca79e693c691e610d99be4e">&#9670;&nbsp;</a></span>randomInt() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int hopi::math::Ops::randomInt </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>weights</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Generate a random integer according to a discrete distribution </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">weights</td><td>the distribution's weights </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the random integer </dd></dl>
+
+</div>
+</div>
+<a id="a4bc396f243fd128f4d8bf7219dd65866"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bc396f243fd128f4d8bf7219dd65866">&#9670;&nbsp;</a></span>randomInt() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int hopi::math::Ops::randomInt </td>
+          <td>(</td>
+          <td class="paramtype">const torch::Tensor &amp;&#160;</td>
+          <td class="paramname"><em>w</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Generate a random integer according to a discrete distribution </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">weights</td><td>the distribution's weights </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the random integer </dd></dl>
+
+</div>
+</div>
+<a id="a54ded19f4540bc43d595c650c99f416b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54ded19f4540bc43d595c650c99f416b">&#9670;&nbsp;</a></span>randomInt() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int hopi::math::Ops::randomInt </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>max</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Generate a random integer uniformly between 0 and max </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">max</td><td>the largest integer that can be generated </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the random integer </dd></dl>
 
 </div>
 </div>

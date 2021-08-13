@@ -52,16 +52,13 @@ namespace hopi::graphs {
         static void setCurrent(std::shared_ptr<FactorGraph> &&ptr);
 
     public:
-        //
-        // Constructor
-        //
         /**
          * Create a new factor graph without any nodes.
          */
         FactorGraph();
 
         /**
-         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the POMDP by
+         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the BTAI by
          * assuming that the action "action" has been taken and that the observation "observation" has been made.
          * @param U the parameter of the prior over actions
          * @param action the action performed
@@ -78,7 +75,7 @@ namespace hopi::graphs {
         );
 
         /**
-         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the POMDP by
+         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the BTAI by
          * assuming that the action "action" has been taken and that the observation "observation" has been made.
          * @param action the action performed
          * @param observation the observation made
@@ -93,7 +90,7 @@ namespace hopi::graphs {
         );
 
         /**
-         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the POMDP by
+         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the BTAI by
          * assuming that the action "action" has been taken and that the observation "observation" has been made.
          * @param action the action performed
          * @param observation the observation made
@@ -108,7 +105,7 @@ namespace hopi::graphs {
         );
 
         /**
-         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the POMDP by
+         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the BTAI by
          * assuming that the action "action" has been taken and that the observation "observation" has been made.
          * @param action the action performed
          * @param observation the observation made
@@ -203,14 +200,27 @@ namespace hopi::graphs {
          * Write the factor graph in a file using the Graphviz format.
          * @param file_name the name of the output file
          * @param display the attributes that must be written in the output file
+         * @param display_posterior true if the posterior distribution should be displayed false otherwise
          */
-        void writeGraphviz(const std::string& file_name, const std::vector<nodes::VarNodeAttr> &display);
+        void writeGraphviz(const std::string& file_name, const std::vector<nodes::VarNodeAttr> &display, bool display_posterior = false);
 
         /**
          * Cut-off the branch corresponding to the input node
          * @param node the node at the top of the branch to be deleted
          */
         void removeBranch(nodes::FactorNode *node);
+
+        /**
+         * Remove all the node's children which are not observed variables.
+         * @param node the node whose hidden children must be removed
+         */
+        void removeHiddenChildren(nodes::VarNode *node); // TODO test?
+
+        /**
+         * Remove all the node's children which are correspond to hidden states.
+         * @param node the node whose children must be removed
+         */
+        void removeHiddenStatesChildren(nodes::VarNode *node);  // TODO test?
 
     private:
         /**
@@ -224,44 +234,7 @@ namespace hopi::graphs {
         void removeNullFactors();
 
         /**
-         * Remove all the node's children which are not observed variables.
-         * @param node the node whose hidden children must be removed
-         */
-        void removeHiddenChildren(nodes::VarNode *node);
-
-        /**
-         * Write all the variable nodes in the file in the Graphviz format
-         * @param file the output file
-         * @param dvn the default name for variable nodes
-         * @param dfn the default name for factor nodes
-         */
-        void writeGraphvizNodes(std::ofstream &file, std::pair<std::string,int> &dvn, std::pair<std::string,int> &dfn);
-
-        /**
-         * Write all the factor nodes in the file in the Graphviz format
-         * @param file the output file
-         * @param dvn the default name for variable nodes
-         * @param dfn the default name for factor nodes
-         */
-        void writeGraphvizFactors(std::ofstream &file, std::pair<std::string,int> &dvn, std::pair<std::string,int> &dfn);
-
-        /**
-         * Write the nodes' attributes in the file using the Graphviz format.
-         * @param file the output file
-         * @param display the list of attributes to that must be displayed, i.e., witten in the file
-         */
-        void writeGraphvizData(std::ofstream &file, const std::vector<nodes::VarNodeAttr> &display);
-
-        /**
-         * Getter.
-         * @param name the node's name
-         * @param default_name the default name to be used if "name" is empty
-         * @return "name" if not empty, default name otherwise
-         */
-        static std::string getName(const std::string &name, std::pair<std::string, int> &default_name);
-
-        /**
-         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the POMDP by
+         * Cut-off the branches of the tree that was expanded during planning, then add a new slice to the BTAI by
          * assuming that the action "a" has been taken and that the observation "observation" has been made.
          * @tparam T1 the type of the likelihood mapping
          * @tparam T2 the type of the transition mapping
@@ -278,8 +251,8 @@ namespace hopi::graphs {
         );
 
     private:
-        std::vector<std::unique_ptr<nodes::VarNode>> _vars;
-        std::vector<std::unique_ptr<nodes::FactorNode>> _factors;
+        std::vector<std::unique_ptr<hopi::nodes::VarNode>> _vars;
+        std::vector<std::unique_ptr<hopi::nodes::FactorNode>> _factors;
         nodes::VarNode *_tree_root;
     };
 

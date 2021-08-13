@@ -6,6 +6,7 @@ examples/data
 examples/cats_and_dogs/*
 examples/images/*
 libs/torch
+libs/or-tools
 build
 
 .vs/*

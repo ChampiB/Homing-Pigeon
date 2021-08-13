@@ -3,11 +3,13 @@
 //
 
 #include "VarNode.h"
-
+#include "FactorNode.h"
 #include <utility>
 #include "distributions/Distribution.h"
+#include "algorithms/planning/MCTSNodeData.h"
 
 using namespace hopi::distributions;
+using namespace hopi::algorithms::planning;
 
 namespace hopi::nodes {
 
@@ -15,8 +17,12 @@ namespace hopi::nodes {
         return std::make_unique<VarNode>(type);
     }
 
-    VarNode::VarNode(VarNodeType type) : N(0), G(-1), _type(type), A(-1),
-        _parent(nullptr), _prior(nullptr), _posterior(nullptr), _biased(nullptr) {}
+    VarNode::VarNode(VarNodeType type) :
+        _type(type), _parent(nullptr), _prior(nullptr), _posterior(nullptr), _biased(nullptr) {
+        _data = MCTSNodeData::create();
+    }
+
+    VarNode::~VarNode() = default;
 
     void VarNode::setPrior(std::unique_ptr<Distribution> p) {
         _prior = std::move(p);
@@ -34,15 +40,7 @@ namespace hopi::nodes {
         _parent = p;
     }
 
-    void VarNode::setAction(int a) {
-        A = a;
-    }
-
-    void VarNode::incrementN() {
-        N += 1;
-    }
-
-    FactorNode *VarNode::parent() {
+    FactorNode *VarNode::parent() const {
         return _parent;
     }
 
@@ -54,27 +52,11 @@ namespace hopi::nodes {
         return _children.end();
     }
 
-    int VarNode::action() const {
-        return A;
-    }
-
-    int VarNode::n() const {
-        return N;
-    }
-
-    double VarNode::g() const {
-        return G;
-    }
-
-    void VarNode::setG(double g) {
-        G = g;
-    }
-
-    Distribution *VarNode::posterior() {
+    Distribution *VarNode::posterior() const {
         return _posterior.get();
     }
 
-    Distribution *VarNode::biased() {
+    Distribution *VarNode::biased() const {
         return _biased.get();
     }
 
@@ -86,7 +68,7 @@ namespace hopi::nodes {
         return _type;
     }
 
-    distributions::Distribution *VarNode::prior() {
+    distributions::Distribution *VarNode::prior() const {
         return _prior.get();
     }
 
@@ -110,6 +92,10 @@ namespace hopi::nodes {
         return _name;
     }
 
+    MCTSNodeData *VarNode::data() const {
+        return _data.get();
+    }
+
     void VarNode::removeNullChildren() {
         _children.erase(std::remove_if(_children.begin(), _children.end(),
                                        [](FactorNode * &x){return x == nullptr;}), _children.end());
@@ -122,6 +108,16 @@ namespace hopi::nodes {
         if (it != _children.end()) {
             *it = nullptr;
         }
+    }
+
+    VarNode *VarNode::child(int id) const {
+        return _children[id]->child();
+    }
+
+    int VarNode::nChildrenHiddenStates() const {
+        return (int) std::count_if(_children.begin(), _children.end(), [](FactorNode *node) {
+            return node->child()->data()->action != -1;
+        });
     }
 
 }

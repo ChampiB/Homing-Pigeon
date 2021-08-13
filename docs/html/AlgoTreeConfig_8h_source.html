@@ -79,7 +79,7 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define HOMING_PIGEON_ALGO_TREE_CONFIG_H</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;torch/torch.h&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;BackPropagationType.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;PropagationType.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;NodeSelectionType.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;EvaluationType.h&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
@@ -115,7 +115,7 @@ $(function() {
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordtype">int</span>                 max_tree_depth;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        NodeSelectionType   node_selection_type;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        EvaluationType      evaluation_type;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        BackPropagationType back_propagation_type;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        PropagationType propagation_type;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1algorithms_1_1AlgoTreeConfig.html#a300d1c1033d1c8634c063173009c04d7">AlgoTreeConfig</a>(<span class="keywordtype">int</span> n_acts);</div>

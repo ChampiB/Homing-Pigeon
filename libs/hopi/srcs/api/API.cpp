@@ -131,7 +131,7 @@ namespace hopi::api {
         return std::make_shared<torch::Tensor>(tensor);
     }
 
-    std::shared_ptr<torch::Tensor> API::to_ptr(const Tensor &&tensor) {
+    std::shared_ptr<torch::Tensor> API::toPtr(const Tensor &&tensor) {
         return std::make_shared<torch::Tensor>(tensor);
     }
 
@@ -186,6 +186,15 @@ namespace hopi::api {
         var->setPrior(std::move(prior));
         var->setPosterior(std::move(posterior));
         return var;
+    }
+
+    std::vector<double> API::toStdVector(const Tensor &w) {
+        std::vector<double> weight(w.size(0));
+
+        for (int i = 0; i < w.size(0); ++i) {
+            weight[i] = w[i].item<double>();
+        }
+        return weight;
     }
 
 }

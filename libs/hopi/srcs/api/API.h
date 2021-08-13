@@ -216,7 +216,14 @@ namespace hopi::api {
          * @param tensor the input tensor
          * @return the shared pointer
          */
-        static std::shared_ptr<torch::Tensor> to_ptr(const torch::Tensor &&tensor);
+        static std::shared_ptr<torch::Tensor> toPtr(const torch::Tensor &&tensor);
+
+        /**
+         * Convert torch tensor to std::vector.
+         * @param tensor the tensor to be converted
+         * @return the output std::vector
+         */
+        static std::vector<double> toStdVector(const torch::Tensor &tensor);
 
     private:
         //

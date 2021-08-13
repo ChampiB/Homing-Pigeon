@@ -55,11 +55,16 @@ namespace hopi::environments {
         //
 
         /**
+         * Reset the environment to its initial state.
+         */
+        torch::Tensor reset() override;
+
+        /**
          * Execute an action in the environment.
          * @param action the action to be executed
          * @return the observation made after executing the action
          */
-        int execute(int action) override;
+        torch::Tensor execute(int action) override;
 
         /**
          * Display the environment.
@@ -88,19 +93,31 @@ namespace hopi::environments {
          * Getter.
          * @return the true likelihood mapping
          */
-        torch::Tensor A() override;
+        [[nodiscard]] torch::Tensor A() const override;
 
         /**
          * Getter.
          * @return the true transition mapping
          */
-        torch::Tensor B() override;
+        [[nodiscard]] torch::Tensor B() const override;
 
         /**
          * Getter.
          * @return the true initial hidden states
          */
-        torch::Tensor D() override;
+        [[nodiscard]] torch::Tensor D() const override;
+
+        /**
+         * Getter.
+         * @return true if the agent solved the environment false otherwise.
+         */
+        [[nodiscard]] bool solved() const override;
+
+        /**
+         * Getter.
+         * @return environment's type.
+         */
+        [[nodiscard]] EnvType type() const override;
 
     public:
         /**
@@ -159,6 +176,7 @@ namespace hopi::environments {
         void loadStatesIndexes();
 
     private:
+        std::pair<int,int> agent_initial_pos;
         std::pair<int,int> agent_pos;
         std::pair<int,int> exit_pos;
         torch::Tensor maze;

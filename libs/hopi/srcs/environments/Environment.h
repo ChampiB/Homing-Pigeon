@@ -6,6 +6,7 @@
 #define HOMING_PIGEON_ENVIRONMENT_H
 
 #include <torch/torch.h>
+#include "EnvType.h"
 
 namespace hopi::environments {
 
@@ -15,11 +16,17 @@ namespace hopi::environments {
     class Environment {
     public:
         /**
+         * Reset the environment to its initial state.
+         * @return the initial observation
+         */
+        virtual torch::Tensor reset() = 0;
+
+        /**
          * Execute an action in the environment.
          * @param action the action to be executed
          * @return the observation made after executing the action
          */
-        virtual int execute(int action) = 0;
+        virtual torch::Tensor execute(int action) = 0;
 
         /**
          * Display the environment.
@@ -48,19 +55,31 @@ namespace hopi::environments {
          * Getter.
          * @return the true likelihood mapping
          */
-        virtual torch::Tensor A() = 0;
+        [[nodiscard]] virtual torch::Tensor A() const = 0;
 
         /**
          * Getter.
          * @return the true transition mapping
          */
-        virtual torch::Tensor B() = 0;
+        [[nodiscard]] virtual torch::Tensor B() const = 0;
 
         /**
          * Getter.
          * @return the true initial hidden states
          */
-        virtual torch::Tensor D() = 0;
+        [[nodiscard]] virtual torch::Tensor D() const = 0;
+
+        /**
+         * Getter.
+         * @return environment's type.
+         */
+        [[nodiscard]] virtual EnvType type() const = 0;
+
+        /**
+         * Getter.
+         * @return true if the agent solved the environment false otherwise.
+         */
+        [[nodiscard]] virtual bool solved() const = 0;
     };
 
 }

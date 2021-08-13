@@ -44,7 +44,7 @@ namespace hopi::nodes {
         }
     }
 
-    VarNode *ActiveTransitionNode::child() {
+    VarNode *ActiveTransitionNode::child() const {
         return to;
     }
 

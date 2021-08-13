@@ -4,10 +4,12 @@
 
 #include "Dirichlet.h"
 #include "nodes/VarNode.h"
+#include "api/API.h"
 #include "math/Ops.h"
 
 using namespace hopi::nodes;
 using namespace hopi::math;
+using namespace hopi::api;
 using namespace torch;
 using namespace torch::indexing;
 
@@ -71,6 +73,19 @@ namespace hopi::distributions {
         }
         *param = torch::squeeze(*param);
         return e;
+    }
+
+    Tensor Dirichlet::expectation(const Tensor &p) {
+        // Make sure input are valid
+        assert(p.dim() <= 3 && "Dirichlet::expectation does not support Dirichlet of dimension superior to three");
+
+        // Compute the expectation of X where is a vector distributed according to a Dirichlet
+        Tensor m = p.detach().clone();
+        int last_dim = (int) m.dim() - 1;
+        Tensor sums = torch::sum(m, last_dim);
+        sums = Ops::expansion(sums, m.size(last_dim), last_dim);
+
+        return m / sums;
     }
 
     Tensor Dirichlet::expectedLog(const Tensor &p) {

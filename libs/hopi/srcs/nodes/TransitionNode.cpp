@@ -40,7 +40,7 @@ namespace hopi::nodes {
             return nullptr;
     }
 
-    VarNode *TransitionNode::child() {
+    VarNode *TransitionNode::child() const {
         return to;
     }
 

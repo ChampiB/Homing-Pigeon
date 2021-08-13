@@ -2,7 +2,6 @@
 // Created by Theophile Champion on 28/11/2020.
 //
 
-#include <fstream>
 #include <distributions/Dirichlet.h>
 #include "distributions/Categorical.h"
 #include "nodes/VarNode.h"
@@ -10,7 +9,9 @@
 #include "math/Ops.h"
 #include "api/API.h"
 #include "FactorGraph.h"
+#include "GraphViz.h"
 #include "iterators/ObservedVarIter.h"
+#include "algorithms/planning/MCTSNodeData.h"
 
 using namespace hopi::nodes;
 using namespace hopi::iterators;
@@ -118,6 +119,19 @@ namespace hopi::graphs {
                 removeBranch(*it);
             }
         }
+        node->removeNullChildren();
+    }
+
+    void FactorGraph::removeHiddenStatesChildren(VarNode *node) {
+        for (auto it = node->firstChild(); it != node->lastChild() ; ++it) {
+            auto child = (*it)->child();
+            if (child->data()->action == -1) {
+                continue;
+            } else {
+                removeBranch(*it);
+            }
+        }
+        node->removeNullChildren();
     }
 
     void FactorGraph::integrate(
@@ -214,7 +228,6 @@ namespace hopi::graphs {
         o->setType(VarNodeType::OBSERVED);
 
         // Clean up the factor graph
-        _tree_root->removeNullChildren();
         setTreeRoot(new_root);
     }
 
@@ -255,94 +268,16 @@ namespace hopi::graphs {
         return vars;
     }
 
-    std::string FactorGraph::getName(const std::string &name, std::pair<std::string, int> &default_name) {
-        std::string res;
-
-        if (name.empty()) {
-            res = default_name.first + std::to_string(default_name.second);
-            ++default_name.second;
-        } else {
-            res = name;
-        }
-        return res;
-    }
-
-    void FactorGraph::writeGraphviz(const std::string &file_name, const std::vector<VarNodeAttr> &display) {
+    void FactorGraph::writeGraphviz(const std::string &file_name, const std::vector<VarNodeAttr> &display, bool display_posterior) {
         static std::pair<std::string, int> dvn("n", 0);
         static std::pair<std::string, int> dfn("f", 0);
-        std::ofstream file;
-        file.open(file_name);
+        GraphViz viz(file_name);
 
-        file << "digraph G {\n";
-        writeGraphvizNodes(file, dvn, dfn);
-        writeGraphvizFactors(file, dvn, dfn);
-        writeGraphvizData(file, display);
-        file << "}\n";
-        file.close();
-    }
-
-    void FactorGraph::writeGraphvizNodes(
-            std::ofstream &file,
-            std::pair<std::string,int> &dvn,
-            std::pair<std::string,int> &dfn
-    ) {
-        for (auto & _var : _vars) {
-            // Get/set nodes' names
-            std::string parent_name = getName(_var->parent()->name(), dfn);
-            _var->parent()->setName(parent_name);
-            std::string var_name = getName(_var->name(), dvn);
-            _var->setName(var_name);
-            // Add "parent_name -> var_name" to the file
-            file << "\t" << parent_name << " -> " << var_name << "\n";
-            // If _var is observed set a gray background
-            if (_var->type() == VarNodeType::OBSERVED) {
-                file << "\t" << var_name << " [fillcolor=\"lightgrey\",style=filled]\n";
-            }
-        }
-    }
-
-    void FactorGraph::writeGraphvizFactors(
-            std::ofstream &file,
-            std::pair<std::string,int> &dvn,
-            std::pair<std::string,int> &dfn
-    ) {
-        for (auto & _factor : _factors) {
-            // Get/set nodes' names
-            std::string factor_name = getName(_factor->name(), dfn);
-            _factor->setName(factor_name);
-            for (int j = 0; _factor->parent(j) != nullptr; ++j) {
-                // Get/set nodes' names
-                std::string parent_name = getName(_factor->parent(j)->name(), dvn);
-                _factor->parent(j)->setName(parent_name);
-                // Add "parent_name -> factor_name" to the file
-                file << "\t" << parent_name << " -> " << factor_name << "[dir=none]\n";
-            }
-            // Make sure factors are displayed as squares
-            file << "\t" << factor_name << " [shape=square]\n";
-        }
-    }
-
-    void FactorGraph::writeGraphvizData(std::ofstream &file, const std::vector<VarNodeAttr> &display) {
-        std::vector<std::string (*)(VarNode*)> func{
-                [](VarNode *var){ return std::to_string(var->n()); },
-                [](VarNode *var){ return (var->g() == std::numeric_limits<double>::min()) ? "-Infinity" : std::to_string(var->g()); },
-                [](VarNode *var){ return std::to_string(var->action()); }
-        };
-
-        if (display.empty())
-            return;
-        for (auto & _var : _vars) {
-            // Add "parent_name -> var_name" to the file
-            file << "\t" << _var->name() << "_data -> " << _var->name() << " [dir=none,style=dashed,color=\"gray\"]\n";
-            // Create label and display the data node
-            std::string label = R"(<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">)";
-            for (auto i : display) {
-                label += "<TR><TD bgcolor=\"YellowGreen\">" + attrNames[i] + "</TD>" +\
-                             "<TD bgcolor=\"YellowGreen\">" + func[i](_var.get()) + "</TD></TR>";
-            }
-            label += "</table>>";
-            file << "\t" << _var->name() << "_data [shape=none,margin=0,label=" << label << "]\n";
-        }
+        viz.writeNodes(dvn, dfn, _vars);
+        viz.writeFactors(dvn, dfn, _factors);
+        viz.writeData(dvn, _vars, display);
+        if (display_posterior)
+            viz.writePosteriors(dvn, _vars);
     }
 
 }

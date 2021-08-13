@@ -71,8 +71,8 @@ int main() {
     /**
      ** Print the factor graph.
      **/
-    std::vector<VarNodeAttr> attrs{VarNodeAttr::G, VarNodeAttr::A, VarNodeAttr::N};
-    fg->writeGraphviz(graph_file, attrs);
+    std::vector<VarNodeAttr> attrs{VarNodeAttr::G, VarNodeAttr::A, VarNodeAttr::N, VarNodeAttr::PRUNED};
+    fg->writeGraphviz(graph_file, attrs, true);
 
     return EXIT_SUCCESS;
 }

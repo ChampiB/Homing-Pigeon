@@ -96,47 +96,51 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;Categorical&gt; <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a4f6bab7a15eb1980cc9b748ec39a39ed">create</a>(<span class="keyword">const</span> torch::Tensor &amp;param);</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;Categorical&gt; <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a4f6bab7a15eb1980cc9b748ec39a39ed">create</a>(<span class="keyword">const</span> torch::Tensor &amp;&amp;param);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;Categorical&gt; <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a4f6bab7a15eb1980cc9b748ec39a39ed">create</a>(<span class="keyword">const</span> std::shared_ptr&lt;torch::Tensor&gt; &amp;param);</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="comment">// Constructors</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#af5fb9ffeb70f5a733f96a12d74e435f2">Categorical</a>(<span class="keyword">const</span> torch::Tensor &amp;param);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#af5fb9ffeb70f5a733f96a12d74e435f2">Categorical</a>(<span class="keyword">const</span> torch::Tensor &amp;&amp;param);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="comment">// Implementation of the methods of the Distribution class</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        [[nodiscard]] DistributionType <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#aa52f6190caaedb11fe858591b36225c1">type</a>() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        [[nodiscard]] torch::Tensor <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#ae76054e8ec9c8e635942b13274d45d9e">logParams</a>() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        [[nodiscard]] torch::Tensor <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a4d43e525934634e6b0bee7e4dc5d316e">params</a>() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#aeebf55b6f0e16ee81cd35cd2e107105d">updateParams</a>(<span class="keyword">const</span> torch::Tensor &amp;param) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a5d178a5de88819634d18560e3940a481">entropy</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        torch::Tensor param;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    };</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_CATEGORICAL_H</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;Categorical&gt; <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a4f6bab7a15eb1980cc9b748ec39a39ed">create</a>(<span class="keyword">const</span> torch::Tensor &amp;&amp;param);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="comment">// Constructors</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#af5fb9ffeb70f5a733f96a12d74e435f2">Categorical</a>(<span class="keyword">const</span> torch::Tensor &amp;param);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#af5fb9ffeb70f5a733f96a12d74e435f2">Categorical</a>(<span class="keyword">const</span> std::shared_ptr&lt;torch::Tensor&gt; &amp;param);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#af5fb9ffeb70f5a733f96a12d74e435f2">Categorical</a>(<span class="keyword">const</span> torch::Tensor &amp;&amp;param);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="comment">// Implementation of the methods of the Distribution class</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        [[nodiscard]] DistributionType <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#aa52f6190caaedb11fe858591b36225c1">type</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        [[nodiscard]] torch::Tensor <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#ae76054e8ec9c8e635942b13274d45d9e">logParams</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        [[nodiscard]] torch::Tensor <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a4d43e525934634e6b0bee7e4dc5d316e">params</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#aeebf55b6f0e16ee81cd35cd2e107105d">updateParams</a>(<span class="keyword">const</span> torch::Tensor &amp;param) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classhopi_1_1distributions_1_1Categorical.html#a5d178a5de88819634d18560e3940a481">entropy</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        std::shared_ptr&lt;torch::Tensor&gt; param;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    };</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_CATEGORICAL_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_aa52f6190caaedb11fe858591b36225c1"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#aa52f6190caaedb11fe858591b36225c1">hopi::distributions::Categorical::type</a></div><div class="ttdeci">DistributionType type() const override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:31</div></div>
+<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_aa52f6190caaedb11fe858591b36225c1"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#aa52f6190caaedb11fe858591b36225c1">hopi::distributions::Categorical::type</a></div><div class="ttdeci">DistributionType type() const override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:39</div></div>
 <div class="ttc" id="aclasshopi_1_1distributions_1_1Distribution_html"><div class="ttname"><a href="classhopi_1_1distributions_1_1Distribution.html">hopi::distributions::Distribution</a></div><div class="ttdef"><b>Definition:</b> Distribution.h:17</div></div>
-<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_a5d178a5de88819634d18560e3940a481"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#a5d178a5de88819634d18560e3940a481">hopi::distributions::Categorical::entropy</a></div><div class="ttdeci">double entropy() override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:48</div></div>
+<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_a5d178a5de88819634d18560e3940a481"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#a5d178a5de88819634d18560e3940a481">hopi::distributions::Categorical::entropy</a></div><div class="ttdeci">double entropy() override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:56</div></div>
 <div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html">hopi::distributions::Categorical</a></div><div class="ttdef"><b>Definition:</b> Categorical.h:21</div></div>
 <div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_af5fb9ffeb70f5a733f96a12d74e435f2"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#af5fb9ffeb70f5a733f96a12d74e435f2">hopi::distributions::Categorical::Categorical</a></div><div class="ttdeci">Categorical(const torch::Tensor &amp;param)</div></div>
-<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_ae76054e8ec9c8e635942b13274d45d9e"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#ae76054e8ec9c8e635942b13274d45d9e">hopi::distributions::Categorical::logParams</a></div><div class="ttdeci">torch::Tensor logParams() const override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:35</div></div>
-<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_a4d43e525934634e6b0bee7e4dc5d316e"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#a4d43e525934634e6b0bee7e4dc5d316e">hopi::distributions::Categorical::params</a></div><div class="ttdeci">torch::Tensor params() const override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:39</div></div>
-<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_aeebf55b6f0e16ee81cd35cd2e107105d"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#aeebf55b6f0e16ee81cd35cd2e107105d">hopi::distributions::Categorical::updateParams</a></div><div class="ttdeci">void updateParams(const torch::Tensor &amp;param) override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:43</div></div>
+<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_ae76054e8ec9c8e635942b13274d45d9e"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#ae76054e8ec9c8e635942b13274d45d9e">hopi::distributions::Categorical::logParams</a></div><div class="ttdeci">torch::Tensor logParams() const override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:43</div></div>
+<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_a4d43e525934634e6b0bee7e4dc5d316e"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#a4d43e525934634e6b0bee7e4dc5d316e">hopi::distributions::Categorical::params</a></div><div class="ttdeci">torch::Tensor params() const override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:47</div></div>
+<div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_aeebf55b6f0e16ee81cd35cd2e107105d"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#aeebf55b6f0e16ee81cd35cd2e107105d">hopi::distributions::Categorical::updateParams</a></div><div class="ttdeci">void updateParams(const torch::Tensor &amp;param) override</div><div class="ttdef"><b>Definition:</b> Categorical.cpp:51</div></div>
 <div class="ttc" id="aclasshopi_1_1distributions_1_1Categorical_html_a4f6bab7a15eb1980cc9b748ec39a39ed"><div class="ttname"><a href="classhopi_1_1distributions_1_1Categorical.html#a4f6bab7a15eb1980cc9b748ec39a39ed">hopi::distributions::Categorical::create</a></div><div class="ttdeci">static std::unique_ptr&lt; Categorical &gt; create(const torch::Tensor &amp;param)</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

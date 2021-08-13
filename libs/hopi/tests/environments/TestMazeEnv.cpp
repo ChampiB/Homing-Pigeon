@@ -130,16 +130,16 @@ TEST_CASE( "EnvMaze returns correct observation" ) {
     UnitTests::run([](){
         auto env = MazeEnv::create(Files::getMazePath("1.maze"));
 
-        REQUIRE( env->execute(MazeEnv::Action::UP)    == 8 );
-        REQUIRE( env->execute(MazeEnv::Action::UP)    == 7 );
-        REQUIRE( env->execute(MazeEnv::Action::UP)    == 6 );
-        REQUIRE( env->execute(MazeEnv::Action::UP)    == 5 );
-        REQUIRE( env->execute(MazeEnv::Action::RIGHT) == 4 );
-        REQUIRE( env->execute(MazeEnv::Action::RIGHT) == 3 );
-        REQUIRE( env->execute(MazeEnv::Action::RIGHT) == 2 );
-        REQUIRE( env->execute(MazeEnv::Action::RIGHT) == 1 );
-        REQUIRE( env->execute(MazeEnv::Action::RIGHT) == 0 );
-        REQUIRE( env->execute(MazeEnv::Action::DOWN)  == 1 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::UP)).item<int>()    == 8 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::UP)).item<int>()    == 7 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::UP)).item<int>()    == 6 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::UP)).item<int>()    == 5 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::RIGHT)).item<int>() == 4 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::RIGHT)).item<int>() == 3 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::RIGHT)).item<int>() == 2 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::RIGHT)).item<int>() == 1 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::RIGHT)).item<int>() == 0 );
+        REQUIRE( argmax(env->execute(MazeEnv::Action::DOWN)).item<int>()  == 1 );
     });
 }
 

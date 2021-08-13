@@ -66,33 +66,48 @@ $(function() {
 <div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
 <h3><a id="index_s"></a>- s -</h3><ul>
-<li>setAction()
-: <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#a9fa2135f53e75b17cfbddeab76289155">hopi::nodes::VarNode</a>
+<li>selectAction()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTS.html#a755917b86dc643c6bff2bf2d7bc51e99">hopi::algorithms::planning::MCTS</a>
+</li>
+<li>selectNode()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTS.html#a4f9cd85081aa06c70fb182f28af76598">hopi::algorithms::planning::MCTS</a>
 </li>
 <li>setBiased()
 : <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#a8a898832832038837dec5218edd98d71">hopi::nodes::VarNode</a>
 </li>
 <li>setCurrent()
-: <a class="el" href="classhopi_1_1graphs_1_1FactorGraph.html#a90453dc4fa0885c12040d7d622d5f7c5">hopi::graphs::FactorGraph</a>
+: <a class="el" href="classhopi_1_1graphs_1_1FactorGraph.html#a12f5516f43ed0348a32e279897b5b564">hopi::graphs::FactorGraph</a>
 </li>
 <li>setDataType()
 : <a class="el" href="classhopi_1_1api_1_1API.html#a542fae86ef34fbf4e1b67d2cdea40d2d">hopi::api::API</a>
 </li>
-<li>setG()
-: <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#a6f5cf19a8bd022f126dd152210c8e662">hopi::nodes::VarNode</a>
+<li>setExplorationConstant()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html#aad27bf41ddbc8428612bc101d7e35cb0">hopi::algorithms::planning::MCTSConfig</a>
 </li>
 <li>setName()
-: <a class="el" href="classhopi_1_1nodes_1_1FactorNode.html#af4f8d15c58232a7e9c886214502bce16">hopi::nodes::FactorNode</a>
+: <a class="el" href="classhopi_1_1nodes_1_1FactorNode.html#a93add05ad09fa8da61829c3b3a186225">hopi::nodes::FactorNode</a>
 , <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#a81e88e604f2cf63ffbdc0174b13f259a">hopi::nodes::VarNode</a>
 </li>
 <li>setParent()
 : <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#aaf729e55c4eace591dbdca7d6d994e3a">hopi::nodes::VarNode</a>
 </li>
+<li>setPlanningSteps()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html#a1732591a183502ec52ec30352a821cb4">hopi::algorithms::planning::MCTSConfig</a>
+</li>
 <li>setPosterior()
 : <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#a80dcc911fb92a0b735a2e9f65455e7fb">hopi::nodes::VarNode</a>
 </li>
+<li>setPrecisionActionSelection()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html#ae34c94bb3103990f2191d18bf85fff77">hopi::algorithms::planning::MCTSConfig</a>
+</li>
+<li>setPrecisionPreferences()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html#ac87775644532986624af3645085709ca">hopi::algorithms::planning::MCTSConfig</a>
+</li>
 <li>setPrior()
 : <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#aa2d33874dcce6f72eb357f0448dc8ca8">hopi::nodes::VarNode</a>
+</li>
+<li>setStatesPreferences()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html#a18f989d2e747dc40cedc66b24489818d">hopi::algorithms::planning::MCTSConfig</a>
 </li>
 <li>setTreeRoot()
 : <a class="el" href="classhopi_1_1graphs_1_1FactorGraph.html#ac730ea90968df1bf727437ac9502676e">hopi::graphs::FactorGraph</a>
@@ -100,9 +115,21 @@ $(function() {
 <li>setType()
 : <a class="el" href="classhopi_1_1nodes_1_1VarNode.html#ad98c0c9965a655d875faa2c9a4a32010">hopi::nodes::VarNode</a>
 </li>
+<li>solved()
+: <a class="el" href="classhopi_1_1environments_1_1Environment.html#afaff9e3acaf863b09126795fe2705a3c">hopi::environments::Environment</a>
+, <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a20401ff33f7495a140b3231ec940d04c">hopi::environments::GraphEnv</a>
+, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a0ac8515ce3f7701673a79094daf40378">hopi::environments::MazeEnv</a>
+</li>
 <li>states()
 : <a class="el" href="classhopi_1_1environments_1_1Environment.html#a73a9a153235c7d4764b0e1e37d3afe29">hopi::environments::Environment</a>
+, <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#aeb246868bb72872a22056aee90a033d0">hopi::environments::GraphEnv</a>
 , <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#ab1d9a23b8662ce589f043e7c17caf541">hopi::environments::MazeEnv</a>
+</li>
+<li>statesPreferences()
+: <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html#a1553a9b83197549e1ad074ed126ee011">hopi::algorithms::planning::MCTSConfig</a>
+</li>
+<li>step()
+: <a class="el" href="classhopi_1_1zoo_1_1BTAI.html#a22f53fdef66aa08832b2a1747ea5428b">hopi::zoo::BTAI</a>
 </li>
 </ul>
 </div><!-- contents -->

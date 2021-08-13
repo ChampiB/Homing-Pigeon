@@ -16,6 +16,9 @@ namespace hopi::distributions {
 namespace hopi::nodes {
     class FactorNode;
 }
+namespace hopi::algorithms::planning {
+    class MCTSNodeData;
+}
 
 namespace hopi::nodes {
 
@@ -24,10 +27,6 @@ namespace hopi::nodes {
      */
     class VarNode {
     public:
-        //
-        // Factory
-        //
-
         /**
          * Create a variable node.
          * @param type the type of variable the node represents, i.e., observed or hidden
@@ -36,15 +35,16 @@ namespace hopi::nodes {
         static std::unique_ptr<VarNode> create(VarNodeType type);
 
     public:
-        //
-        // Constructor
-        //
-
         /**
          * Construct a variable node.
          * @param type the type of variable the node represents, i.e., observed or hidden
          */
         explicit VarNode(VarNodeType type);
+
+        /**
+         * Destruct the variable node.
+         */
+        ~VarNode();
 
         /**
          * Setter.
@@ -72,18 +72,6 @@ namespace hopi::nodes {
 
         /**
          * Setter.
-         * @param action the new action that led to that node
-         */
-        void setAction(int action);
-
-        /**
-         * Setter
-         * @param g the new cost of the node
-         */
-        void setG(double g);
-
-        /**
-         * Setter.
          * @param type the new type of the node
          */
         void setType(VarNodeType type);
@@ -101,15 +89,10 @@ namespace hopi::nodes {
         void setName(std::string &&name);
 
         /**
-         * Increase the number of times this node has been expanded.
-         */
-        void incrementN();
-
-        /**
          * Getter.
          * @return the node's parent factor
          */
-        FactorNode *parent();
+        FactorNode *parent() const;
 
         /**
          * An iterator on the first child of the node
@@ -137,21 +120,15 @@ namespace hopi::nodes {
 
         /**
          * Getter.
-         * @return the action that led to this node
+         * @return the number of children the node has
          */
-        [[nodiscard]] int action() const;
+        [[nodiscard]] int nChildrenHiddenStates() const;
 
         /**
          * Getter.
-         * @return the cost of the node
+         * @return the number of children the node has
          */
-        [[nodiscard]] double g() const;
-
-        /**
-         * Getter.
-         * @return the number of times this node has been expanded
-         */
-        [[nodiscard]] int n() const;
+        [[nodiscard]] VarNode *child(int id) const;
 
         /**
          * Getter.
@@ -160,28 +137,34 @@ namespace hopi::nodes {
         [[nodiscard]] VarNodeType type() const;
 
         /**
-         * Getter,
+         * Getter.
          * @return the node's name
          */
         [[nodiscard]] std::string name() const;
 
         /**
          * Getter.
+         * @return the node's data
+         */
+        [[nodiscard]] algorithms::planning::MCTSNodeData *data() const;
+
+        /**
+         * Getter.
          * @return the node's prior distribution
          */
-        distributions::Distribution *prior();
+        distributions::Distribution *prior() const;
 
         /**
          * Getter.
          * @return the node's posterior distribution
          */
-        distributions::Distribution *posterior();
+        distributions::Distribution *posterior() const;
 
         /**
          * Getter.
          * @return the node's biased distribution
          */
-        distributions::Distribution *biased();
+        distributions::Distribution *biased() const;
 
         /**
          * In the vector of children, remove the pointers that are equals to nullptr.
@@ -196,9 +179,7 @@ namespace hopi::nodes {
         void disconnectChild(nodes::FactorNode *node);
 
     private:
-        int N;    // Number of children expanded   (only used within the tree)
-        double G; // Node's cost / inverse quality (only used within the tree)
-        int A;    // Action that led to this state (only used within the tree)
+        std::unique_ptr<algorithms::planning::MCTSNodeData> _data;
         std::vector<FactorNode *> _children;
         FactorNode *_parent;
         std::string _name;

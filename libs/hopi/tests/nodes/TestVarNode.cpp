@@ -39,47 +39,6 @@ TEST_CASE( "VarNode's type setter/getter work properly" ) {
     });
 }
 
-TEST_CASE( "VarNode's G setter/getter work properly" ) {
-    UnitTests::run([](){
-        auto n1 = VarNode::create(VarNodeType::HIDDEN);
-
-        n1->setG(0);
-        REQUIRE( n1->g() == 0 );
-        n1->setG(-42);
-        REQUIRE( n1->g() == -42 );
-    });
-}
-
-TEST_CASE( "VarNode's action setter/getter work properly" ) {
-    UnitTests::run([](){
-        auto n1 = VarNode::create(VarNodeType::HIDDEN);
-
-        n1->setAction(0);
-        REQUIRE( n1->action() == 0 );
-        n1->setAction(42);
-        REQUIRE( n1->action() == 42 );
-    });
-}
-
-TEST_CASE( "VarNode's n getter/incrementer work properly" ) {
-    UnitTests::run([](){
-        auto n1 = VarNode::create(VarNodeType::HIDDEN);
-
-        REQUIRE( n1->n() == 0 );
-        n1->incrementN();
-        REQUIRE( n1->n() == 1 );
-        n1->incrementN();
-        REQUIRE( n1->n() == 2 );
-        n1->incrementN();
-        REQUIRE( n1->n() == 3 );
-        n1->incrementN();
-        n1->incrementN();
-        n1->incrementN();
-        n1->incrementN();
-        REQUIRE( n1->n() == 7 );
-    });
-}
-
 TEST_CASE( "VarNode's prior getter/setter work properly" ) {
     UnitTests::run([](){
         auto d1 = Categorical::create(Ops::uniform({2}));

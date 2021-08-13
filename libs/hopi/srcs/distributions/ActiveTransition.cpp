@@ -46,6 +46,7 @@ namespace hopi::distributions {
 
     double ActiveTransition::entropy() {
         assert(false && "ActiveTransition::entropy, unsupported.");
+        return -1;
     }
 
 }

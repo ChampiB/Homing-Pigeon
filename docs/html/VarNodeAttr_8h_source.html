@@ -81,16 +81,18 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span>hopi::nodes {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">enum</span> VarNodeAttr : <span class="keywordtype">int</span> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        N = 0, <span class="comment">// Number of children expanded</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        G = 1, <span class="comment">// Node&#39;s cost / inverse quality</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        A = 2  <span class="comment">// Action that led to this state</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    };</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> std::string attrNames[] = { <span class="stringliteral">&quot;N&quot;</span>, <span class="stringliteral">&quot;G&quot;</span>, <span class="stringliteral">&quot;U&quot;</span> };</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        N = 0,      <span class="comment">// Number of children expanded</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        G = 1,      <span class="comment">// Node&#39;s cost / inverse quality</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        A = 2,      <span class="comment">// Action that led to this state</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        PRUNED = 3, <span class="comment">// Is the node pruned?</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        S = 4       <span class="comment">// Most likely state a posteriori</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    };</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;}</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> std::string attrNames[] = { <span class="stringliteral">&quot;Visits&quot;</span>, <span class="stringliteral">&quot;Cost&quot;</span>, <span class="stringliteral">&quot;Action&quot;</span>, <span class="stringliteral">&quot;Pruned&quot;</span>, <span class="stringliteral">&quot;State&quot;</span> };</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_VAR_NODE_ATTR_H</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;}</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_VAR_NODE_ATTR_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

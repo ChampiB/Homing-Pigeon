@@ -97,6 +97,13 @@ namespace hopi::distributions {
          */
         static torch::Tensor expectedLog(const torch::Tensor &p);
 
+        /**
+         * Compute the expectation of X where X is a vector distributed according to a Dirichlet distribution
+         * @param p the parameter of the Dirichlet
+         * @return the expectation of X
+         */
+        static torch::Tensor expectation(const torch::Tensor &p); // TODO test
+
     private:
         /**
          * Compute the entropy of a 1D Dirichlet whose parameters are given by "p".

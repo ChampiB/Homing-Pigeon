@@ -100,6 +100,8 @@ Collaboration diagram for hopi::distributions::Transition:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad593e2a12658028ab0cdc38ec2c2f443"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Transition.html#ad593e2a12658028ab0cdc38ec2c2f443">Transition</a> (const torch::Tensor &amp;param)</td></tr>
 <tr class="separator:ad593e2a12658028ab0cdc38ec2c2f443"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8586ae918dbddb6f62c05e86dd8ecd5f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Transition.html#a8586ae918dbddb6f62c05e86dd8ecd5f">Transition</a> (const std::shared_ptr&lt; torch::Tensor &gt; &amp;param)</td></tr>
+<tr class="separator:a8586ae918dbddb6f62c05e86dd8ecd5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a3a2cff3c700028f7377b87ac1df6ed"><td class="memItemLeft" align="right" valign="top">DistributionType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Transition.html#a1a3a2cff3c700028f7377b87ac1df6ed">type</a> () const override</td></tr>
 <tr class="separator:a1a3a2cff3c700028f7377b87ac1df6ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae680d96a9b509577fdf7c5a3e9c631f6"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Transition.html#ae680d96a9b509577fdf7c5a3e9c631f6">logParams</a> () const override</td></tr>
@@ -113,14 +115,16 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ac148b5e17684c95846c91dfc4a2980ff"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Transition.html#ac148b5e17684c95846c91dfc4a2980ff">create</a> (const torch::Tensor &amp;p)</td></tr>
-<tr class="separator:ac148b5e17684c95846c91dfc4a2980ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae9f96c7c0ba5c75493260a6faa35c4b"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Transition.html#aae9f96c7c0ba5c75493260a6faa35c4b">create</a> (const torch::Tensor &amp;p)</td></tr>
+<tr class="separator:aae9f96c7c0ba5c75493260a6faa35c4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d44886983aca7625e9da83dac455dca"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Transition.html#a4d44886983aca7625e9da83dac455dca">create</a> (const std::shared_ptr&lt; torch::Tensor &gt; &amp;p)</td></tr>
+<tr class="separator:a4d44886983aca7625e9da83dac455dca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class representing a <a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a> distribution. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad593e2a12658028ab0cdc38ec2c2f443"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad593e2a12658028ab0cdc38ec2c2f443">&#9670;&nbsp;</a></span>Transition()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad593e2a12658028ab0cdc38ec2c2f443">&#9670;&nbsp;</a></span>Transition() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -151,9 +155,41 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a8586ae918dbddb6f62c05e86dd8ecd5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8586ae918dbddb6f62c05e86dd8ecd5f">&#9670;&nbsp;</a></span>Transition() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">hopi::distributions::Transition::Transition </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; torch::Tensor &gt; &amp;&#160;</td>
+          <td class="paramname"><em>param</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construct a <a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a> distribution. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">param</td><td>the parameters of the distribution </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac148b5e17684c95846c91dfc4a2980ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac148b5e17684c95846c91dfc4a2980ff">&#9670;&nbsp;</a></span>create()</h2>
+<a id="a4d44886983aca7625e9da83dac455dca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d44886983aca7625e9da83dac455dca">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -163,6 +199,39 @@ Static Public Member Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a> &gt; hopi::distributions::Transition::create </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; torch::Tensor &gt; &amp;&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Create a <a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a> distribution. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the parameters of the distribution </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the created distribution </dd></dl>
+
+</div>
+</div>
+<a id="aae9f96c7c0ba5c75493260a6faa35c4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae9f96c7c0ba5c75493260a6faa35c4b">&#9670;&nbsp;</a></span>create() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::unique_ptr&lt;<a class="el" href="classhopi_1_1distributions_1_1Transition.html">Transition</a>&gt; hopi::distributions::Transition::create </td>
           <td>(</td>
           <td class="paramtype">const torch::Tensor &amp;&#160;</td>
           <td class="paramname"><em>p</em></td><td>)</td>

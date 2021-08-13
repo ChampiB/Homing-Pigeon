@@ -35,7 +35,7 @@ namespace hopi::nodes {
             return nullptr;
     }
 
-    VarNode *CategoricalNode::child() {
+    VarNode *CategoricalNode::child() const {
         return childNode;
     }
 

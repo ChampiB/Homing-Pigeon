@@ -4,8 +4,8 @@
 #include "nodes/FactorNode.h"
 #include "math/Ops.h"
 #include "graphs/FactorGraph.h"
-#include "algorithms/AlgoTree.h"
-#include "algorithms/AlgoVMP.h"
+#include "algorithms/planning/tmp/MCTS.h"
+#include "algorithms/inference/VMP.h"
 #include "api/API.h"
 #include <torch/torch.h>
 #include <iostream>
@@ -16,7 +16,8 @@ using namespace hopi::nodes;
 using namespace hopi::graphs;
 using namespace hopi::math;
 using namespace hopi::api;
-using namespace hopi::algorithms;
+using namespace hopi::algorithms::inference;
+using namespace hopi::algorithms::planning;
 using namespace torch;
 
 int main() {
@@ -85,13 +86,13 @@ int main() {
 
         for (int j = 0; j < nb_cycles; ++j) { // Action perception cycle
             // Inference, planning, action selection, action execution and model integration.
-            AlgoVMP::inference(fg->getNodes());
-            auto algoTree = AlgoTree::create(env->actions(), D_tilde, E_tilde);
+            VMP::inference(fg->getNodes());
+            auto algoTree = MCTS::create(env->actions(), D_tilde, E_tilde);
             for (int k = 0; k < nb_planning_steps; ++k) { // Planning
                 VarNode *n = algoTree->nodeSelection(fg);
                 algoTree->expansion(n, A, B);
-                AlgoVMP::inference(algoTree->lastExpandedNodes());
-                algoTree->evaluation();
+                VMP::inference(algoTree->lastExpandedNodes());
+                algoTree->evaluation(fg, A, B);
                 algoTree->propagation(fg->treeRoot());
             }
             int a = algoTree->actionSelection(fg->treeRoot());
@@ -111,7 +112,7 @@ int main() {
             theta_B[ii] = B->posterior()->params()[ii];
         }
 
-        std::cout << "VFE: " << AlgoVMP::vfe(fg->getNodes()) << std::endl;
+        std::cout << "VFE: " << VMP::vfe(fg->getNodes()) << std::endl;
     }
 
     // Display the matrices of parameters.

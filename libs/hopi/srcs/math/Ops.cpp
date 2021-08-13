@@ -3,6 +3,7 @@
 //
 
 #include <map>
+#include <random>
 #include <cmath>
 #include "Ops.h"
 #include "distributions/Distribution.h"
@@ -165,7 +166,7 @@ namespace hopi::math {
         std::vector<int64_t> pl(x1.dim());
         for (int i = 0; i < x1.dim(); ++i) {
             auto it = std::find(ml.begin(), ml.end(), i);
-            if (it != ml.end()) { // if i is in matching list
+            if (it != ml.end()) { // if "i" is in matching list
                 pl[i] = it - ml.begin();
             } else {
                 pl[i] = (int64_t) ml.size() + (std::find(not_ml.begin(), not_ml.end(), i) - not_ml.begin());
@@ -225,6 +226,26 @@ namespace hopi::math {
             result = Ops::expansion(result, (*t)->size((*t)->dim() - 1), result.dim()) * tmp;
         }
         return result;
+    }
+
+    int Ops::randomInt(const torch::Tensor &w) {
+        return randomInt(API::toStdVector(w));
+    }
+
+    int Ops::randomInt(int max) {
+        static std::random_device dev;
+        static std::mt19937 engine(dev());
+        std::uniform_int_distribution<int> rand_int(0, max);
+
+        return rand_int(engine);
+    }
+
+    int Ops::randomInt(const std::vector<double> &weights) {
+        static std::random_device dev;
+        static std::mt19937 engine(dev());
+        std::discrete_distribution<int> rand_int(weights.begin(), weights.end());
+
+        return rand_int(engine);
     }
 
 }

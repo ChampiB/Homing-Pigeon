@@ -75,6 +75,31 @@ namespace hopi::math {
         static double digamma(double x);
 
         //
+        // Sampling
+        //
+
+        /**
+         * Generate a random integer according to a discrete distribution
+         * @param weights the distribution's weights
+         * @return the random integer
+         */
+        static int randomInt(const torch::Tensor &w);
+
+        /**
+         * Generate a random integer uniformly between 0 and max
+         * @param max the largest integer that can be generated
+         * @return the random integer
+         */
+        static int randomInt(int max);
+
+        /**
+         * Generate a random integer according to a discrete distribution
+         * @param weights the distribution's weights
+         * @return the random integer
+         */
+        static int randomInt(const std::vector<double> &weights);
+
+        //
         // Matrices creation
         //
 

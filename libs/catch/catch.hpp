@@ -3992,7 +3992,7 @@ namespace Catch {
             }
 
             T const& get() const override {
-                return m_generators[m_current].get();
+                return m_generators[m_current].eConfigsMaze();
             }
 
             bool next() override {
@@ -4039,7 +4039,7 @@ namespace Catch {
         // Note: The type after -> is weird, because VS2015 cannot parse
         //       the expression used in the typedef inside, when it is in
         //       return type. Yeah.
-        auto generate( SourceLineInfo const& lineInfo, L const& generatorExpression ) -> decltype(std::declval<decltype(generatorExpression())>().get()) {
+        auto generate( SourceLineInfo const& lineInfo, L const& generatorExpression ) -> decltype(std::declval<decltype(generatorExpression())>().eConfigsMaze()) {
             using UnderlyingType = typename decltype(generatorExpression())::type;
 
             IGeneratorTracker& tracker = acquireGeneratorTracker( lineInfo );
@@ -4048,7 +4048,7 @@ namespace Catch {
             }
 
             auto const& generator = static_cast<IGenerator<UnderlyingType> const&>( *tracker.getGenerator() );
-            return generator.get();
+            return generator.eConfigsMaze();
         }
 
     } // namespace Generators

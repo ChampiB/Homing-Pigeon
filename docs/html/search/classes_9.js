@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['varnode_141',['VarNode',['../classhopi_1_1nodes_1_1VarNode.html',1,'hopi::nodes']]]
+  ['observedvariter_171',['ObservedVarIter',['../classhopi_1_1iterators_1_1ObservedVarIter.html',1,'hopi::iterators']]],
+  ['ops_172',['Ops',['../classhopi_1_1math_1_1Ops.html',1,'hopi::math']]]
 ];

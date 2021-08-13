@@ -100,6 +100,8 @@ Collaboration diagram for hopi::distributions::Categorical:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af5fb9ffeb70f5a733f96a12d74e435f2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Categorical.html#af5fb9ffeb70f5a733f96a12d74e435f2">Categorical</a> (const torch::Tensor &amp;param)</td></tr>
 <tr class="separator:af5fb9ffeb70f5a733f96a12d74e435f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ea5aa8f6943f1ecab5fa2c095503add"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Categorical.html#a1ea5aa8f6943f1ecab5fa2c095503add">Categorical</a> (const std::shared_ptr&lt; torch::Tensor &gt; &amp;param)</td></tr>
+<tr class="separator:a1ea5aa8f6943f1ecab5fa2c095503add"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36f89d3e38710808ce888ddc9124e575"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Categorical.html#a36f89d3e38710808ce888ddc9124e575">Categorical</a> (const torch::Tensor &amp;&amp;param)</td></tr>
 <tr class="separator:a36f89d3e38710808ce888ddc9124e575"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa52f6190caaedb11fe858591b36225c1"><td class="memItemLeft" align="right" valign="top">DistributionType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Categorical.html#aa52f6190caaedb11fe858591b36225c1">type</a> () const override</td></tr>
@@ -117,6 +119,8 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a4f6bab7a15eb1980cc9b748ec39a39ed"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Categorical.html">Categorical</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Categorical.html#a4f6bab7a15eb1980cc9b748ec39a39ed">create</a> (const torch::Tensor &amp;param)</td></tr>
 <tr class="separator:a4f6bab7a15eb1980cc9b748ec39a39ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d4a12d5631141fd27748df6bdde8b78"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Categorical.html">Categorical</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Categorical.html#a2d4a12d5631141fd27748df6bdde8b78">create</a> (const std::shared_ptr&lt; torch::Tensor &gt; &amp;param)</td></tr>
+<tr class="separator:a2d4a12d5631141fd27748df6bdde8b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb7ff2a2dc08c77b40411fac0daccf59"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Categorical.html">Categorical</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Categorical.html#adb7ff2a2dc08c77b40411fac0daccf59">create</a> (const torch::Tensor &amp;&amp;param)</td></tr>
 <tr class="separator:adb7ff2a2dc08c77b40411fac0daccf59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -124,7 +128,7 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Class representing a <a class="el" href="classhopi_1_1distributions_1_1Categorical.html">Categorical</a> distribution. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af5fb9ffeb70f5a733f96a12d74e435f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5fb9ffeb70f5a733f96a12d74e435f2">&#9670;&nbsp;</a></span>Categorical() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af5fb9ffeb70f5a733f96a12d74e435f2">&#9670;&nbsp;</a></span>Categorical() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -155,8 +159,40 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a1ea5aa8f6943f1ecab5fa2c095503add"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ea5aa8f6943f1ecab5fa2c095503add">&#9670;&nbsp;</a></span>Categorical() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">hopi::distributions::Categorical::Categorical </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; torch::Tensor &gt; &amp;&#160;</td>
+          <td class="paramname"><em>param</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construct a <a class="el" href="classhopi_1_1distributions_1_1Categorical.html">Categorical</a> distribution. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">param</td><td>the parameters of the distribution </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a36f89d3e38710808ce888ddc9124e575"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36f89d3e38710808ce888ddc9124e575">&#9670;&nbsp;</a></span>Categorical() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a36f89d3e38710808ce888ddc9124e575">&#9670;&nbsp;</a></span>Categorical() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -188,8 +224,41 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a2d4a12d5631141fd27748df6bdde8b78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d4a12d5631141fd27748df6bdde8b78">&#9670;&nbsp;</a></span>create() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::unique_ptr&lt;<a class="el" href="classhopi_1_1distributions_1_1Categorical.html">Categorical</a>&gt; hopi::distributions::Categorical::create </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; torch::Tensor &gt; &amp;&#160;</td>
+          <td class="paramname"><em>param</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Create a <a class="el" href="classhopi_1_1distributions_1_1Categorical.html">Categorical</a> distribution. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">param</td><td>the parameters of the distribution </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the created distribution </dd></dl>
+
+</div>
+</div>
 <a id="adb7ff2a2dc08c77b40411fac0daccf59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb7ff2a2dc08c77b40411fac0daccf59">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adb7ff2a2dc08c77b40411fac0daccf59">&#9670;&nbsp;</a></span>create() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -222,7 +291,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a4f6bab7a15eb1980cc9b748ec39a39ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f6bab7a15eb1980cc9b748ec39a39ed">&#9670;&nbsp;</a></span>create() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f6bab7a15eb1980cc9b748ec39a39ed">&#9670;&nbsp;</a></span>create() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

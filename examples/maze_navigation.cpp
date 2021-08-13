@@ -4,8 +4,8 @@
 #include "math/Ops.h"
 #include "api/API.h"
 #include "graphs/FactorGraph.h"
-#include "algorithms/AlgoTree.h"
-#include "algorithms/AlgoVMP.h"
+#include "algorithms/planning/tmp/MCTS.h"
+#include "algorithms/inference/VMP.h"
 #include <torch/torch.h>
 #include <iostream>
 
@@ -14,7 +14,8 @@ using namespace hopi::distributions;
 using namespace hopi::nodes;
 using namespace hopi::math;
 using namespace hopi::graphs;
-using namespace hopi::algorithms;
+using namespace hopi::algorithms::inference;
+using namespace hopi::algorithms::planning;
 using namespace hopi::api;
 using namespace torch;
 
@@ -59,13 +60,13 @@ int main() {
      **/
     env->print();
     for (int i = 0; i < 20; ++i) { // Action perception cycle
-        AlgoVMP::inference(fg->getNodes());
-        auto algoTree = AlgoTree::create(env->actions(), D_tilde, E_tilde);
+        VMP::inference(fg->getNodes());
+        auto algoTree = MCTS::create(env->actions(), D_tilde, E_tilde);
         for (int j = 0; j < 100; ++j) { // Planning
             VarNode *n = algoTree->nodeSelection(fg);
             algoTree->expansion(n, A, B);
-            AlgoVMP::inference(algoTree->lastExpandedNodes());
-            algoTree->evaluation();
+            VMP::inference(algoTree->lastExpandedNodes());
+            algoTree->evaluation(fg, A, B);
             algoTree->propagation(fg->treeRoot());
         }
         int a = algoTree->actionSelection(fg->treeRoot());

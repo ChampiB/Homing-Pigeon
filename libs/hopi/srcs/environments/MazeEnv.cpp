@@ -4,10 +4,12 @@
 
 #include "MazeEnv.h"
 #include "api/API.h"
+#include "math/Ops.h"
 #include <iostream>
 
 using namespace torch;
 using namespace hopi::api;
+using namespace hopi::math;
 
 namespace hopi::environments {
 
@@ -19,6 +21,9 @@ namespace hopi::environments {
         std::pair<int,int> maze_size;
         std::ifstream input(file);
         std::string line;
+
+        if (!input.is_open())
+            throw std::runtime_error("In MazeEnv::MazeEnv(...): Could not open maze's file.");
 
         agent_pos = {-1,-1};
         exit_pos = {-1,-1};
@@ -58,11 +63,19 @@ namespace hopi::environments {
                 maze[i][j] = 1;
             }
         }
+        agent_initial_pos = agent_pos;
+
+        loadStatesIndexes();
     }
 
-    int MazeEnv::execute(int action) {
+    torch::Tensor MazeEnv::reset() {
+        agent_pos = agent_initial_pos;
+        return execute(IDLE);
+    }
+
+    torch::Tensor MazeEnv::execute(int action) {
         agent_pos = execute(action, agent_pos);
-        return manhattan_distance(agent_pos);
+        return Ops::one_hot(observations(), manhattan_distance(agent_pos));
     }
 
     void MazeEnv::print() const {
@@ -130,12 +143,9 @@ namespace hopi::environments {
         }
     }
 
-    Tensor MazeEnv::A() {
+    Tensor MazeEnv::A() const {
         Tensor A = API::full({observations(), states()}, 0.1 / (observations() - 1));
 
-        if (states_idx.numel() == 0) {
-            loadStatesIndexes();
-        }
         for (int i = 0; i < maze.size(1); ++i) {
             for (int j = 0; j < maze.size(0); ++j) {
                 if (maze[j][i].item<double>() == 0) {
@@ -146,12 +156,9 @@ namespace hopi::environments {
         return A;
     }
 
-    Tensor MazeEnv::B() {
+    Tensor MazeEnv::B() const {
         Tensor B = API::full({states(), states(), actions()}, 0.1 / (states() - 1));
 
-        if (states_idx.numel() == 0) {
-            loadStatesIndexes();
-        }
         for (int i = 0; i < maze.size(1); ++i) {
             for (int j = 0; j < maze.size(0); ++j) {
                 if (maze[j][i].item<double>() == 0) {
@@ -166,12 +173,9 @@ namespace hopi::environments {
         return B;
     }
 
-    Tensor MazeEnv::D() {
+    Tensor MazeEnv::D() const {
         Tensor D = API::full({states()}, 0.1 / (states() - 1));
 
-        if (states_idx.numel() == 0) {
-            loadStatesIndexes();
-        }
         D[states_idx[agent_pos.first][agent_pos.second]] = 0.9;
         return D;
     }
@@ -203,6 +207,16 @@ namespace hopi::environments {
                 assert(false && "MazeEnv::execute, unsupported action.");
         }
         return res;
+    }
+
+    bool MazeEnv::solved() const {
+        auto agent = agentPosition();
+        auto exit = exitPosition();
+        return agent.first == exit.first && agent.second == exit.second;
+    }
+
+    EnvType MazeEnv::type() const {
+        return MAZE;
     }
 
 }

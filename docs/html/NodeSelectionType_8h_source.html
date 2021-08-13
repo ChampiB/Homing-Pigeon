@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Homing Pigeon: libs/hopi/srcs/algorithms/NodeSelectionType.h Source File</title>
+<title>Homing Pigeon: libs/hopi/srcs/algorithms/planning/NodeSelectionType.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_6719ab1f1f7655efc2fa43f7eb574fd1.html">libs</a></li><li class="navelem"><a class="el" href="dir_dd26fd2c79959191cf68afd3b62e815f.html">hopi</a></li><li class="navelem"><a class="el" href="dir_cab401a762152af9bf6955f049d2f557.html">srcs</a></li><li class="navelem"><a class="el" href="dir_588d4f3cd06d527d6d9b6d80750c447b.html">algorithms</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_6719ab1f1f7655efc2fa43f7eb574fd1.html">libs</a></li><li class="navelem"><a class="el" href="dir_dd26fd2c79959191cf68afd3b62e815f.html">hopi</a></li><li class="navelem"><a class="el" href="dir_cab401a762152af9bf6955f049d2f557.html">srcs</a></li><li class="navelem"><a class="el" href="dir_588d4f3cd06d527d6d9b6d80750c447b.html">algorithms</a></li><li class="navelem"><a class="el" href="dir_a77bca871da5e9be4c7fb5f49a9a79f8.html">planning</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -78,13 +78,15 @@ $(function() {
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#ifndef HOMING_PIGEON_NODE_SELECTION_TYPE_H</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#define HOMING_PIGEON_NODE_SELECTION_TYPE_H</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">enum</span> NodeSelectionType : <span class="keywordtype">int</span> {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    MIN = 0,             <span class="comment">// Select the node with the smallest cost</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    SAMPLING = 1,        <span class="comment">// Sample a node from a discrete distribution whose weights correspond to the states&#39; quality</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    SOFTMAX_SAMPLING = 2 <span class="comment">// Sample a node from a softmax function whose inputs correspond to the states&#39; quality</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;};</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span>hopi::algorithms::planning {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">enum</span> NodeSelectionType : <span class="keywordtype">int</span> {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        UCT1 = 0 <span class="comment">// Select a node using the UCT1_Criterion criterion</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    };</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_NODE_SELECTION_TYPE_H</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;}</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_NODE_SELECTION_TYPE_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

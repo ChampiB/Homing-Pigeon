@@ -25,7 +25,7 @@ namespace hopi::nodes {
         return nullptr;
     }
 
-    VarNode *DirichletNode::child() {
+    VarNode *DirichletNode::child() const {
         return childNode;
     }
 

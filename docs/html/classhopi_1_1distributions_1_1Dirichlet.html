@@ -100,6 +100,8 @@ Collaboration diagram for hopi::distributions::Dirichlet:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a7116a1957b019ade83ab2baf00d7c4fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#a7116a1957b019ade83ab2baf00d7c4fe">Dirichlet</a> (const torch::Tensor &amp;param)</td></tr>
 <tr class="separator:a7116a1957b019ade83ab2baf00d7c4fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d30e9188e8335ef64d566f5daa22589"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#a6d30e9188e8335ef64d566f5daa22589">Dirichlet</a> (const std::shared_ptr&lt; torch::Tensor &gt; &amp;param)</td></tr>
+<tr class="separator:a6d30e9188e8335ef64d566f5daa22589"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26236247de33f34331c590dd971bd61d"><td class="memItemLeft" align="right" valign="top">DistributionType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#a26236247de33f34331c590dd971bd61d">type</a> () const override</td></tr>
 <tr class="separator:a26236247de33f34331c590dd971bd61d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae7903a07bd57fa6ee2c9bc7d1e0cbeb"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#aae7903a07bd57fa6ee2c9bc7d1e0cbeb">logParams</a> () const override</td></tr>
@@ -113,16 +115,20 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a395e5308ae48b23ad753a0a0458c9fb1"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#a395e5308ae48b23ad753a0a0458c9fb1">create</a> (const torch::Tensor &amp;p)</td></tr>
-<tr class="separator:a395e5308ae48b23ad753a0a0458c9fb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a795529cd6e0a0dceb81e0079168352d4"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#a795529cd6e0a0dceb81e0079168352d4">create</a> (const torch::Tensor &amp;p)</td></tr>
+<tr class="separator:a795529cd6e0a0dceb81e0079168352d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d2765d23a3e84c8e6ac1fe0d89ebc0c"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#a0d2765d23a3e84c8e6ac1fe0d89ebc0c">create</a> (const std::shared_ptr&lt; torch::Tensor &gt; &amp;p)</td></tr>
+<tr class="separator:a0d2765d23a3e84c8e6ac1fe0d89ebc0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a67dd5b9498beb06d9058e995f5b85aa0"><td class="memItemLeft" align="right" valign="top">static torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#a67dd5b9498beb06d9058e995f5b85aa0">expectedLog</a> (const torch::Tensor &amp;p)</td></tr>
 <tr class="separator:a67dd5b9498beb06d9058e995f5b85aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9c071e8f151c24eeaec8d0cf0eeddd5"><td class="memItemLeft" align="right" valign="top">static torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html#ac9c071e8f151c24eeaec8d0cf0eeddd5">expectation</a> (const torch::Tensor &amp;p)</td></tr>
+<tr class="separator:ac9c071e8f151c24eeaec8d0cf0eeddd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class representing a <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> distribution. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7116a1957b019ade83ab2baf00d7c4fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7116a1957b019ade83ab2baf00d7c4fe">&#9670;&nbsp;</a></span>Dirichlet()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7116a1957b019ade83ab2baf00d7c4fe">&#9670;&nbsp;</a></span>Dirichlet() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,9 +159,41 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a6d30e9188e8335ef64d566f5daa22589"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d30e9188e8335ef64d566f5daa22589">&#9670;&nbsp;</a></span>Dirichlet() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">hopi::distributions::Dirichlet::Dirichlet </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; torch::Tensor &gt; &amp;&#160;</td>
+          <td class="paramname"><em>param</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construct a <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> distribution. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the parameters of the distribution </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a395e5308ae48b23ad753a0a0458c9fb1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a395e5308ae48b23ad753a0a0458c9fb1">&#9670;&nbsp;</a></span>create()</h2>
+<a id="a0d2765d23a3e84c8e6ac1fe0d89ebc0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d2765d23a3e84c8e6ac1fe0d89ebc0c">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -165,6 +203,39 @@ Static Public Member Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> &gt; hopi::distributions::Dirichlet::create </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; torch::Tensor &gt; &amp;&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Create a <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> distribution. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the parameters of the distribution </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the created distribution </dd></dl>
+
+</div>
+</div>
+<a id="a795529cd6e0a0dceb81e0079168352d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a795529cd6e0a0dceb81e0079168352d4">&#9670;&nbsp;</a></span>create() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::unique_ptr&lt;<a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a>&gt; hopi::distributions::Dirichlet::create </td>
           <td>(</td>
           <td class="paramtype">const torch::Tensor &amp;&#160;</td>
           <td class="paramname"><em>p</em></td><td>)</td>
@@ -212,6 +283,39 @@ Static Public Member Functions</h2></td></tr>
 <p>Compute the entropy of the distribution. </p><dl class="section return"><dt>Returns</dt><dd>the entropy </dd></dl>
 
 <p>Implements <a class="el" href="classhopi_1_1distributions_1_1Distribution.html#a393a3e2a7d27a41f5ef78f2b584e59bf">hopi::distributions::Distribution</a>.</p>
+
+</div>
+</div>
+<a id="ac9c071e8f151c24eeaec8d0cf0eeddd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9c071e8f151c24eeaec8d0cf0eeddd5">&#9670;&nbsp;</a></span>expectation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Tensor hopi::distributions::Dirichlet::expectation </td>
+          <td>(</td>
+          <td class="paramtype">const torch::Tensor &amp;&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Compute the expectation of X where X is a vector distributed according to a <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> distribution </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>the parameter of the <a class="el" href="classhopi_1_1distributions_1_1Dirichlet.html">Dirichlet</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the expectation of X </dd></dl>
 
 </div>
 </div>
