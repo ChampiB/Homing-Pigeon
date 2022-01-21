@@ -10,6 +10,12 @@ Homing-Pigeon is using cmake for the build. First you need to install Pytorch C+
 - `rm libtorch-shared-with-deps-latest.zip`
 - `cd ..`
 
+Next, if boost is not installed on your system, run the following command:
+- `sudo apt-get install libboost-all-dev`
+
+Similarly, if gnuplot is not installed on your system, run the following command:
+- `sudo apt-get install -y gnuplot libgnuplot-iostream-dev`
+
 Then, use cmake to build the project as follows:
 - `mkdir build`
 - `cd build`
