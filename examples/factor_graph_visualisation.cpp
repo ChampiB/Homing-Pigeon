@@ -19,7 +19,7 @@ int main() {
      ** The files' name.
      **/
     std::string evidence_file = "../examples/evidences/1.evi";
-    std::string maze_file     = "../examples/mazes/1.maze";
+    std::string maze_file     = "../examples/mazes/1.lake";
     std::string graph_file    = "../examples/graphs/1.graph";
 
     /**

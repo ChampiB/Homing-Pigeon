@@ -21,9 +21,10 @@ namespace hopi::environments {
         std::pair<int,int> maze_size;
         std::ifstream input(file);
         std::string line;
+        file_name = file;
 
         if (!input.is_open())
-            throw std::runtime_error("In MazeEnv::MazeEnv(...): Could not open maze's file.");
+            throw std::runtime_error("In MazeEnv::MazeEnv(...): Could not open lake's file.");
 
         agent_pos = {-1,-1};
         exit_pos = {-1,-1};
@@ -78,7 +79,7 @@ namespace hopi::environments {
         return Ops::one_hot(observations(), manhattan_distance(agent_pos));
     }
 
-    void MazeEnv::print() const {
+    void MazeEnv::print() {
         for (int i = 0; i < maze.size(0); ++i) {
             for (int j = 0; j < maze.size(1); ++j) {
                 if (agent_pos.first == i && agent_pos.second == j)
@@ -217,6 +218,26 @@ namespace hopi::environments {
 
     EnvType MazeEnv::type() const {
         return MAZE;
+    }
+
+    torch::Tensor MazeEnv::pref_states(bool advanced) const {
+        if (advanced and file_name.substr(file_name.find_last_of('/') + 1) != "5.maze")
+            throw std::invalid_argument("Advanced prior is only supported in maze: \"5.maze\".");
+
+        if (!advanced)
+            return Ops::uniform({states()});
+
+        Tensor D_tilde = API::full({7}, 0.0333333);
+        std::vector<int> good_states{1,3,5};
+
+        D_tilde[2] = 0.45;
+        for (int good_state : good_states)
+            D_tilde[good_state] = 0.15;
+        return D_tilde;
+    }
+
+    torch::Tensor MazeEnv::pref_obs() const {
+        return observations() - API::range(0, observations());
     }
 
 }

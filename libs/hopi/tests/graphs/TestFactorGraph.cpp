@@ -303,43 +303,6 @@ TEST_CASE( "FactorGraph's loadEvidence properly load evidence into observed vari
     });
 }
 
-TEST_CASE( "FactorGraph.integrate properly update the factor graph" ) {
-    UnitTests::run([](){
-        auto fg = FactorGraphContexts::context2();
-
-        Tensor A = Ops::uniform({9,3});
-        Tensor B = Ops::uniform({3,3,2});
-
-        auto root = fg->treeRoot();
-
-        // First expansion
-        /**TODO
-        auto sI = API::Transition(root, B[1]);
-        sI->setAction(1);
-        auto oI = API::Transition(sI, A);
-
-        // Second expansion
-        auto sJ = API::Transition(root, B[0]);
-        sJ->setAction(0);
-        auto oJ = API::Transition(sJ, A);
-
-        // Third expansion
-        auto sK = API::Transition(sJ, B[0]);
-        sK->setAction(0);
-        auto oK = API::Transition(sK, A);
-
-        fg->integrate(0, Ops::one_hot(9, 2), A, B);
-        auto new_root = fg->treeRoot();
-        REQUIRE( new_root != root );  // Root have been updated
-        REQUIRE( new_root->prior()->type() == DistributionType::ACTIVE_TRANSITION ); // The type of prior is now an active transition
-        REQUIRE( new_root->parent()->parent(0) == root ); // The first parent of new_root is the (old) root node
-        auto d1 = new_root->parent()->parent(1)->prior();
-        REQUIRE( d1->type() == DistributionType::CATEGORICAL); // The second parent of new_root has a categorical prior
-        REQUIRE( d1->params().numel() == 2); // and its cardinality is 2
-         */
-    });
-}
-
 TEST_CASE( "FactorGraph.removeBranch properly cut off branches of the tree" ) {
     UnitTests::run([](){
         auto fg = FactorGraphContexts::context2();

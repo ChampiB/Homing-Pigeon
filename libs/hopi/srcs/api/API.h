@@ -21,7 +21,7 @@ namespace hopi::api {
     public:
         //
         // The following functions create random variables distributed according to various distributions.
-        // It also handle the creation of the underlying factor graph that will be used to perform inference.
+        // It also handles the creation of the underlying factor graph that will be used to perform inference.
         //
 
         /**
@@ -184,6 +184,13 @@ namespace hopi::api {
          * @return the created tensor
          */
         static torch::Tensor ones(at::IntArrayRef sizes);
+
+        /**
+         * Create an identity matrix.
+         * @param size of the dimensions of the matrix to create
+         * @return the created matrix
+         */
+        static torch::Tensor eye(int size);
 
         /**
          * Create a tensor filled with a specific value

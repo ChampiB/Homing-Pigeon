@@ -9,6 +9,9 @@
 
 namespace hopi::algorithms::planning {
 
+    /**
+     * A class storing the data of a node used by the MCTS algorithm.
+     */
     class MCTSNodeData {
     public:
         /**

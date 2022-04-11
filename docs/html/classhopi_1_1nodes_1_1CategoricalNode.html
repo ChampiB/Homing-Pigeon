@@ -122,8 +122,8 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a7ff029f07b77399495d8a53c93d85f07"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1nodes_1_1CategoricalNode.html">CategoricalNode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1nodes_1_1CategoricalNode.html#a7ff029f07b77399495d8a53c93d85f07">create</a> (<a class="el" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *to, <a class="el" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *d)</td></tr>
 <tr class="separator:a7ff029f07b77399495d8a53c93d85f07"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87f5d6648e4d4e6bbab4c79edf287d2f"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1nodes_1_1CategoricalNode.html">CategoricalNode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1nodes_1_1CategoricalNode.html#a87f5d6648e4d4e6bbab4c79edf287d2f">create</a> (<a class="el" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *node)</td></tr>
-<tr class="separator:a87f5d6648e4d4e6bbab4c79edf287d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a700b0dcdf6724d9eda293b0007472718"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1nodes_1_1CategoricalNode.html">CategoricalNode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1nodes_1_1CategoricalNode.html#a700b0dcdf6724d9eda293b0007472718">create</a> (<a class="el" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *to)</td></tr>
+<tr class="separator:a700b0dcdf6724d9eda293b0007472718"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class representing a factor node corresponding to an Categorical distribution. </p>
@@ -190,7 +190,6 @@ Static Public Member Functions</h2></td></tr>
 <p>Create a Categorical factor node, i.e., representing the distribution P(to). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">to</td><td>the generated random variable </td></tr>
-    <tr><td class="paramname">param</td><td>the parameters of the distribution </td></tr>
   </table>
   </dd>
 </dl>
@@ -227,8 +226,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a87f5d6648e4d4e6bbab4c79edf287d2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87f5d6648e4d4e6bbab4c79edf287d2f">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
+<a id="a700b0dcdf6724d9eda293b0007472718"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a700b0dcdf6724d9eda293b0007472718">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -240,7 +239,7 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classhopi_1_1nodes_1_1CategoricalNode.html">CategoricalNode</a> &gt; hopi::nodes::CategoricalNode::create </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *&#160;</td>
-          <td class="paramname"><em>node</em></td><td>)</td>
+          <td class="paramname"><em>to</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -253,7 +252,6 @@ Static Public Member Functions</h2></td></tr>
 <p>Create a Categorical factor node, i.e., representing the distribution P(to). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">to</td><td>the generated random variable </td></tr>
-    <tr><td class="paramname">param</td><td>the parameters of the distribution </td></tr>
   </table>
   </dd>
 </dl>
@@ -294,10 +292,10 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Create a Categorical factor node, i.e., representing the distribution P(to|param). </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Create a Categorical factor node, i.e., representing the distribution P(to|d). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">to</td><td>the generated random variable </td></tr>
-    <tr><td class="paramname">param</td><td>the parameters of the distribution, i.e., a random vector distributed according to a Dirichlet </td></tr>
+    <tr><td class="paramname">d</td><td>the parameters of the distribution, i.e., a random vector distributed according to a Dirichlet </td></tr>
   </table>
   </dd>
 </dl>

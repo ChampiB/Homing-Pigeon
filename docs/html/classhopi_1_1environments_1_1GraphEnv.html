@@ -76,6 +76,8 @@ $(function() {
 <div class="title">hopi::environments::GraphEnv Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="GraphEnv_8h_source.html">GraphEnv.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for hopi::environments::GraphEnv:</div>
 <div class="dyncontent">
@@ -110,8 +112,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aeb06f88ccc2fce40caf7fc23dced486a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6332baab77145d5059d09b909e2a628"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#ad6332baab77145d5059d09b909e2a628">execute</a> (int action) override</td></tr>
 <tr class="separator:ad6332baab77145d5059d09b909e2a628"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc6e8998d24e42a827c9b9716a65eacd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#acc6e8998d24e42a827c9b9716a65eacd">print</a> () const override</td></tr>
-<tr class="separator:acc6e8998d24e42a827c9b9716a65eacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f696cc57e9d14b208c548612f14b6bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a3f696cc57e9d14b208c548612f14b6bb">print</a> () override</td></tr>
+<tr class="separator:a3f696cc57e9d14b208c548612f14b6bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bbc816302d04a18f85bea4b97e865ab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a3bbc816302d04a18f85bea4b97e865ab">actions</a> () const override</td></tr>
 <tr class="separator:a3bbc816302d04a18f85bea4b97e865ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb246868bb72872a22056aee90a033d0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#aeb246868bb72872a22056aee90a033d0">states</a> () const override</td></tr>
@@ -124,6 +126,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1d1da7f7130b83b66525af0aca2a841a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91453093627a4e2ed7bb7e8afb9161d8"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a91453093627a4e2ed7bb7e8afb9161d8">D</a> () const override</td></tr>
 <tr class="separator:a91453093627a4e2ed7bb7e8afb9161d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e7e7a0d6a556f9aab91f8760115341a"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a2e7e7a0d6a556f9aab91f8760115341a">pref_states</a> (bool advanced) const override</td></tr>
+<tr class="separator:a2e7e7a0d6a556f9aab91f8760115341a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ce654bb40b29bb103fa013498725a3c"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a6ce654bb40b29bb103fa013498725a3c">pref_obs</a> () const override</td></tr>
+<tr class="separator:a6ce654bb40b29bb103fa013498725a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20401ff33f7495a140b3231ec940d04c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a20401ff33f7495a140b3231ec940d04c">solved</a> () const override</td></tr>
 <tr class="separator:a20401ff33f7495a140b3231ec940d04c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f868355143653b29ab54648a1278c17"><td class="memItemLeft" align="right" valign="top">EnvType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a0f868355143653b29ab54648a1278c17">type</a> () const override</td></tr>
@@ -140,7 +146,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ace050584a792d07ce8c181959820c60f"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html">GraphEnv</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#ace050584a792d07ce8c181959820c60f">create</a> (int nGood, int nBad, const std::vector&lt; int &gt; &amp;sizeGoodPaths)</td></tr>
 <tr class="separator:ace050584a792d07ce8c181959820c60f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A class implementing the graph environment. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="adf551ffdaad8c04e671b176c5a2a6d9e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adf551ffdaad8c04e671b176c5a2a6d9e">&#9670;&nbsp;</a></span>ObsType</h2>
 
@@ -462,8 +470,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="acc6e8998d24e42a827c9b9716a65eacd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc6e8998d24e42a827c9b9716a65eacd">&#9670;&nbsp;</a></span>print()</h2>
+<a id="a6ce654bb40b29bb103fa013498725a3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce654bb40b29bb103fa013498725a3c">&#9670;&nbsp;</a></span>pref_obs()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -472,7 +480,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void hopi::environments::GraphEnv::print </td>
+          <td class="memname">torch::Tensor hopi::environments::GraphEnv::pref_obs </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -484,9 +492,72 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the prior preferences over observations </dd></dl>
+
+<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#adabff616ca63bd4443dc4c4864fd03d9">hopi::environments::Environment</a>.</p>
+
+</div>
+</div>
+<a id="a2e7e7a0d6a556f9aab91f8760115341a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e7e7a0d6a556f9aab91f8760115341a">&#9670;&nbsp;</a></span>pref_states()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">torch::Tensor hopi::environments::GraphEnv::pref_states </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>advanced</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Getter. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">advanced</td><td>should the prior preferences be advanced? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the prior preferences over observations </dd></dl>
+
+<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#a5a1828da9ce1c68a9cea19b8d83d5e8c">hopi::environments::Environment</a>.</p>
+
+</div>
+</div>
+<a id="a3f696cc57e9d14b208c548612f14b6bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f696cc57e9d14b208c548612f14b6bb">&#9670;&nbsp;</a></span>print()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void hopi::environments::GraphEnv::print </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 <p>Display the environment. </p>
 
-<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#ae96e1228e6ef7133a7200c93497f9a47">hopi::environments::Environment</a>.</p>
+<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#a452488a592b9bb02c43bd3bfe70f8399">hopi::environments::Environment</a>.</p>
 
 </div>
 </div>

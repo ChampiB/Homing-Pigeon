@@ -81,7 +81,7 @@ namespace hopi::distributions {
          * Update the distribution's parameters.
          * @param param the new parameters
          */
-        void updateParams(const torch::Tensor &p) override;
+        void updateParams(const torch::Tensor &param) override;
 
         /**
          * Compute the entropy of the distribution.

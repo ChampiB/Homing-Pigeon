@@ -105,7 +105,7 @@ namespace hopi::environments {
         std::cout << std::endl;
     }
 
-    void GraphEnv::print() const {
+    void GraphEnv::print() {
         // Create the strings containing the states of each good path.
         std::vector<std::string> paths_states = getPathsStates();
 
@@ -180,6 +180,16 @@ namespace hopi::environments {
 
         D[0] = 0.9;
         return D;
+    }
+
+    torch::Tensor GraphEnv::pref_states(bool advanced) const {
+        if (advanced)
+            throw std::invalid_argument("Advanced prior are not supported in graph environment.");
+        return Ops::uniform({states()});
+    }
+
+    torch::Tensor GraphEnv::pref_obs() const {
+        return observations() - API::range(0, observations());
     }
 
     void GraphEnv::verbose() {

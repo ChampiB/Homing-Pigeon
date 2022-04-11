@@ -58,6 +58,11 @@ namespace hopi::zoo {
         _mcts = MCTS::create(config);
     }
 
+    BTAI::~BTAI() {
+        this->_mcts = nullptr;
+        this->_fg = nullptr;
+    }
+
     void BTAI::step(const std::shared_ptr<Environment> &env, const EvaluationType &type) {
         VMP::inference(_fg->getNodes());
         for (int j = 0; j < _mcts->config()->nbPlanningSteps(); ++j) {
@@ -67,6 +72,7 @@ namespace hopi::zoo {
             _mcts->evaluation(expandedNodes, _a, type);
             _mcts->propagation(expandedNodes);
         }
+
         int action = _mcts->selectAction(_fg->treeRoot());
         auto obs = env->execute(action);
         _fg->integrate(action, obs, _a, _b);

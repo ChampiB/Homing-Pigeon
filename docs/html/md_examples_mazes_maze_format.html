@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Homing Pigeon: Format of the files with extension .maze</title>
+<title>Homing Pigeon: Format of the files with extension .lake</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,13 +64,13 @@ $(function() {
 </div><!-- top -->
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Format of the files with extension .maze </div>  </div>
+<div class="title">Format of the files with extension .lake </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This document specify the format that a maze file must have to be loaded properly by the MazeEnv class.</p>
-<p>The first row of the file must contains to integer describing the number of rows and columns in the maze, e.g.</p>
+<div class="textblock"><p>This document specify the format that a lake file must have to be loaded properly by the MazeEnv class.</p>
+<p>The first row of the file must contains to integer describing the number of rows and columns in the lake, e.g.</p>
 <div class="fragment"><div class="line">7 8</div>
-</div><!-- fragment --><p>indicates that the maze contains in this file contains 7 rows and 8 columns. The first line must be followed by n other lines where n is the number of rows, i.e. each line after the first line specify the content of one row in the maze. For example:</p>
+</div><!-- fragment --><p>indicates that the lake contains in this file contains 7 rows and 8 columns. The first line must be followed by n other lines where n is the number of rows, i.e. each line after the first line specify the content of one row in the lake. For example:</p>
 <div class="fragment"><div class="line">WWWWWWWW</div>
 <div class="line">W.....EW</div>
 <div class="line">W.WWWW.W</div>
@@ -78,13 +78,13 @@ $(function() {
 <div class="line">W.WW.W.W</div>
 <div class="line">WS.....W</div>
 <div class="line">WWWWWWWW</div>
-</div><!-- fragment --><p>Various characters can be used to specify a maze's row:</p><ul>
+</div><!-- fragment --><p>Various characters can be used to specify a lake's row:</p><ul>
 <li>'W' stands for wall, i.e. the agent cannot pass through it;</li>
 <li>'.' refers to empty cell, i.e. the agent can navigate them;</li>
-<li>'E' specify where the maze exit is, i.e. agent's target location;</li>
-<li>'S' specify the initial position of the agent in the maze.</li>
+<li>'E' specify where the lake exit is, i.e. agent's target location;</li>
+<li>'S' specify the initial position of the agent in the lake.</li>
 </ul>
-<p>Importantly, the maze is assumed to be surrounded by walls!</p>
+<p>Importantly, the lake is assumed to be surrounded by walls!</p>
 <p>Any variation from this format might lead to crashes, bugs or exceptions threw. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

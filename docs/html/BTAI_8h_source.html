@@ -98,43 +98,45 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">namespace </span>hopi::zoo {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classhopi_1_1zoo_1_1BTAI.html">   28</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classhopi_1_1zoo_1_1BTAI.html">BTAI</a> {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">static</span> std::shared_ptr&lt;BTAI&gt; <a class="code" href="classhopi_1_1zoo_1_1BTAI.html#a8a15a620ed5267c7b6d72ad635803668">create</a>(</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="keyword">const</span> <a class="code" href="classhopi_1_1environments_1_1Environment.html">environments::Environment</a> *env,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keyword">const</span> std::shared_ptr&lt;algorithms::planning::MCTSConfig&gt; &amp;config,</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <span class="keyword">const</span> torch::Tensor &amp;obs</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        );</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <a class="code" href="classhopi_1_1zoo_1_1BTAI.html#a244d58127a503ec504aaa0ca88135f40">BTAI</a>(</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keyword">const</span> <a class="code" href="classhopi_1_1environments_1_1Environment.html">environments::Environment</a> *env,</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keyword">const</span> std::shared_ptr&lt;algorithms::planning::MCTSConfig&gt; &amp;config,</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keyword">const</span> torch::Tensor &amp;obs</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        );</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classhopi_1_1zoo_1_1BTAI.html#a22f53fdef66aa08832b2a1747ea5428b">step</a>(</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                <span class="keyword">const</span> std::shared_ptr&lt;environments::Environment&gt; &amp;env,</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keyword">const</span> algorithms::planning::EvaluationType &amp;type</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        );</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        torch::Tensor _a;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        torch::Tensor _b;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        torch::Tensor _c;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        torch::Tensor _d;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        std::unique_ptr&lt;algorithms::planning::MCTS&gt; _mcts;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        std::shared_ptr&lt;graphs::FactorGraph&gt; _fg;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    };</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;}</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#endif //EXPERIMENTS_AI_TS_BTAI_V2_H</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classhopi_1_1zoo_1_1BTAI.html">   31</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classhopi_1_1zoo_1_1BTAI.html">BTAI</a> {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">static</span> std::shared_ptr&lt;BTAI&gt; <a class="code" href="classhopi_1_1zoo_1_1BTAI.html#a8a15a620ed5267c7b6d72ad635803668">create</a>(</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keyword">const</span> <a class="code" href="classhopi_1_1environments_1_1Environment.html">environments::Environment</a> *env,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keyword">const</span> std::shared_ptr&lt;algorithms::planning::MCTSConfig&gt; &amp;config,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keyword">const</span> torch::Tensor &amp;obs</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        );</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="classhopi_1_1zoo_1_1BTAI.html#a244d58127a503ec504aaa0ca88135f40">BTAI</a>(</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <span class="keyword">const</span> <a class="code" href="classhopi_1_1environments_1_1Environment.html">environments::Environment</a> *env,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <span class="keyword">const</span> std::shared_ptr&lt;algorithms::planning::MCTSConfig&gt; &amp;config,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keyword">const</span> torch::Tensor &amp;obs</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        );</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <a class="code" href="classhopi_1_1zoo_1_1BTAI.html#aef9c54646640568740c81fa04d22c893">~BTAI</a>();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classhopi_1_1zoo_1_1BTAI.html#a22f53fdef66aa08832b2a1747ea5428b">step</a>(</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                <span class="keyword">const</span> std::shared_ptr&lt;environments::Environment&gt; &amp;env,</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                <span class="keyword">const</span> algorithms::planning::EvaluationType &amp;type</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        );</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        torch::Tensor _a;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        torch::Tensor _b;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        torch::Tensor _d;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        std::unique_ptr&lt;algorithms::planning::MCTS&gt; _mcts;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        std::shared_ptr&lt;graphs::FactorGraph&gt; _fg;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    };</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="preprocessor">#endif //EXPERIMENTS_AI_TS_BTAI_V2_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasshopi_1_1zoo_1_1BTAI_html_a244d58127a503ec504aaa0ca88135f40"><div class="ttname"><a href="classhopi_1_1zoo_1_1BTAI.html#a244d58127a503ec504aaa0ca88135f40">hopi::zoo::BTAI::BTAI</a></div><div class="ttdeci">BTAI(const environments::Environment *env, const std::shared_ptr&lt; algorithms::planning::MCTSConfig &gt; &amp;config, const torch::Tensor &amp;obs)</div><div class="ttdef"><b>Definition:</b> BTAI.cpp:35</div></div>
-<div class="ttc" id="aclasshopi_1_1zoo_1_1BTAI_html"><div class="ttname"><a href="classhopi_1_1zoo_1_1BTAI.html">hopi::zoo::BTAI</a></div><div class="ttdef"><b>Definition:</b> BTAI.h:28</div></div>
+<div class="ttc" id="aclasshopi_1_1zoo_1_1BTAI_html"><div class="ttname"><a href="classhopi_1_1zoo_1_1BTAI.html">hopi::zoo::BTAI</a></div><div class="ttdef"><b>Definition:</b> BTAI.h:31</div></div>
 <div class="ttc" id="aclasshopi_1_1environments_1_1Environment_html"><div class="ttname"><a href="classhopi_1_1environments_1_1Environment.html">hopi::environments::Environment</a></div><div class="ttdef"><b>Definition:</b> Environment.h:16</div></div>
-<div class="ttc" id="aclasshopi_1_1zoo_1_1BTAI_html_a22f53fdef66aa08832b2a1747ea5428b"><div class="ttname"><a href="classhopi_1_1zoo_1_1BTAI.html#a22f53fdef66aa08832b2a1747ea5428b">hopi::zoo::BTAI::step</a></div><div class="ttdeci">void step(const std::shared_ptr&lt; environments::Environment &gt; &amp;env, const algorithms::planning::EvaluationType &amp;type)</div><div class="ttdef"><b>Definition:</b> BTAI.cpp:61</div></div>
+<div class="ttc" id="aclasshopi_1_1zoo_1_1BTAI_html_aef9c54646640568740c81fa04d22c893"><div class="ttname"><a href="classhopi_1_1zoo_1_1BTAI.html#aef9c54646640568740c81fa04d22c893">hopi::zoo::BTAI::~BTAI</a></div><div class="ttdeci">~BTAI()</div><div class="ttdef"><b>Definition:</b> BTAI.cpp:61</div></div>
+<div class="ttc" id="aclasshopi_1_1zoo_1_1BTAI_html_a22f53fdef66aa08832b2a1747ea5428b"><div class="ttname"><a href="classhopi_1_1zoo_1_1BTAI.html#a22f53fdef66aa08832b2a1747ea5428b">hopi::zoo::BTAI::step</a></div><div class="ttdeci">void step(const std::shared_ptr&lt; environments::Environment &gt; &amp;env, const algorithms::planning::EvaluationType &amp;type)</div><div class="ttdef"><b>Definition:</b> BTAI.cpp:66</div></div>
 <div class="ttc" id="aclasshopi_1_1zoo_1_1BTAI_html_a8a15a620ed5267c7b6d72ad635803668"><div class="ttname"><a href="classhopi_1_1zoo_1_1BTAI.html#a8a15a620ed5267c7b6d72ad635803668">hopi::zoo::BTAI::create</a></div><div class="ttdeci">static std::shared_ptr&lt; BTAI &gt; create(const environments::Environment *env, const std::shared_ptr&lt; algorithms::planning::MCTSConfig &gt; &amp;config, const torch::Tensor &amp;obs)</div><div class="ttdef"><b>Definition:</b> BTAI.cpp:27</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

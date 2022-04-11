@@ -70,11 +70,14 @@ $(function() {
 <div class="textblock"><hr  />
 <p>Homing-Pigeon is using cmake for the build. First you need to install Pytorch C++ API in the directory <code>libs/torch</code>:</p><ul>
 <li><code>cd libs</code></li>
-<li><code>wget <a href="https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip">https://download.pytorch.org/libtorch/nightly/cpu/libtorch-shared-with-deps-latest.zip</a></code></li>
-<li><code>unzip libtorch-shared-with-deps-latest.zip</code></li>
+<li><code>wget <a href="https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.10.2%2Bcpu.zip">https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-1.10.2%2Bcpu.zip</a></code></li>
+<li><code>unzip libtorch-cxx11-abi-shared-with-deps-1.10.2%2Bcpu.zip</code></li>
 <li><code>mv libtorch torch</code></li>
-<li><code>rm libtorch-shared-with-deps-latest.zip</code></li>
+<li><code>rm libtorch-cxx11-abi-shared-with-deps-1.10.2%2Bcpu.zip</code></li>
 <li><code>cd ..</code></li>
+</ul>
+<p>Second, install OpenCV:</p><ul>
+<li><code>sudo apt-get install libopencv-dev</code></li>
 </ul>
 <p>Then, use cmake to build the project as follows:</p><ul>
 <li><code>mkdir build</code></li>
@@ -82,6 +85,12 @@ $(function() {
 <li><code>cmake ..</code></li>
 <li><code>make</code></li>
 <li><code>cd ..</code></li>
+</ul>
+<p>Next, if you want to run the simulation involving the dSprites dataset run the following commands:</p><ul>
+<li><code>cd examples/d_sprites</code></li>
+<li><code>git clone <a href="https://github.com/deepmind/dsprites-dataset.git">https://github.com/deepmind/dsprites-dataset.git</a></code></li>
+<li><code>python3 ./d_sprites_from_npz_to_pickle.py</code></li>
+<li><code>cd ../..</code></li>
 </ul>
 <p>The above set of commands will build the Homing-Pigeon library, the unit tests as well as the examples of the project. Note that the example named <code>deep_learning_mnist</code> requires the mnist dataset to be present in the build directory. You can download the dataset using the following command:</p><ul>
 <li><code>mkdir build/mnist</code></li>

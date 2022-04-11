@@ -214,13 +214,13 @@ namespace hopi::graphs {
          * Remove all the node's children which are not observed variables.
          * @param node the node whose hidden children must be removed
          */
-        void removeHiddenChildren(nodes::VarNode *node); // TODO test?
+        void removeHiddenChildren(nodes::VarNode *node);
 
         /**
          * Remove all the node's children which are correspond to hidden states.
          * @param node the node whose children must be removed
          */
-        void removeHiddenStatesChildren(nodes::VarNode *node);  // TODO test?
+        void removeHiddenStatesChildren(nodes::VarNode *node);
 
     private:
         /**

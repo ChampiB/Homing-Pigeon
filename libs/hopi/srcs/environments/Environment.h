@@ -31,7 +31,7 @@ namespace hopi::environments {
         /**
          * Display the environment.
          */
-        virtual void print() const = 0;
+        virtual void print() = 0;
 
         /**
          * Getter.
@@ -68,6 +68,19 @@ namespace hopi::environments {
          * @return the true initial hidden states
          */
         [[nodiscard]] virtual torch::Tensor D() const = 0;
+
+        /**
+         * Getter.
+         * @param advanced should the prior preferences be advanced?
+         * @return the prior preferences over observations
+         */
+        [[nodiscard]] virtual torch::Tensor pref_states(bool advanced) const = 0;
+
+        /**
+         * Getter.
+         * @return the prior preferences over observations
+         */
+        [[nodiscard]] virtual torch::Tensor pref_obs() const = 0;
 
         /**
          * Getter.

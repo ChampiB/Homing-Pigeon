@@ -7,10 +7,10 @@ set(CMAKE_CXX_FLAGS_DEBUG -g)
 add_definitions(-DNOMINMAX)
 
 # Useful variables
-set(HOPI_PROJECT_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-set(LIB_HOPI_ROOT     ${HOPI_PROJECT_ROOT}/libs/hopi)
-set(LIB_CATCH_ROOT    ${HOPI_PROJECT_ROOT}/libs/catch)
-set(LIB_TORCH_ROOT    ${HOPI_PROJECT_ROOT}/libs/torch)
+set(HOPI_PROJECT_ROOT  ${CMAKE_CURRENT_SOURCE_DIR})
+set(LIB_HOPI_ROOT      ${HOPI_PROJECT_ROOT}/libs/hopi)
+set(LIB_CATCH_ROOT     ${HOPI_PROJECT_ROOT}/libs/catch)
+set(LIB_TORCH_ROOT     ${HOPI_PROJECT_ROOT}/libs/torch)
 set(HOPI_SRCS_PATH  "srcs/")
 set(HOPI_TESTS_PATH "tests/")
 
@@ -26,6 +26,8 @@ include(CreateLibWithTests)
 set(LIB_HOPI_SRCS
         environments/Environment.h
         environments/EnvType.h
+        environments/FrozenLakeEnv.h environments/FrozenLakeEnv.cpp
+        environments/DisentangleSpritesEnv.h environments/DisentangleSpritesEnv.cpp
         environments/MazeEnv.h environments/MazeEnv.cpp
         environments/GraphEnv.h environments/GraphEnv.cpp
         algorithms/inference/VMP.h algorithms/inference/VMP.cpp
@@ -57,6 +59,7 @@ set(LIB_HOPI_SRCS
         math/Ops.cpp math/Ops.h
         api/API.cpp api/API.h
         api/Aliases.h
+        zoo/Human.cpp zoo/Human.h
         zoo/BTAI.cpp zoo/BTAI.h)
 
 # Add prefix to all files in HOPI_SRCS
@@ -105,6 +108,11 @@ create_lib_with_tests(
         SOURCES ${HOPI_TEST_SRCS}
         PUBLIC_INCLUDE_DIRS ${LIB_HOPI_ROOT}/${HOPI_TESTS_PATH}
 )
+
+# Link OpenCV to hopi
+find_package(OpenCV REQUIRED)
+target_include_directories(hopi PUBLIC ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(hopi PUBLIC ${OpenCV_LIBS})
 
 # Link pytorch to hopi
 link_pytorch_to_target(

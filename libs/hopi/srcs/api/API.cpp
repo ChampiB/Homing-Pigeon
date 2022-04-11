@@ -127,6 +127,10 @@ namespace hopi::api {
         return torch::ones(sizes).to(dataType());
     }
 
+    torch::Tensor API::eye(int size) {
+        return torch::eye(size).to(dataType());
+    }
+
     std::shared_ptr<torch::Tensor> API::toPtr(const Tensor &tensor) {
         return std::make_shared<torch::Tensor>(tensor);
     }

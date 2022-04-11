@@ -32,6 +32,7 @@ namespace hopi::algorithms::inference {
 
             // Check if the variational free energy have converged
             double new_VFE = vfe(vars);
+
             if (VFE - new_VFE < epsilon) {
                 break;
             }

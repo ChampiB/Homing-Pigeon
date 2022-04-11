@@ -26,9 +26,9 @@ namespace hopi::nodes {
         //
 
         /**
-         * Create a Categorical factor node, i.e., representing the distribution P(to|param).
+         * Create a Categorical factor node, i.e., representing the distribution P(to|d).
          * @param to the generated random variable
-         * @param param the parameters of the distribution, i.e., a random vector distributed according to a Dirichlet
+         * @param d the parameters of the distribution, i.e., a random vector distributed according to a Dirichlet
          * @return the created factor node
          */
         static std::unique_ptr<CategoricalNode> create(RV *to, RV *d);
@@ -36,10 +36,9 @@ namespace hopi::nodes {
         /**
          * Create a Categorical factor node, i.e., representing the distribution P(to).
          * @param to the generated random variable
-         * @param param the parameters of the distribution
          * @return the created factor node
          */
-        static std::unique_ptr<CategoricalNode> create(RV *node);
+        static std::unique_ptr<CategoricalNode> create(RV *to);
 
     public:
         //
@@ -57,7 +56,6 @@ namespace hopi::nodes {
         /**
          * Create a Categorical factor node, i.e., representing the distribution P(to).
          * @param to the generated random variable
-         * @param param the parameters of the distribution
          * @return the created factor node
          */
         explicit CategoricalNode(VarNode *to);

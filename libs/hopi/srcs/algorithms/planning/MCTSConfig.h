@@ -10,6 +10,9 @@
 
 namespace hopi::algorithms::planning {
 
+    /**
+     * A class storing the configuration of the MCTS algorithm.
+     */
     class MCTSConfig {
     public:
         /**

@@ -2,8 +2,8 @@
 // Created by Theophile Champion on 03/08/2021.
 //
 
-#ifndef EXPERIMENTS_AI_TS_MCTS_V2_H
-#define EXPERIMENTS_AI_TS_MCTS_V2_H
+#ifndef EXPERIMENTS_AI_TS_MCTS_H
+#define EXPERIMENTS_AI_TS_MCTS_H
 
 #include <memory>
 #include <torch/torch.h>
@@ -24,6 +24,9 @@ namespace hopi::algorithms::planning {
             const std::shared_ptr<MCTSConfig> &c
             );
 
+    /**
+     * A class implementing the MCTS algorithm.
+     */
     class MCTS {
     public:
         /**
@@ -154,4 +157,4 @@ namespace hopi::algorithms::planning {
 
 }
 
-#endif //EXPERIMENTS_AI_TS_MCTS_V2_H
+#endif //EXPERIMENTS_AI_TS_MCTS_H

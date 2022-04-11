@@ -99,7 +99,7 @@ Collaboration diagram for hopi::environments::MazeEnv:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a14bd2af470a3f3b88dc77ee28540d6a8"><td class="memItemLeft" align="right" valign="top"><a id="a14bd2af470a3f3b88dc77ee28540d6a8"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Action</b> : int { <br />
+<tr class="memitem:a14bd2af470a3f3b88dc77ee28540d6a8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a14bd2af470a3f3b88dc77ee28540d6a8">Action</a> : int { <br />
 &#160;&#160;<b>UP</b> = 0, 
 <b>DOWN</b> = 1, 
 <b>LEFT</b> = 2, 
@@ -118,8 +118,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a32548ff3a73b062b463177244d8e28b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14d75e521f4235eb47a8fd6694f08033"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a14d75e521f4235eb47a8fd6694f08033">execute</a> (int action) override</td></tr>
 <tr class="separator:a14d75e521f4235eb47a8fd6694f08033"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a976f2dc0b012489c6d2249303b92a43e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a976f2dc0b012489c6d2249303b92a43e">print</a> () const override</td></tr>
-<tr class="separator:a976f2dc0b012489c6d2249303b92a43e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad85de333cd883620dd6ddf63c33fb4fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#ad85de333cd883620dd6ddf63c33fb4fa">print</a> () override</td></tr>
+<tr class="separator:ad85de333cd883620dd6ddf63c33fb4fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a9675b08efb92c37d42c6b51f82c550"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a2a9675b08efb92c37d42c6b51f82c550">actions</a> () const override</td></tr>
 <tr class="separator:a2a9675b08efb92c37d42c6b51f82c550"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1d9a23b8662ce589f043e7c17caf541"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#ab1d9a23b8662ce589f043e7c17caf541">states</a> () const override</td></tr>
@@ -132,6 +132,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a414c0c5aef57afc91ebd780fb5ad681f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc3bd71847f343a3db2f86700004004f"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#abc3bd71847f343a3db2f86700004004f">D</a> () const override</td></tr>
 <tr class="separator:abc3bd71847f343a3db2f86700004004f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a625f7a899cf63dda1ba88602ee993c03"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a625f7a899cf63dda1ba88602ee993c03">pref_states</a> (bool advanced) const override</td></tr>
+<tr class="separator:a625f7a899cf63dda1ba88602ee993c03"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4737b0df5ef9e289ff05e2e471d9815"><td class="memItemLeft" align="right" valign="top">torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#af4737b0df5ef9e289ff05e2e471d9815">pref_obs</a> () const override</td></tr>
+<tr class="separator:af4737b0df5ef9e289ff05e2e471d9815"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ac8515ce3f7701673a79094daf40378"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a0ac8515ce3f7701673a79094daf40378">solved</a> () const override</td></tr>
 <tr class="separator:a0ac8515ce3f7701673a79094daf40378"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a8852b40cb625bb461bae6ca94d859a"><td class="memItemLeft" align="right" valign="top">EnvType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a4a8852b40cb625bb461bae6ca94d859a">type</a> () const override</td></tr>
@@ -151,8 +155,24 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a070653b2f5324b3bf659f8afcc893edb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Class representing a environment where an agent evolve in a maze. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<div class="textblock"><p>Class representing a environment where an agent evolve in a lake. </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a14bd2af470a3f3b88dc77ee28540d6a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14bd2af470a3f3b88dc77ee28540d6a8">&#9670;&nbsp;</a></span>Action</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a14bd2af470a3f3b88dc77ee28540d6a8">hopi::environments::MazeEnv::Action</a> : int</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The actions available to the agent in the maze environment. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2980516e2da19ae568415361ba4f13fe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2980516e2da19ae568415361ba4f13fe">&#9670;&nbsp;</a></span>MazeEnv()</h2>
 
@@ -176,7 +196,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Construct a maze environment. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Construct a lake environment. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">file</td><td>the name of the file from which the environment should be loaded </td></tr>
   </table>
@@ -311,7 +331,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Create a maze environment. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Create a lake environment. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">file</td><td>the name of the file from which the environment should be loaded </td></tr>
   </table>
@@ -506,12 +526,12 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>the value stored at position (row, col) in the maze, i.e., zero for an empty cell and one for a wall </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>the value stored at position (row, col) in the lake, i.e., zero for an empty cell and one for a wall </dd></dl>
 
 </div>
 </div>
-<a id="a976f2dc0b012489c6d2249303b92a43e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a976f2dc0b012489c6d2249303b92a43e">&#9670;&nbsp;</a></span>print()</h2>
+<a id="af4737b0df5ef9e289ff05e2e471d9815"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4737b0df5ef9e289ff05e2e471d9815">&#9670;&nbsp;</a></span>pref_obs()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -520,7 +540,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void hopi::environments::MazeEnv::print </td>
+          <td class="memname">torch::Tensor hopi::environments::MazeEnv::pref_obs </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -532,9 +552,72 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the prior preferences over observations </dd></dl>
+
+<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#adabff616ca63bd4443dc4c4864fd03d9">hopi::environments::Environment</a>.</p>
+
+</div>
+</div>
+<a id="a625f7a899cf63dda1ba88602ee993c03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a625f7a899cf63dda1ba88602ee993c03">&#9670;&nbsp;</a></span>pref_states()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">torch::Tensor hopi::environments::MazeEnv::pref_states </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>advanced</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Getter. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">advanced</td><td>should the prior preferences be advanced? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the prior preferences over observations </dd></dl>
+
+<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#a5a1828da9ce1c68a9cea19b8d83d5e8c">hopi::environments::Environment</a>.</p>
+
+</div>
+</div>
+<a id="ad85de333cd883620dd6ddf63c33fb4fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad85de333cd883620dd6ddf63c33fb4fa">&#9670;&nbsp;</a></span>print()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void hopi::environments::MazeEnv::print </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 <p>Display the environment. </p>
 
-<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#ae96e1228e6ef7133a7200c93497f9a47">hopi::environments::Environment</a>.</p>
+<p>Implements <a class="el" href="classhopi_1_1environments_1_1Environment.html#a452488a592b9bb02c43bd3bfe70f8399">hopi::environments::Environment</a>.</p>
 
 </div>
 </div>

@@ -4,7 +4,7 @@
 #include "math/Ops.h"
 #include "api/API.h"
 #include "graphs/FactorGraph.h"
-#include "algorithms/planning/tmp/MCTS.h"
+#include "algorithms/planning/MCTS.h"
 #include "algorithms/inference/VMP.h"
 #include <torch/torch.h>
 #include <iostream>
@@ -23,7 +23,7 @@ int main() {
     /**
      ** Create the environment and matrix generator.
      **/
-    auto env = MazeEnv::create("../examples/mazes/1.maze");
+    auto env = MazeEnv::create("../examples/mazes/1.lake");
 
     /**
      ** Create the model's parameters.

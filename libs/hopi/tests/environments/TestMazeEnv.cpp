@@ -18,7 +18,7 @@ using namespace torch;
 TEST_CASE( "EnvMaze throws exception for invalid files" ) {
     UnitTests::run([](){
         try {
-            auto env = MazeEnv::create(Files::getMazePath("4.maze"));
+            auto env = MazeEnv::create(Files::getMazePath("4.lake"));
             REQUIRE( false );
         } catch (const std::runtime_error& error) {
             // Do nothing
@@ -29,17 +29,17 @@ TEST_CASE( "EnvMaze throws exception for invalid files" ) {
 TEST_CASE( "EnvMaze do not throw exception for valid files" ) {
     UnitTests::run([](){
         try {
-            auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+            auto env = MazeEnv::create(Files::getMazePath("1.lake"));
         } catch (const std::runtime_error& error) {
             REQUIRE( false );
         }
         try {
-            auto env = MazeEnv::create(Files::getMazePath("2.maze"));
+            auto env = MazeEnv::create(Files::getMazePath("2.lake"));
         } catch (const std::runtime_error& error) {
             REQUIRE( false );
         }
         try {
-            auto env = MazeEnv::create(Files::getMazePath("2.maze"));
+            auto env = MazeEnv::create(Files::getMazePath("2.lake"));
         } catch (const std::runtime_error& error) {
             REQUIRE( false );
         }
@@ -48,28 +48,28 @@ TEST_CASE( "EnvMaze do not throw exception for valid files" ) {
 
 TEST_CASE( "EnvMaze has 5 actions" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
         REQUIRE( env->actions() == 5 );
     });
 }
 
-TEST_CASE( "1.maze has 22 states" ) {
+TEST_CASE( "1.lake has 22 states" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
         REQUIRE( env->states() == 22 );
     });
 }
 
-TEST_CASE( "1.maze has 10 observations" ) {
+TEST_CASE( "1.lake has 10 observations" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
         REQUIRE( env->observations() == 10 );
     });
 }
 
 TEST_CASE( "EnvMaze loads the correct agent's initial position" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
         auto pos = env->agentPosition();
 
         REQUIRE( pos.first  == 5 );
@@ -79,7 +79,7 @@ TEST_CASE( "EnvMaze loads the correct agent's initial position" ) {
 
 TEST_CASE( "EnvMaze loads the correct exit's position" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
         auto pos = env->exitPosition();
 
         REQUIRE( pos.first  == 1 );
@@ -89,7 +89,7 @@ TEST_CASE( "EnvMaze loads the correct exit's position" ) {
 
 TEST_CASE( "EnvMaze properly updates agent's position when executing actions" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
 
         env->execute(MazeEnv::Action::UP);
         auto pos = env->agentPosition();
@@ -128,7 +128,7 @@ TEST_CASE( "EnvMaze properly updates agent's position when executing actions" ) 
 
 TEST_CASE( "EnvMaze returns correct observation" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
 
         REQUIRE( argmax(env->execute(MazeEnv::Action::UP)).item<int>()    == 8 );
         REQUIRE( argmax(env->execute(MazeEnv::Action::UP)).item<int>()    == 7 );
@@ -143,9 +143,9 @@ TEST_CASE( "EnvMaze returns correct observation" ) {
     });
 }
 
-TEST_CASE( "EnvMaze load the correct maze value" ) {
+TEST_CASE( "EnvMaze load the correct lake value" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("1.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("1.lake"));
 
         // First row
         REQUIRE( (*env)(0, 0) == 1 );
@@ -221,7 +221,7 @@ TEST_CASE( "EnvMaze load the correct maze value" ) {
 
 TEST_CASE( "EnvMaze properly generate A matrix" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("5.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("5.lake"));
         Tensor A_true = API::tensor({0.025, 0.025, 0.9,   0.025, 0.025, 0.025, 0.025,
                                      0.025, 0.9,   0.025, 0.025, 0.025, 0.025, 0.025,
                                      0.9,   0.025, 0.025, 0.9,   0.025, 0.025, 0.9,
@@ -235,7 +235,7 @@ TEST_CASE( "EnvMaze properly generate A matrix" ) {
 
 TEST_CASE( "EnvMaze properly generate B matrices" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("5.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("5.lake"));
         Tensor B_true = API::tensor({
             0.9,  0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
             0.05, 0.9,  0.05, 0.9,  0.05, 0.05, 0.05,
@@ -285,7 +285,7 @@ TEST_CASE( "EnvMaze properly generate B matrices" ) {
 
 TEST_CASE( "EnvMaze properly generate D matrix" ) {
     UnitTests::run([](){
-        auto env = MazeEnv::create(Files::getMazePath("5.maze"));
+        auto env = MazeEnv::create(Files::getMazePath("5.lake"));
         Tensor D = env->D();
         Tensor D_true = torch::tensor({0.05,0.05,0.05,0.05,0.05,0.05,0.9});
 

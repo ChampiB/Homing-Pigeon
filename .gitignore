@@ -1,6 +1,7 @@
 # But those files
 !examples/graphs/graph_format.md
 !examples/graphs/example.graph
+examples/d_sprites/dsprites-dataset/*
 examples/graphs/*
 examples/data
 examples/cats_and_dogs/*

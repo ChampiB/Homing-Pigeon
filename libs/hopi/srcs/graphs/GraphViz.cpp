@@ -75,7 +75,9 @@ namespace hopi::graphs {
                 [](VarNode *var){ return (var->data()->cost == std::numeric_limits<double>::min()) ? "-Infinity" : std::to_string(var->data()->cost); },
                 [](VarNode *var){ return std::to_string(var->data()->action); },
                 [](VarNode *var){ return std::to_string(var->data()->pruned); },
-                [](VarNode *var){ return std::to_string(argmax(var->posterior()->params()).item<int>()); }
+                [](VarNode *var){ return std::to_string(argmax(var->posterior()->params()).item<int>()); },
+                [](VarNode *var){ return std::to_string(var->data()->cost / var->data()->visits); },
+                [](VarNode *var){ return var->parent()->parent(0) != nullptr ? std::to_string(std::sqrt(std::log(var->parent()->parent(0)->data()->visits) / var->data()->visits)) : "NA"; }
         };
 
         if (display.empty())

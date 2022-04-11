@@ -82,26 +82,26 @@ $(function() {
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span>hopi::algorithms::planning {</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html">   12</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html">MCTSNodeData</a> {</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;MCTSNodeData&gt; <a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a3b81188af80723d524c4475036f7660e">create</a>();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a5aebeacd2e17e0b0afcfac94adb964ec">MCTSNodeData</a>(<span class="keywordtype">int</span> N = 0, <span class="keywordtype">double</span> G = -1, <span class="keywordtype">int</span> A = -1, <span class="keywordtype">bool</span> pruned = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a2eecec19131cc230cbc9e9a75d28adef">~MCTSNodeData</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keywordtype">int</span>    visits;     <span class="comment">// Number of visits</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordtype">double</span> cost;       <span class="comment">// Node&#39;s total cost</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordtype">int</span>    action;     <span class="comment">// Action that led to this state</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">bool</span>   pruned;     <span class="comment">// Should this branch be discarded during node selection?</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    };</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif //EXPERIMENTS_AI_TS_MCTS_NODE_DATA_H</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html">   15</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html">MCTSNodeData</a> {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;MCTSNodeData&gt; <a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a3b81188af80723d524c4475036f7660e">create</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a5aebeacd2e17e0b0afcfac94adb964ec">MCTSNodeData</a>(<span class="keywordtype">int</span> N = 0, <span class="keywordtype">double</span> G = -1, <span class="keywordtype">int</span> A = -1, <span class="keywordtype">bool</span> pruned = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <a class="code" href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a2eecec19131cc230cbc9e9a75d28adef">~MCTSNodeData</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keywordtype">int</span>    visits;     <span class="comment">// Number of visits</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keywordtype">double</span> cost;       <span class="comment">// Node&#39;s total cost</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keywordtype">int</span>    action;     <span class="comment">// Action that led to this state</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">bool</span>   pruned;     <span class="comment">// Should this branch be discarded during node selection?</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    };</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;}</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#endif //EXPERIMENTS_AI_TS_MCTS_NODE_DATA_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclasshopi_1_1algorithms_1_1planning_1_1MCTSNodeData_html"><div class="ttname"><a href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html">hopi::algorithms::planning::MCTSNodeData</a></div><div class="ttdef"><b>Definition:</b> MCTSNodeData.h:12</div></div>
+<div class="ttc" id="aclasshopi_1_1algorithms_1_1planning_1_1MCTSNodeData_html"><div class="ttname"><a href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html">hopi::algorithms::planning::MCTSNodeData</a></div><div class="ttdef"><b>Definition:</b> MCTSNodeData.h:15</div></div>
 <div class="ttc" id="aclasshopi_1_1algorithms_1_1planning_1_1MCTSNodeData_html_a5aebeacd2e17e0b0afcfac94adb964ec"><div class="ttname"><a href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a5aebeacd2e17e0b0afcfac94adb964ec">hopi::algorithms::planning::MCTSNodeData::MCTSNodeData</a></div><div class="ttdeci">MCTSNodeData(int N=0, double G=-1, int A=-1, bool pruned=false)</div><div class="ttdef"><b>Definition:</b> MCTSNodeData.cpp:13</div></div>
 <div class="ttc" id="aclasshopi_1_1algorithms_1_1planning_1_1MCTSNodeData_html_a3b81188af80723d524c4475036f7660e"><div class="ttname"><a href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a3b81188af80723d524c4475036f7660e">hopi::algorithms::planning::MCTSNodeData::create</a></div><div class="ttdeci">static std::unique_ptr&lt; MCTSNodeData &gt; create()</div><div class="ttdef"><b>Definition:</b> MCTSNodeData.cpp:9</div></div>
 <div class="ttc" id="aclasshopi_1_1algorithms_1_1planning_1_1MCTSNodeData_html_a2eecec19131cc230cbc9e9a75d28adef"><div class="ttname"><a href="classhopi_1_1algorithms_1_1planning_1_1MCTSNodeData.html#a2eecec19131cc230cbc9e9a75d28adef">hopi::algorithms::planning::MCTSNodeData::~MCTSNodeData</a></div><div class="ttdeci">~MCTSNodeData()=default</div></div>

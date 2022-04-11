@@ -19,7 +19,6 @@ using namespace torch;
 using namespace tests;
 using namespace std;
 
-// TODO what if p(X = x) = 0 for some x ?
 TEST_CASE( "kl of identical (Categorical) distributions is zero." ) {
     UnitTests::run([](){
         Tensor param = Ops::uniform({5});

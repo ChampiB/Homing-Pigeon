@@ -45,13 +45,13 @@ namespace hopi::distributions {
 
         /**
          * Construct a Dirichlet distribution.
-         * @param p the parameters of the distribution
+         * @param param the parameters of the distribution
          */
         explicit Dirichlet(const torch::Tensor &param);
 
         /**
          * Construct a Dirichlet distribution.
-         * @param p the parameters of the distribution
+         * @param param the parameters of the distribution
          */
         explicit Dirichlet(const std::shared_ptr<torch::Tensor> &param);
 
@@ -102,7 +102,7 @@ namespace hopi::distributions {
          * @param p the parameter of the Dirichlet
          * @return the expectation of X
          */
-        static torch::Tensor expectation(const torch::Tensor &p); // TODO test
+        static torch::Tensor expectation(const torch::Tensor &p);
 
     private:
         /**

@@ -83,7 +83,7 @@ namespace hopi::math {
          * @param weights the distribution's weights
          * @return the random integer
          */
-        static int randomInt(const torch::Tensor &w);
+        static int randomInt(const torch::Tensor &weights);
 
         /**
          * Generate a random integer uniformly between 0 and max

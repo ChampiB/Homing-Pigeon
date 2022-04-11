@@ -1,5 +1,7 @@
 <map id="hopi::environments::Environment" name="hopi::environments::Environment">
-<area shape="rect" id="node1" title=" " alt="" coords="91,5,239,47"/>
-<area shape="rect" id="node2" href="$classhopi_1_1environments_1_1GraphEnv.html" title=" " alt="" coords="5,95,153,136"/>
-<area shape="rect" id="node3" href="$classhopi_1_1environments_1_1MazeEnv.html" title=" " alt="" coords="177,95,325,136"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,104,153,145"/>
+<area shape="rect" id="node2" href="$classhopi_1_1environments_1_1DisentangleSpritesEnv.html" title=" " alt="" coords="201,5,379,47"/>
+<area shape="rect" id="node3" href="$classhopi_1_1environments_1_1FrozenLakeEnv.html" title=" " alt="" coords="216,71,364,112"/>
+<area shape="rect" id="node4" href="$classhopi_1_1environments_1_1GraphEnv.html" title=" " alt="" coords="216,136,364,177"/>
+<area shape="rect" id="node5" href="$classhopi_1_1environments_1_1MazeEnv.html" title=" " alt="" coords="216,201,364,243"/>
 </map>

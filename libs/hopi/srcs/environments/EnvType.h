@@ -9,7 +9,9 @@ namespace hopi::environments {
 
     enum EnvType {
         MAZE = 0,
-        GRAPH = 1
+        GRAPH = 1,
+        FROZEN_LAKE = 2,
+        D_SPRITES = 3
     };
 
 }

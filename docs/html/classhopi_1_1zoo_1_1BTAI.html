@@ -75,11 +75,15 @@ $(function() {
 <div class="title">hopi::zoo::BTAI Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="BTAI_8h_source.html">BTAI.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a244d58127a503ec504aaa0ca88135f40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1zoo_1_1BTAI.html#a244d58127a503ec504aaa0ca88135f40">BTAI</a> (const <a class="el" href="classhopi_1_1environments_1_1Environment.html">environments::Environment</a> *env, const std::shared_ptr&lt; <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html">algorithms::planning::MCTSConfig</a> &gt; &amp;config, const torch::Tensor &amp;obs)</td></tr>
 <tr class="separator:a244d58127a503ec504aaa0ca88135f40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef9c54646640568740c81fa04d22c893"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1zoo_1_1BTAI.html#aef9c54646640568740c81fa04d22c893">~BTAI</a> ()</td></tr>
+<tr class="separator:aef9c54646640568740c81fa04d22c893"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22f53fdef66aa08832b2a1747ea5428b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1zoo_1_1BTAI.html#a22f53fdef66aa08832b2a1747ea5428b">step</a> (const std::shared_ptr&lt; <a class="el" href="classhopi_1_1environments_1_1Environment.html">environments::Environment</a> &gt; &amp;env, const algorithms::planning::EvaluationType &amp;type)</td></tr>
 <tr class="separator:a22f53fdef66aa08832b2a1747ea5428b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -88,7 +92,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a8a15a620ed5267c7b6d72ad635803668"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classhopi_1_1zoo_1_1BTAI.html">BTAI</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1zoo_1_1BTAI.html#a8a15a620ed5267c7b6d72ad635803668">create</a> (const <a class="el" href="classhopi_1_1environments_1_1Environment.html">environments::Environment</a> *env, const std::shared_ptr&lt; <a class="el" href="classhopi_1_1algorithms_1_1planning_1_1MCTSConfig.html">algorithms::planning::MCTSConfig</a> &gt; &amp;config, const torch::Tensor &amp;obs)</td></tr>
 <tr class="separator:a8a15a620ed5267c7b6d72ad635803668"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A class implementing the Branching Time Active Inference agent. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a244d58127a503ec504aaa0ca88135f40"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a244d58127a503ec504aaa0ca88135f40">&#9670;&nbsp;</a></span>BTAI()</h2>
 
@@ -128,6 +134,24 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="aef9c54646640568740c81fa04d22c893"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef9c54646640568740c81fa04d22c893">&#9670;&nbsp;</a></span>~BTAI()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">hopi::zoo::BTAI::~BTAI </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Destructor. </p>
 
 </div>
 </div>

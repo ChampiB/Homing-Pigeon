@@ -81,9 +81,11 @@ Inheritance diagram for hopi::environments::Environment:</div>
 <div class="dyncontent">
 <div class="center"><img src="classhopi_1_1environments_1_1Environment__inherit__graph.png" border="0" usemap="#hopi_1_1environments_1_1Environment_inherit__map" alt="Inheritance graph"/></div>
 <map name="hopi_1_1environments_1_1Environment_inherit__map" id="hopi_1_1environments_1_1Environment_inherit__map">
-<area shape="rect" title=" " alt="" coords="91,5,239,47"/>
-<area shape="rect" href="classhopi_1_1environments_1_1GraphEnv.html" title=" " alt="" coords="5,95,153,136"/>
-<area shape="rect" href="classhopi_1_1environments_1_1MazeEnv.html" title=" " alt="" coords="177,95,325,136"/>
+<area shape="rect" title=" " alt="" coords="5,104,153,145"/>
+<area shape="rect" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html" title=" " alt="" coords="201,5,379,47"/>
+<area shape="rect" href="classhopi_1_1environments_1_1FrozenLakeEnv.html" title=" " alt="" coords="216,71,364,112"/>
+<area shape="rect" href="classhopi_1_1environments_1_1GraphEnv.html" title=" " alt="" coords="216,136,364,177"/>
+<area shape="rect" href="classhopi_1_1environments_1_1MazeEnv.html" title=" " alt="" coords="216,201,364,243"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -93,8 +95,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4a912baf1c8a52ba8bf9fdd4c4d3201d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5ea6c7d2c74ffdbb52f05b96bdd0c0e"><td class="memItemLeft" align="right" valign="top">virtual torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#ab5ea6c7d2c74ffdbb52f05b96bdd0c0e">execute</a> (int action)=0</td></tr>
 <tr class="separator:ab5ea6c7d2c74ffdbb52f05b96bdd0c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae96e1228e6ef7133a7200c93497f9a47"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#ae96e1228e6ef7133a7200c93497f9a47">print</a> () const =0</td></tr>
-<tr class="separator:ae96e1228e6ef7133a7200c93497f9a47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a452488a592b9bb02c43bd3bfe70f8399"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#a452488a592b9bb02c43bd3bfe70f8399">print</a> ()=0</td></tr>
+<tr class="separator:a452488a592b9bb02c43bd3bfe70f8399"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a581b61c8bcc30752a7192e2f86615945"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#a581b61c8bcc30752a7192e2f86615945">actions</a> () const =0</td></tr>
 <tr class="separator:a581b61c8bcc30752a7192e2f86615945"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a73a9a153235c7d4764b0e1e37d3afe29"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#a73a9a153235c7d4764b0e1e37d3afe29">states</a> () const =0</td></tr>
@@ -107,6 +109,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a33389ecf4db54bbc750a4b5b145a1082"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afcfd184a1e7d1507626a55884ef39d9d"><td class="memItemLeft" align="right" valign="top">virtual torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#afcfd184a1e7d1507626a55884ef39d9d">D</a> () const =0</td></tr>
 <tr class="separator:afcfd184a1e7d1507626a55884ef39d9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a1828da9ce1c68a9cea19b8d83d5e8c"><td class="memItemLeft" align="right" valign="top">virtual torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#a5a1828da9ce1c68a9cea19b8d83d5e8c">pref_states</a> (bool advanced) const =0</td></tr>
+<tr class="separator:a5a1828da9ce1c68a9cea19b8d83d5e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adabff616ca63bd4443dc4c4864fd03d9"><td class="memItemLeft" align="right" valign="top">virtual torch::Tensor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#adabff616ca63bd4443dc4c4864fd03d9">pref_obs</a> () const =0</td></tr>
+<tr class="separator:adabff616ca63bd4443dc4c4864fd03d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03e0a2fe51d110710af85856a3c16c23"><td class="memItemLeft" align="right" valign="top">virtual EnvType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#a03e0a2fe51d110710af85856a3c16c23">type</a> () const =0</td></tr>
 <tr class="separator:a03e0a2fe51d110710af85856a3c16c23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaff9e3acaf863b09126795fe2705a3c"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classhopi_1_1environments_1_1Environment.html#afaff9e3acaf863b09126795fe2705a3c">solved</a> () const =0</td></tr>
@@ -139,7 +145,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the true likelihood mapping </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a43c464a276a2531149b4dcb562143932">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a6b2382722473624de856ff628ab77de2">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#ae4a2b83cee4680d40cceee023c9f3378">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a43c464a276a2531149b4dcb562143932">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a48d23cc0604d3bac7f1d67e1d29232ac">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a6b2382722473624de856ff628ab77de2">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -167,7 +173,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the number of actions available to the agent </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a2a9675b08efb92c37d42c6b51f82c550">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a3bbc816302d04a18f85bea4b97e865ab">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#ac1a898d1e13855babbc29da29fe9b902">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a2a9675b08efb92c37d42c6b51f82c550">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#ac8d09b3d5a13dfc44bd32c3a8af6d1e3">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a3bbc816302d04a18f85bea4b97e865ab">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -195,7 +201,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the true transition mapping </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a414c0c5aef57afc91ebd780fb5ad681f">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a1d1da7f7130b83b66525af0aca2a841a">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#a58caf380021abecb3f0e107ed95aa839">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a414c0c5aef57afc91ebd780fb5ad681f">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a3c8a421deb793a4ac0de1f2c270003ec">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a1d1da7f7130b83b66525af0aca2a841a">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -223,7 +229,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the true initial hidden states </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#abc3bd71847f343a3db2f86700004004f">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a91453093627a4e2ed7bb7e8afb9161d8">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#a2072fb2ef4f4db1f8efcf5bde3023ff7">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#abc3bd71847f343a3db2f86700004004f">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a337686baddd7dc3a43b5fd8b55eb2c0b">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a91453093627a4e2ed7bb7e8afb9161d8">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -258,7 +264,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the observation made after executing the action </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a14d75e521f4235eb47a8fd6694f08033">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#ad6332baab77145d5059d09b909e2a628">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#a750fd9ccde9bf455b80c9cfcc3dc688f">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a14d75e521f4235eb47a8fd6694f08033">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a2f22226013ee2d6a281bad4bfd3ec1ba">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#ad6332baab77145d5059d09b909e2a628">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -286,12 +292,12 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the number of observations in the environment </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a3a03b186969d35cae1978d759bfb40ad">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a19b54be5103442adc2cee5c228dc622b">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#ac8863e4323be59cd2d5b9acf11184cba">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a3a03b186969d35cae1978d759bfb40ad">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a1831ec0b546e51238057f846196465aa">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a19b54be5103442adc2cee5c228dc622b">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
-<a id="ae96e1228e6ef7133a7200c93497f9a47"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae96e1228e6ef7133a7200c93497f9a47">&#9670;&nbsp;</a></span>print()</h2>
+<a id="adabff616ca63bd4443dc4c4864fd03d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adabff616ca63bd4443dc4c4864fd03d9">&#9670;&nbsp;</a></span>pref_obs()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -300,7 +306,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void hopi::environments::Environment::print </td>
+          <td class="memname">virtual torch::Tensor hopi::environments::Environment::pref_obs </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -312,9 +318,72 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the prior preferences over observations </dd></dl>
+
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#ae04a5fb4561870c016edda5d5c7b6e35">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#af4737b0df5ef9e289ff05e2e471d9815">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#adfc013582d2ecd2dd04e8773f940c384">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a6ce654bb40b29bb103fa013498725a3c">hopi::environments::GraphEnv</a>.</p>
+
+</div>
+</div>
+<a id="a5a1828da9ce1c68a9cea19b8d83d5e8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a1828da9ce1c68a9cea19b8d83d5e8c">&#9670;&nbsp;</a></span>pref_states()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual torch::Tensor hopi::environments::Environment::pref_states </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>advanced</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Getter. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">advanced</td><td>should the prior preferences be advanced? </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the prior preferences over observations </dd></dl>
+
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#a079db2564b01444350bea06277e5a141">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a625f7a899cf63dda1ba88602ee993c03">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a88a430b5c5e6bb9b4cdc80fbdb49b8fd">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a2e7e7a0d6a556f9aab91f8760115341a">hopi::environments::GraphEnv</a>.</p>
+
+</div>
+</div>
+<a id="a452488a592b9bb02c43bd3bfe70f8399"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a452488a592b9bb02c43bd3bfe70f8399">&#9670;&nbsp;</a></span>print()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void hopi::environments::Environment::print </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 <p>Display the environment. </p>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a976f2dc0b012489c6d2249303b92a43e">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#acc6e8998d24e42a827c9b9716a65eacd">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#ab1a1f16e7abe77ee6c08cadc71825ad4">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#ad85de333cd883620dd6ddf63c33fb4fa">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#ab83e73097722f458a179d6a73552fa0e">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a3f696cc57e9d14b208c548612f14b6bb">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -342,7 +411,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Reset the environment to its initial state. </p><dl class="section return"><dt>Returns</dt><dd>the initial observation </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a32548ff3a73b062b463177244d8e28b1">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#aeb06f88ccc2fce40caf7fc23dced486a">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#a39b82e0a8e39229f598ff6564cc3c1c2">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a32548ff3a73b062b463177244d8e28b1">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a6b1bb727171db09523d5694fa19a7233">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#aeb06f88ccc2fce40caf7fc23dced486a">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -370,7 +439,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>true if the agent solved the environment false otherwise. </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a0ac8515ce3f7701673a79094daf40378">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a20401ff33f7495a140b3231ec940d04c">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#ae66008a4fc6656f47c7402c2c147d6d8">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a0ac8515ce3f7701673a79094daf40378">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a197f543044f5b1e1ad4cef4c68598ba2">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a20401ff33f7495a140b3231ec940d04c">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -398,7 +467,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>the number of states in the environment </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#ab1d9a23b8662ce589f043e7c17caf541">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#aeb246868bb72872a22056aee90a033d0">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#ad31a1a7b8225039a16098faa3c48bfca">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#ab1d9a23b8662ce589f043e7c17caf541">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#a38f2272f0c97f50f47212fd76c96db9b">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#aeb246868bb72872a22056aee90a033d0">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>
@@ -426,7 +495,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Getter. </p><dl class="section return"><dt>Returns</dt><dd>environment's type. </dd></dl>
 
-<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a4a8852b40cb625bb461bae6ca94d859a">hopi::environments::MazeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a0f868355143653b29ab54648a1278c17">hopi::environments::GraphEnv</a>.</p>
+<p>Implemented in <a class="el" href="classhopi_1_1environments_1_1DisentangleSpritesEnv.html#a4dbcd4debcd9cd9627298638fd5f0e98">hopi::environments::DisentangleSpritesEnv</a>, <a class="el" href="classhopi_1_1environments_1_1MazeEnv.html#a4a8852b40cb625bb461bae6ca94d859a">hopi::environments::MazeEnv</a>, <a class="el" href="classhopi_1_1environments_1_1FrozenLakeEnv.html#ac34cfe52a778d4d515e1466af7e3f66f">hopi::environments::FrozenLakeEnv</a>, and <a class="el" href="classhopi_1_1environments_1_1GraphEnv.html#a0f868355143653b29ab54648a1278c17">hopi::environments::GraphEnv</a>.</p>
 
 </div>
 </div>

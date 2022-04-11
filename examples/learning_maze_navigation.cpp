@@ -24,7 +24,7 @@ int main() {
     /**
      ** The files' name.
      **/
-    auto maze_file     = "../examples/mazes/5.maze";
+    auto maze_file     = "../examples/mazes/5.lake";
     auto evidence_file = "../examples/evidences/5.evi";
 
     /**

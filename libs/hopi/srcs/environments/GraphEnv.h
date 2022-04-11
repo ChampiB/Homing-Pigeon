@@ -9,6 +9,9 @@
 
 namespace hopi::environments {
 
+    /**
+     * A class implementing the graph environment.
+     */
     class GraphEnv : public Environment {
     public:
         /**
@@ -53,7 +56,7 @@ namespace hopi::environments {
         /**
          * Display the environment.
          */
-        void print() const override;
+        void print() override;
 
         /**
          * Getter.
@@ -90,6 +93,19 @@ namespace hopi::environments {
          * @return the true initial hidden states
          */
         [[nodiscard]] torch::Tensor D() const override;
+
+        /**
+         * Getter.
+         * @param advanced should the prior preferences be advanced?
+         * @return the prior preferences over observations
+         */
+        [[nodiscard]] torch::Tensor pref_states(bool advanced) const override;
+
+        /**
+         * Getter.
+         * @return the prior preferences over observations
+         */
+        [[nodiscard]] torch::Tensor pref_obs() const override;
 
         /**
          * Getter.

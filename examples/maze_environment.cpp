@@ -10,7 +10,7 @@ void take_action(const std::unique_ptr<MazeEnv> &env, MazeEnv::Action action) {
 
 int main() {
     // Create the environment
-    auto env = MazeEnv::create("../examples/mazes/1.maze");
+    auto env = MazeEnv::create("../examples/mazes/1.lake");
 
     // Execute actions and display the environment state.
     env->print();

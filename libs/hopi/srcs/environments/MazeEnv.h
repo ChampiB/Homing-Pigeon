@@ -13,7 +13,7 @@
 namespace hopi::environments {
 
     /**
-     * Class representing a environment where an agent evolve in a maze.
+     * Class representing a environment where an agent evolve in a lake.
      */
     class MazeEnv : public Environment {
     public:
@@ -22,7 +22,7 @@ namespace hopi::environments {
         //
 
         /**
-         * Create a maze environment.
+         * Create a lake environment.
          * @param file the name of the file from which the environment should be loaded
          * @return the environment
          */
@@ -32,15 +32,15 @@ namespace hopi::environments {
         // Constructor
         //
         /**
-         * Construct a maze environment.
+         * Construct a lake environment.
          * @param file the name of the file from which the environment should be loaded
          */
         explicit MazeEnv(const std::string &file);
 
     public:
-        //
-        // Possible action available to the agent
-        //
+        /**
+         * The actions available to the agent in the maze environment.
+         */
         enum Action: int {
             UP    = 0,
             DOWN  = 1,
@@ -51,7 +51,7 @@ namespace hopi::environments {
 
     public:
         //
-        // Implementation of the methods of the Distribution class
+        // Implementation of the methods of the Environment class
         //
 
         /**
@@ -69,7 +69,7 @@ namespace hopi::environments {
         /**
          * Display the environment.
          */
-        void print() const override;
+        void print() override;
 
         /**
          * Getter.
@@ -109,6 +109,19 @@ namespace hopi::environments {
 
         /**
          * Getter.
+         * @param advanced should the prior preferences be advanced?
+         * @return the prior preferences over observations
+         */
+        [[nodiscard]] torch::Tensor pref_states(bool advanced) const override;
+
+        /**
+         * Getter.
+         * @return the prior preferences over observations
+         */
+        [[nodiscard]] torch::Tensor pref_obs() const override;
+
+        /**
+         * Getter.
          * @return true if the agent solved the environment false otherwise.
          */
         [[nodiscard]] bool solved() const override;
@@ -136,7 +149,7 @@ namespace hopi::environments {
          * Getter.
          * @param row the row index
          * @param col the column index
-         * @return the value stored at position (row, col) in the maze, i.e., zero for an empty cell and one for a wall
+         * @return the value stored at position (row, col) in the lake, i.e., zero for an empty cell and one for a wall
          */
         double operator()(int row, int col);
 
@@ -150,7 +163,7 @@ namespace hopi::environments {
 
     private:
         /**
-         * Compute the Manhattan distance between the agent and the maze's exit.
+         * Compute the Manhattan distance between the agent and the lake's exit.
          * @param agent the agent position
          * @return the Manhattan distance
          */
@@ -165,7 +178,7 @@ namespace hopi::environments {
         [[nodiscard]] std::pair<int,int> execute(int action, const std::pair<int,int> &pos) const;
 
         /**
-         * Associate to each empty cell a state index, e.g., for the following maze
+         * Associate to each empty cell a state index, e.g., for the following lake
          * WWWW                            WWWW
          * W  W     we get the mapping     W12W
          * W WW    ------------------->    W3WW
@@ -182,6 +195,7 @@ namespace hopi::environments {
         torch::Tensor maze;
         torch::Tensor states_idx;
         int nb_states;
+        std::string file_name;
     };
 
 }

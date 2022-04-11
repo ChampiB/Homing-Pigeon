@@ -97,44 +97,44 @@ $(function() {
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;CategoricalNode&gt; <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a7ff029f07b77399495d8a53c93d85f07">create</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *to, <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *d);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;CategoricalNode&gt; <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a7ff029f07b77399495d8a53c93d85f07">create</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *node);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="comment">// Constructors</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a265ab97fb77ff9d155dc3a87dc79cded">CategoricalNode</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *to, <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *param);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a265ab97fb77ff9d155dc3a87dc79cded">CategoricalNode</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *to);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">static</span> std::unique_ptr&lt;CategoricalNode&gt; <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a7ff029f07b77399495d8a53c93d85f07">create</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">RV</a> *to);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="comment">// Constructors</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a265ab97fb77ff9d155dc3a87dc79cded">CategoricalNode</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *to, <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *param);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">explicit</span> <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a265ab97fb77ff9d155dc3a87dc79cded">CategoricalNode</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *to);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="comment">//</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="comment">// Implement the methods of the FactorNode class</span></div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="comment">// Implement the methods of the FactorNode class</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="comment">//</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *<a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a58e12db5790d0f75f07624950e60cca9">parent</a>(<span class="keywordtype">int</span> i) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *<a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#ab5e879d982f0df32ac0cf4e2dc500f21">child</a>() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        torch::Tensor <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a1c65214d52f832bc4b473b1b7530b956">message</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *to) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#aed66eb02977ffbbeddbfb415b955159b">vfe</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        torch::Tensor childMessage();</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        torch::Tensor dMessage();</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        torch::Tensor getLogD();</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *childNode;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *D;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    };</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *<a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a58e12db5790d0f75f07624950e60cca9">parent</a>(<span class="keywordtype">int</span> i) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *<a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#ab5e879d982f0df32ac0cf4e2dc500f21">child</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        torch::Tensor <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#a1c65214d52f832bc4b473b1b7530b956">message</a>(<a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *to) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordtype">double</span> <a class="code" href="classhopi_1_1nodes_1_1CategoricalNode.html#aed66eb02977ffbbeddbfb415b955159b">vfe</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        torch::Tensor childMessage();</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        torch::Tensor dMessage();</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        torch::Tensor getLogD();</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *childNode;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <a class="code" href="classhopi_1_1nodes_1_1VarNode.html">VarNode</a> *D;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    };</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;}</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_CATEGORICAL_NODE_H</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#endif //HOMING_PIGEON_CATEGORICAL_NODE_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasshopi_1_1nodes_1_1CategoricalNode_html_a265ab97fb77ff9d155dc3a87dc79cded"><div class="ttname"><a href="classhopi_1_1nodes_1_1CategoricalNode.html#a265ab97fb77ff9d155dc3a87dc79cded">hopi::nodes::CategoricalNode::CategoricalNode</a></div><div class="ttdeci">CategoricalNode(VarNode *to, VarNode *param)</div><div class="ttdef"><b>Definition:</b> CategoricalNode.cpp:24</div></div>
 <div class="ttc" id="aclasshopi_1_1nodes_1_1CategoricalNode_html"><div class="ttname"><a href="classhopi_1_1nodes_1_1CategoricalNode.html">hopi::nodes::CategoricalNode</a></div><div class="ttdef"><b>Definition:</b> CategoricalNode.h:22</div></div>

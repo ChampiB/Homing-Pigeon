@@ -25,6 +25,9 @@ namespace hopi::nodes {
 
 namespace hopi::zoo {
 
+    /**
+     * A class implementing the Branching Time Active Inference agent.
+     */
     class BTAI {
     public:
         /**
@@ -53,6 +56,11 @@ namespace hopi::zoo {
         );
 
         /**
+         * Destructor.
+         */
+        ~BTAI();
+
+        /**
          * Execute on step of the action perception cycle in the environment.
          * @param env the environment to act in.
          * @param type the type of evaluation to use during planning.
@@ -65,7 +73,6 @@ namespace hopi::zoo {
     private:
         torch::Tensor _a;
         torch::Tensor _b;
-        torch::Tensor _c;
         torch::Tensor _d;
 
         std::unique_ptr<algorithms::planning::MCTS> _mcts;
